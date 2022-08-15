@@ -183,7 +183,7 @@ public class ConsoleUI implements UIprogram{
 
     public void createRandomMachineSetting() {
         DTO_MachineInfo dto_machineInfo = engine.createMachineInfoDTO();
-        List<Pair<String ,Pair<Integer,Integer>>>  rotorsIDList = randomCreateIDListForRotors(dto_machineInfo.getNumOfPossibleRotors());
+        List<Pair<String ,Pair<Integer,Integer>>>  rotorsIDList = randomCreateIDListForRotors(dto_machineInfo.getNumOfPossibleRotors(),dto_machineInfo.getNumOfUsedRotors());
         List<Character>  startPositionList = randomCreateListForStartPosition(dto_machineInfo,rotorsIDList,dto_machineInfo.getABC(),rotorsIDList.size());
         String reflectorID = randomCreateReflectorID(dto_machineInfo.getNumOfReflectors());
         List<Pair<Character, Character>> plugBoard = randomCreatePlugBoard(dto_machineInfo.getABC());
@@ -209,15 +209,15 @@ public class ConsoleUI implements UIprogram{
         }
      return rotorsStartPositionList;
     }
-    private List<Pair<String ,Pair<Integer,Integer>>>  randomCreateIDListForRotors(int numOfRotors) {
+    private List<Pair<String ,Pair<Integer,Integer>>>  randomCreateIDListForRotors(int numOfRotors,int numOfUsedRotors) {
         List<Pair<String ,Pair<Integer,Integer>>>  rotorsIDList = new ArrayList<>();
         Random rand = new Random();
         Set<Integer > set = new HashSet<>();
-        int randomNum = rand.nextInt(numOfRotors - 2) + 2;
-        for(int i = 0; i < randomNum; i++){
-            randomNum = rand.nextInt(numOfRotors - 1) + 1;
+        int randomNum;
+        for(int i = 0; i < numOfUsedRotors; i++){
+            randomNum = rand.nextInt(numOfRotors) + 1;
             while(set.contains(randomNum)) {
-                randomNum = rand.nextInt(numOfRotors - 1) + 1;
+                randomNum = rand.nextInt(numOfRotors) + 1;
             }
             rotorsIDList.add(new Pair<>(String.valueOf(randomNum),null));
             set.add(randomNum);
@@ -439,11 +439,11 @@ public class ConsoleUI implements UIprogram{
         System.out.println("3. Machine number of messages - " + machineInfo.getNumOfMsgProcessed());
         if(isXmlLoaded && isCodeChosen) {
             System.out.println("4.  Description for the original code:");
-            printDescriptionFormat(engine.createCodeDescriptionDTO());
+            printDescriptionFormat(engine.getUsageHistory().getFirstCodeDescription());
         }
         if(isXmlLoaded && isCodeChosen) {
             System.out.println("5.  Description for the current code:");
-            printDescriptionFormat(engine.createCodeDescriptionDTO());
+            printDescriptionFormat(engine.getUsageHistory().getCurrentCodeDescription());
         }
         /*System.out.println("Machine Status:");
         System.out.println("1.    a) Number of Possible Rotors: " + machineInfo.getNumOfPossibleRotors() );
