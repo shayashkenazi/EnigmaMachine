@@ -12,6 +12,7 @@ public class DTO_CodeDescription {
     private String reflectorID;
     private List<Pair<Character, Character>> plugsInUseList; // maybe Pair<int, int> ?
     private String abc;
+    private String str = "Shay is HOMO";
 
 
     public DTO_CodeDescription (String abc,List<Pair<String ,Pair<Integer,Integer>>> rotorInUseIDList, List<Character> startingPositionList, String reflectorID,
