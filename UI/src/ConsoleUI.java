@@ -29,7 +29,7 @@ public class ConsoleUI implements UIprogram{
         for (Pair<DTO_CodeDescription, List<Pair<Pair<String, String>, Duration>>> codeAndList
                 : engine.getUsageHistory().getData()) {
 
-            printCodeDescriptionFormat(codeAndList.getKey());
+            printDescriptionFormat(codeAndList.getKey());
 
             int index = 1;
             for (Pair<Pair<String, String>, Duration> msgAndTime : codeAndList.getValue()) {
@@ -38,11 +38,6 @@ public class ConsoleUI implements UIprogram{
                 index++;
             }
         }
-    }
-    private void printCodeDescriptionFormat(DTO_CodeDescription codeDescription) {
-        // SHAY aaaaa - Please implement this method that get dto of code and print it
-        // in the format <23, 87>...
-        // You can rename it but if you do so, please fix the calling
     }
     private void printEncodedAndDecodedMsgAndTime(Pair<Pair<String, String>, Duration> msgAndTime, int index) {
 
@@ -403,6 +398,9 @@ public class ConsoleUI implements UIprogram{
             throw new Exception("you enter less letters than number of rotors!");
         for(char ch : chars) {
             checkCharInput(ch,abc,set);
+        }
+        for(char ch : chars) {
+            rotorsStartPositionList.add(ch);
         }
         Collections.reverse(rotorsStartPositionList);
         return rotorsStartPositionList;
