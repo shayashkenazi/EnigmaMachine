@@ -1,5 +1,7 @@
 import DTOs.DTO_CodeDescription;
 import javafx.util.Pair;
+
+import java.io.Serializable;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +14,9 @@ import java.util.List;
 //  decode them.                                            //
 //////////////////////////////////////////////////////////////
 
-public class UsageHistory {
+public class UsageHistory implements Serializable {
 
+    private String xmlPath;
     private List<Pair<DTO_CodeDescription, List<Pair<Pair<String, String>, Duration>>>> data = new ArrayList<>();
 
     public void addCodeSegment(DTO_CodeDescription dto_codeDescription) {
@@ -26,5 +29,23 @@ public class UsageHistory {
 
     public List<Pair<DTO_CodeDescription, List<Pair<Pair<String, String>, Duration>>>> getData() {
         return data;
+    }
+
+    public void setXmlPath(String xmlPath) {
+        this.xmlPath = xmlPath;
+    }
+
+    public String getXmlPath() {
+        return xmlPath;
+    }
+
+    public DTO_CodeDescription getFirstCodeDescription() {
+
+        return data.get(0).getKey();
+    }
+
+    public DTO_CodeDescription getCurrentCodeDescription() {
+
+        return data.get(data.size() - 1).getKey();
     }
 }
