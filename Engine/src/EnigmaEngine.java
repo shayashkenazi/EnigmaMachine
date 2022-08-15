@@ -2,6 +2,10 @@ import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
 import Tools.*;
 import javafx.util.Pair;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.time.Duration;
 import java.time.Instant;
 
@@ -60,6 +64,21 @@ public class EnigmaEngine implements EngineCapabilities{
             plugsInUseList.add(new Pair<>(entry.getKey(), entry.getValue()));
 
         return new DTO_CodeDescription(machine.getAbc(), rotorInUseIDList, startingPositionList, reflectorID, plugsInUseList);
+    }
+
+    @Override
+    public void saveInfoToFile(String filePathAndName) throws FileNotFoundException, Exception {
+
+        FileOutputStream fos = new FileOutputStream(filePathAndName);
+        ObjectOutputStream out = new ObjectOutputStream(fos);
+
+        out.writeObject(usageHistory);
+        out.close();
+    }
+
+    @Override
+    public void loadInfoFromFile(String filePathAndName) {
+
     }
 
     @Override

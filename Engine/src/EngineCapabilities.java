@@ -2,6 +2,7 @@ import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
 import Tools.Machine;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 public interface EngineCapabilities {
@@ -17,4 +18,6 @@ public interface EngineCapabilities {
 
     UsageHistory getUsageHistory();
     DTO_CodeDescription createCodeDescriptionDTO();
+    void saveInfoToFile(String filePathAndName) throws FileNotFoundException, Exception;
+    void loadInfoFromFile(String filePathAndName);
 }
