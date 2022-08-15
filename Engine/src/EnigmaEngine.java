@@ -12,7 +12,7 @@ import java.util.*;
 public class EnigmaEngine implements EngineCapabilities{
 
     private Machine machine;
-    private UsageHistory usageHistory = new UsageHistory();
+    private UsageHistory usageHistory/* = new UsageHistory()*/;
 
 
     @Override
@@ -89,6 +89,9 @@ public class EnigmaEngine implements EngineCapabilities{
     public void createEnigmaMachineFromXML(String xmlPath) throws Exception {
         Factory factory = new Factory(xmlPath);
         machine = factory.createMachine();
+
+        usageHistory = new UsageHistory();
+        usageHistory.setXmlPath(xmlPath);
     }
 
     @Override

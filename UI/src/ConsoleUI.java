@@ -1,6 +1,8 @@
 import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
 import javafx.util.Pair;
+
+import java.io.FileNotFoundException;
 import java.time.Duration;
 import java.util.*;
 
@@ -22,50 +24,7 @@ public class ConsoleUI implements UIprogram{
             ManageOptions();
 
         } while (userOption != UserOptions.EXIT);
-    }
-
-    @Override
-    public void showHistoryAndStatistics() {
-        for (Pair<DTO_CodeDescription, List<Pair<Pair<String, String>, Duration>>> codeAndList
-                : engine.getUsageHistory().getData()) {
-
-            printDescriptionFormat(codeAndList.getKey());
-
-            int index = 1;
-            for (Pair<Pair<String, String>, Duration> msgAndTime : codeAndList.getValue()) {
-
-                printEncodedAndDecodedMsgAndTime(msgAndTime, index);
-                index++;
-            }
-        }
-    }
-    private void printEncodedAndDecodedMsgAndTime(Pair<Pair<String, String>, Duration> msgAndTime, int index) {
-
-        //StringBuilder sb = new StringBuilder();
-        String s = new String();
-        s += index + ". <" + msgAndTime.getKey().getKey() + "> " + "--> <" + msgAndTime.getKey().getValue() + ">"
-                + " (" + msgAndTime.getValue() + " nano-seconds)";
-        System.out.println(s);
-    }
-
-    private Boolean getUserChoiceAsEnum() {
-        String tempChoice = sc.nextLine();
-        try {
-            userOption = validateUserChoiceAndConvertToEnum(Integer.parseInt(tempChoice));
-        }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-            return false;
-        }
-        return true;
-    }
-
-    private UserOptions validateUserChoiceAndConvertToEnum(Integer userChoiceInt) throws Exception {
-
-        if (userChoiceInt < 1 || userChoiceInt > 8)
-            throw new Exception("Error - This option is out of range! Please select a number in range 1-8.");
-
-        return UserOptions.values()[userChoiceInt - 1]; // Option 1 for user is actually Option 0 for system
+        System.out.println("You choose to Exit this program. Bye Bye!");
     }
 
     private void ManageOptions (){
@@ -109,18 +68,94 @@ public class ConsoleUI implements UIprogram{
                 break;
 
             case SAVE_MACHINE_INFORMATION: // Bonus
-
-
+                saveInfoToFile();
                 break;
 
             case LOAD_MACHINE_INFORMATION: // Bonus
-
-
-                break;
-
-            case EXIT:
+                loadInfoFromFile();
                 break;
         }
+    }
+
+    @Override
+    public void showHistoryAndStatistics() {
+        for (Pair<DTO_CodeDescription, List<Pair<Pair<String, String>, Duration>>> codeAndList
+                : engine.getUsageHistory().getData()) {
+
+            printDescriptionFormat(codeAndList.getKey());
+
+            int index = 1;
+            for (Pair<Pair<String, String>, Duration> msgAndTime : codeAndList.getValue()) {
+
+                printEncodedAndDecodedMsgAndTime(msgAndTime, index);
+                index++;
+            }
+        }
+    }
+
+    @Override
+    public void saveInfoToFile() {
+
+        System.out.println("Please enter the full path AND file name that you would like to save your data to.");
+        try {
+            engine.saveInfoToFile(sc.nextLine());
+        }
+        catch (FileNotFoundException fe) {
+            System.out.println("???"); // TODO: should I make the file for him or the method does that
+        }
+        catch (Exception e) {
+            System.out.println("See problem in class ConsoleUI, saveInfoToFile method"); // TODO: correct this exception
+        }
+    }
+
+    @Override
+    public void loadInfoFromFile() {
+
+        System.out.println("Please enter the full path AND file name that you would like to load your data from.");
+        try {
+            engine.loadInfoFromFile(sc.nextLine());
+            isXmlLoaded = true;
+            isCodeChosen = true;
+        }
+        catch (FileNotFoundException fe) {
+            System.out.println("???"); // TODO: should I make the file for him or the method does that
+        }
+        catch (Exception e) {
+            System.out.println("See problem in class ConsoleUI, loadInfoFromFile() method"); // TODO: correct this exception
+        }
+    }
+
+    private void printEncodedAndDecodedMsgAndTime(Pair<Pair<String, String>, Duration> msgAndTime, int index) {
+
+        //StringBuilder sb = new StringBuilder();
+        String s = new String();
+        s += index + ". <" + msgAndTime.getKey().getKey() + "> " + "--> <" + msgAndTime.getKey().getValue() + ">"
+                + " (" + msgAndTime.getValue() + " nano-seconds)";
+        System.out.println(s);
+    }
+
+    private Boolean getUserChoiceAsEnum() {
+        String tempChoice = sc.nextLine();
+        try {
+            userOption = validateUserChoiceAndConvertToEnum(Integer.parseInt(tempChoice));
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    private UserOptions validateUserChoiceAndConvertToEnum(Integer userChoiceInt) throws Exception {
+
+        if (userChoiceInt < 1 || userChoiceInt > UserOptions.values().length){
+            String errorMsg = "Error - This option is out of range! Please select a number in range 1-"
+                    + UserOptions.values().length;
+            throw new Exception(errorMsg);
+        }
+
+
+        return UserOptions.values()[userChoiceInt - 1]; // Option 1 for user is actually Option 0 for system
     }
 
     @Override
