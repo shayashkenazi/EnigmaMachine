@@ -3,9 +3,7 @@ import DTOs.DTO_MachineInfo;
 import Tools.*;
 import javafx.util.Pair;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.time.Duration;
 import java.time.Instant;
 
@@ -71,14 +69,20 @@ public class EnigmaEngine implements EngineCapabilities{
 
         FileOutputStream fos = new FileOutputStream(filePathAndName);
         ObjectOutputStream out = new ObjectOutputStream(fos);
-
+        // TODO: Do I need to create the file ?
         out.writeObject(usageHistory);
         out.close();
     }
 
     @Override
-    public void loadInfoFromFile(String filePathAndName) {
+    public void loadInfoFromFile(String filePathAndName) throws FileNotFoundException, Exception {
 
+        FileInputStream fis = new FileInputStream(filePathAndName);
+        ObjectInputStream in = new ObjectInputStream(fis);
+
+        usageHistory = (UsageHistory) in.readObject();
+        createEnigmaMachineFromXML(usageHistory.getXmlPath());
+        buildRotorsStack(usageHistory.getCurrentCodeDescription());
     }
 
     @Override

@@ -19,5 +19,5 @@ public interface EngineCapabilities {
     UsageHistory getUsageHistory();
     DTO_CodeDescription createCodeDescriptionDTO();
     void saveInfoToFile(String filePathAndName) throws FileNotFoundException, Exception;
-    void loadInfoFromFile(String filePathAndName);
+    void loadInfoFromFile(String filePathAndName) throws FileNotFoundException, Exception;
 }
