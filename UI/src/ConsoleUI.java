@@ -457,7 +457,7 @@ public class ConsoleUI implements UIprogram{
         sb.append("<");
         int index = 0;
         for (Pair<String ,Pair<Integer,Integer>> rotorId : dto_codeDescription.getRotorsInUseIDList()) {
-            int distance = (dto_codeDescription.getNotch(rotorId) - dto_codeDescription.getCurrent(rotorId)) % dto_codeDescription.getABC().length(); //'% dto_codeDescription.'
+            int distance = Math.floorMod(dto_codeDescription.getNotch(rotorId) - dto_codeDescription.getCurrent(rotorId), dto_codeDescription.getABC().length()) ; //'% dto_codeDescription.'
             sb.append(rotorId.getKey()).append("(").append(distance).append("),"); // need to have curr index eac h rotor
         }
         sb.deleteCharAt(sb.length() - 1); // for the last ','
