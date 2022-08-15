@@ -45,6 +45,7 @@ public class ConsoleUI implements UIprogram{
         String s = new String();
         s += index + ". <" + msgAndTime.getKey().getKey() + "> " + "--> <" + msgAndTime.getKey().getValue() + ">"
                 + " (" + msgAndTime.getValue() + " nano-seconds)";
+        System.out.println(s);
     }
 
     private Boolean getUserChoiceAsEnum() {
@@ -247,12 +248,13 @@ public class ConsoleUI implements UIprogram{
             while(set.contains(randLetter1)) {
                 randLetter1 = rand.nextInt(abc.length());
             }
+            set.add(randLetter1);
             while(set.contains(randLetter2)) {
                 randLetter2 = rand.nextInt(abc.length());
             }
-            res.add(new Pair<>(abc.charAt(randLetter1),abc.charAt(randLetter2)));
-            set.add(randLetter1);
             set.add(randLetter2);
+            res.add(new Pair<>(abc.charAt(randLetter1),abc.charAt(randLetter2)));
+
         }
         return res;
     }
@@ -261,7 +263,7 @@ public class ConsoleUI implements UIprogram{
         try {
             DTO_MachineInfo dto_machineInfo = engine.createMachineInfoDTO();
             List<Pair<String ,Pair<Integer,Integer>>> rotorsIDList = createIDListForRotors(dto_machineInfo.getNumOfPossibleRotors());
-            List<Character>  startPositionList = createListForStartPosition(dto_machineInfo.getABC(),rotorsIDList.size());
+            List<Character>  startPositionList = createListForStartPosition(dto_machineInfo.getABC(),rotorsIDList.size(),rotorsIDList,dto_machineInfo);
             String reflectorID = createReflectorID(dto_machineInfo.getNumOfReflectors());
             List<Pair<Character, Character>> plugBoard = createPlugBoard(dto_machineInfo.getABC());
             DTO_CodeDescription res = new DTO_CodeDescription(dto_machineInfo.getABC(),rotorsIDList,startPositionList,reflectorID,plugBoard);
@@ -385,10 +387,9 @@ public class ConsoleUI implements UIprogram{
     }
 
 
-    private List<Character> createListForStartPosition(String abc, int numOfRotor, List<Pair<String ,
-                                                       Pair<Integer,Integer>>> rotorIDList,
-                                                       DTO_MachineInfo dto_machineInfo) throws Exception{
-
+    private List<Character> createListForStartPosition(String abc, int numOfRotor,
+                                      List<Pair<String, Pair<Integer, Integer>>> rotorIDList,
+                                      DTO_MachineInfo dto_machineInfo) throws Exception{
         List<Character> rotorsStartPositionList = new ArrayList<>();
         Set <Character> set = new HashSet<>();
         String msg = "Please chose " + numOfRotor + "start position from the abc - " + abc;
@@ -402,11 +403,12 @@ public class ConsoleUI implements UIprogram{
         for(char ch : chars) {
             checkCharInput(ch,abc,set);
         }
+        int index = 0;
         for(char ch : chars) {
             rotorsStartPositionList.add(ch);
-            Pair<String, Pair<Integer, Integer>> tmp = rotorIDList.get(i);
-            int curNotch = dto_machineInfo.getNotchPositionList().get(i);
-            rotorIDList.set(i,new Pair<>(tmp.getKey(),new Pair<>(curNotch,randomNum)));
+            Pair<String, Pair<Integer, Integer>> tmp = rotorIDList.get(index);
+            int curNotch = dto_machineInfo.getNotchPositionList().get(index);
+            rotorIDList.set(index++,new Pair<>(tmp.getKey(),new Pair<>(curNotch,abc.indexOf(ch))));
 
         }
         Collections.reverse(rotorsStartPositionList);
