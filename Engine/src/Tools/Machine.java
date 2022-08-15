@@ -68,7 +68,7 @@ public class Machine {
             rotorsStack.add(currentRotor);
         }
         rotorsStack.add(reflectorsMap.get(codeDescription.getReflectorID()));
-
+        buildPlugBoard(codeDescription.getPlugsInUseList());
 
     }
 
