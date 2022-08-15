@@ -127,7 +127,7 @@ public class EnigmaEngine implements EngineCapabilities{
         String resMsg = machine.buildStringWithPlugBoard(res);
 
         Instant end = Instant.now();
-        usageHistory.addMsgAndTimeToCurrentCodeSegment(msgToEncodeDecode,resMsg, Duration.between(start, end));
+        usageHistory.addMsgAndTimeToCurrentCodeSegment(msgToEncodeDecode, resMsg, Duration.between(start, end));
 
 
         return resMsg;

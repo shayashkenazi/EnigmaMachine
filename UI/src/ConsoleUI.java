@@ -99,7 +99,7 @@ public class ConsoleUI implements UIprogram{
                 System.out.println("Operation scudded!");
                 break;
 
-            case HISTORIC_AND_STATISTIC:
+            case HISTORIC_AND_STATISTIC: // 7
                 if (isXmlLoaded)
                     showHistoryAndStatistics();
                 else
@@ -187,7 +187,7 @@ public class ConsoleUI implements UIprogram{
         String reflectorID = randomCreateReflectorID(dto_machineInfo.getNumOfReflectors());
         List<Pair<Character, Character>> plugBoard = randomCreatePlugBoard(dto_machineInfo.getABC());
         DTO_CodeDescription res = new DTO_CodeDescription(dto_machineInfo.getABC(),rotorsIDList,startPositionList,reflectorID,plugBoard);
-        engine.getMachine().buildRotorsStack(res);
+        engine.buildRotorsStack(res);
     }
 
     private List<Character> randomCreateListForStartPosition(DTO_MachineInfo dto_machineInfo,List<Pair<String ,Pair<Integer,Integer>>> rotorsIDList,String abc, int numOfRotors) {
@@ -265,7 +265,7 @@ public class ConsoleUI implements UIprogram{
             String reflectorID = createReflectorID(dto_machineInfo.getNumOfReflectors());
             List<Pair<Character, Character>> plugBoard = createPlugBoard(dto_machineInfo.getABC());
             DTO_CodeDescription res = new DTO_CodeDescription(dto_machineInfo.getABC(),rotorsIDList,startPositionList,reflectorID,plugBoard);
-            engine.getMachine().buildRotorsStack(res);
+            engine.buildRotorsStack(res);
         }
         catch(Exception e) {
             System.out.println("you enter wrong input!\nDo you wnat  ");
@@ -385,7 +385,10 @@ public class ConsoleUI implements UIprogram{
     }
 
 
-    private List<Character> createListForStartPosition(String abc, int numOfRotor) throws Exception{
+    private List<Character> createListForStartPosition(String abc, int numOfRotor, List<Pair<String ,
+                                                       Pair<Integer,Integer>>> rotorIDList,
+                                                       DTO_MachineInfo dto_machineInfo) throws Exception{
+
         List<Character> rotorsStartPositionList = new ArrayList<>();
         Set <Character> set = new HashSet<>();
         String msg = "Please chose " + numOfRotor + "start position from the abc - " + abc;
@@ -401,6 +404,10 @@ public class ConsoleUI implements UIprogram{
         }
         for(char ch : chars) {
             rotorsStartPositionList.add(ch);
+            Pair<String, Pair<Integer, Integer>> tmp = rotorIDList.get(i);
+            int curNotch = dto_machineInfo.getNotchPositionList().get(i);
+            rotorIDList.set(i,new Pair<>(tmp.getKey(),new Pair<>(curNotch,randomNum)));
+
         }
         Collections.reverse(rotorsStartPositionList);
         return rotorsStartPositionList;

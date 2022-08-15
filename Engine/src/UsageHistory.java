@@ -24,7 +24,7 @@ public class UsageHistory implements Serializable {
     }
 
     public void addMsgAndTimeToCurrentCodeSegment(String beforeMsg, String afterMsg, Duration time) {
-        data.get(data.size()).getValue().add(new Pair<>(new Pair<>(beforeMsg, afterMsg), time));
+        data.get(data.size() - 1).getValue().add(new Pair<>(new Pair<>(beforeMsg, afterMsg), time));
     }
 
     public List<Pair<DTO_CodeDescription, List<Pair<Pair<String, String>, Duration>>>> getData() {
