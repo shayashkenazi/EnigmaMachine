@@ -79,13 +79,13 @@ public class ConsoleUI implements UIprogram{
 
     @Override
     public void showHistoryAndStatistics() {
-        for (Pair<DTO_CodeDescription, List<Pair<Pair<String, String>, Duration>>> codeAndList
+        for (Pair<DTO_CodeDescription, List<Pair<Pair<String, String>, Long>>> codeAndList
                 : engine.getUsageHistory().getData()) {
 
             printDescriptionFormat(codeAndList.getKey());
 
             int index = 1;
-            for (Pair<Pair<String, String>, Duration> msgAndTime : codeAndList.getValue()) {
+            for (Pair<Pair<String, String>, Long> msgAndTime : codeAndList.getValue()) {
 
                 printEncodedAndDecodedMsgAndTime(msgAndTime, index);
                 index++;
@@ -125,11 +125,11 @@ public class ConsoleUI implements UIprogram{
         }
     }
 
-    private void printEncodedAndDecodedMsgAndTime(Pair<Pair<String, String>, Duration> msgAndTime, int index) {
+    private void printEncodedAndDecodedMsgAndTime(Pair<Pair<String, String>, Long> msgAndTime, int index) {
 
         //StringBuilder sb = new StringBuilder();
         String s = new String();
-        s += index + ". <" + msgAndTime.getKey().getKey() + "> " + "--> <" + msgAndTime.getKey().getValue() + ">"
+        s += "   " + index + ". <" + msgAndTime.getKey().getKey() + "> " + "--> <" + msgAndTime.getKey().getValue() + ">"
                 + " (" + msgAndTime.getValue() + " nano-seconds)";
         System.out.println(s);
     }
@@ -169,6 +169,7 @@ public class ConsoleUI implements UIprogram{
             OptionIndex++;
         }
         System.out.println(separators);
+        System.out.print("Please select a number for the option you would like to use from the above: ");
     }
 
     private void PrintEncodeDecodeMsgIfPossible() {
@@ -178,8 +179,8 @@ public class ConsoleUI implements UIprogram{
         else if (!isCodeChosen)
             System.out.println("Error - In order to select this option, you should load machine code first!");
         else {
-            System.out.println("Please enter the message you would like to Encode / Decode:");
-            System.out.println(engine.encodeDecodeMsg(sc.nextLine()));
+            System.out.print("Please enter the message you would like to Encode / Decode: ");
+            System.out.println("The message after process is: " + engine.encodeDecodeMsg(sc.nextLine()));
         }
     }
 
@@ -474,7 +475,7 @@ public class ConsoleUI implements UIprogram{
         System.out.println("1.    a) Number of Possible Rotors: " + machineInfo.getNumOfPossibleRotors() );
         System.out.println("      b) Number of Rotors in use: " + machineInfo.getNumOfUsedRotors());
         System.out.println("2. Number of Reflectors: " + machineInfo.getNumOfReflectors());
-        System.out.println("3. Machine number of messages - " + machineInfo.getNumOfMsgProcessed());
+        System.out.println("3. Machine number of messages processed - " + engine.getUsageHistory().getNumOfProcessMsg());
         if(isXmlLoaded && isCodeChosen) {
             System.out.println("4.  Description for the original code:");
             printDescriptionFormat(engine.getUsageHistory().getFirstCodeDescription());
