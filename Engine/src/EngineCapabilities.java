@@ -11,10 +11,10 @@ public interface EngineCapabilities {
     List<Integer> createIntegerListFromString(String msg);
     String createStringFromIntegerList(List<Integer> integerList);
     String encodeDecodeMsg(String msgToEncodeDecode);
-    void createEnigmaMachineFromXML(String xmlPath) throws Exception;
+    void createEnigmaMachineFromXML(String xmlPath, boolean newMachine) throws Exception;
     Machine getMachine();
     DTO_MachineInfo createMachineInfoDTO();
-    void buildRotorsStack(DTO_CodeDescription codeDescription);
+    void buildRotorsStack(DTO_CodeDescription codeDescription, boolean newMachine);
 
     UsageHistory getUsageHistory();
     DTO_CodeDescription createCodeDescriptionDTO();

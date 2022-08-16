@@ -38,8 +38,10 @@ public class EnigmaEngine implements EngineCapabilities{
     }
 
     @Override
-    public void buildRotorsStack(DTO_CodeDescription codeDescription) {
-        usageHistory.addCodeSegment(codeDescription);
+    public void buildRotorsStack(DTO_CodeDescription codeDescription, boolean newMachine) {
+
+        if (newMachine)
+            usageHistory.addCodeSegment(codeDescription);
         machine.buildRotorsStack(codeDescription);
     }
     @Override
@@ -71,26 +73,28 @@ public class EnigmaEngine implements EngineCapabilities{
         ObjectOutputStream out = new ObjectOutputStream(fos);
         // TODO: Do I need to create the file ?
         out.writeObject(usageHistory);
-        out.close();
+        out.close(); // TODO: do I need to close it sooner?
     }
 
     @Override
     public void loadInfoFromFile(String filePathAndName) throws FileNotFoundException, Exception {
 
+        // TODO: Do I need to handle situation that the user did NOT save any data? (check if null?)
         FileInputStream fis = new FileInputStream(filePathAndName);
         ObjectInputStream in = new ObjectInputStream(fis);
 
         usageHistory = (UsageHistory) in.readObject();
-        createEnigmaMachineFromXML(usageHistory.getXmlPath());
-        buildRotorsStack(usageHistory.getCurrentCodeDescription());
+        createEnigmaMachineFromXML(usageHistory.getXmlPath(), false);
+        buildRotorsStack(usageHistory.getCurrentCodeDescription(), false);
     }
 
     @Override
-    public void createEnigmaMachineFromXML(String xmlPath) throws Exception {
+    public void createEnigmaMachineFromXML(String xmlPath, boolean newMachine) throws Exception {
         Factory factory = new Factory(xmlPath);
         machine = factory.createMachine();
 
-        usageHistory = new UsageHistory();
+        if (newMachine) // The machine is NOT built from the Load option, therefor need New
+            usageHistory = new UsageHistory();
         usageHistory.setXmlPath(xmlPath);
     }
 

@@ -2,9 +2,10 @@ package Tools;
 
 import javafx.util.Pair;
 
+import java.io.Serializable;
 import java.util.*;
 
-public abstract class Switcher {
+public abstract class Switcher implements Serializable {
 
     private String id;
     protected List<Pair<Integer, Integer>> inputOutput;

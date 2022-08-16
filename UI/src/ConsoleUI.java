@@ -118,7 +118,7 @@ public class ConsoleUI implements UIprogram{
             isCodeChosen = true;
         }
         catch (FileNotFoundException fe) {
-            System.out.println("???"); // TODO: should I make the file for him or the method does that
+            System.out.println("The file you entered is NOT exist!"); // TODO: should I make the file for him or the method does that
         }
         catch (Exception e) {
             System.out.println("See problem in class ConsoleUI, loadInfoFromFile() method"); // TODO: correct this exception
@@ -161,35 +161,38 @@ public class ConsoleUI implements UIprogram{
     @Override
     public void showManu() {
 
+        String separators = "#################################################################";
+        System.out.println(separators);
         int OptionIndex = 1;
         for (UserOptions option : UserOptions.values()) {
             System.out.println(OptionIndex + ". " + option.getDescription());
             OptionIndex++;
         }
+        System.out.println(separators);
     }
 
     private void PrintEncodeDecodeMsgIfPossible() {
 
         if (!isXmlLoaded)
-            System.out.print("Error - In order to select this option, you should load xml file first!");
+            System.out.println("Error - In order to select this option, you should load xml file first!");
         else if (!isCodeChosen)
-            System.out.print("Error - In order to select this option, you should load machine code first!");
+            System.out.println("Error - In order to select this option, you should load machine code first!");
         else {
-            System.out.print("Please enter the message you would like to Encode / Decode:");
-            System.out.print(engine.encodeDecodeMsg(sc.nextLine()));
+            System.out.println("Please enter the message you would like to Encode / Decode:");
+            System.out.println(engine.encodeDecodeMsg(sc.nextLine()));
         }
     }
 
-    private void createEnigmaMachineFromXmlIfPossible() {
+    private void createEnigmaMachineFromXmlIfPossible() { // Not from load option
 
-        System.out.print("Please enter FULL path for the XML file:");
+        System.out.println("Please enter FULL path for the XML file:");
         String xmlPath = sc.nextLine();
         if (!validateXMLFile(xmlPath)){
             System.out.println("Error - xml file should end with .xml!");
         }
         else {
             try {
-                engine.createEnigmaMachineFromXML(xmlPath);
+                engine.createEnigmaMachineFromXML(xmlPath, true);
                 isXmlLoaded = true;
             }
             catch (Exception e) {
@@ -201,7 +204,7 @@ public class ConsoleUI implements UIprogram{
     private void showMachineStatusIfPossible() {
 
         if (!isXmlLoaded) {
-            System.out.print("Error - In order to select this option, you should load xml file first!");
+            System.out.println("Error - In order to select this option, you should load xml file first!");
         }
         /*else if (!isCodeChosen) {
             System.out.print("Error - In order to select this option, you should load machine code first!");
@@ -223,7 +226,7 @@ public class ConsoleUI implements UIprogram{
         String reflectorID = randomCreateReflectorID(dto_machineInfo.getNumOfReflectors());
         List<Pair<Character, Character>> plugBoard = randomCreatePlugBoard(dto_machineInfo.getABC());
         DTO_CodeDescription res = new DTO_CodeDescription(dto_machineInfo.getABC(),rotorsIDList,startPositionList,reflectorID,plugBoard);
-        engine.buildRotorsStack(res);
+        engine.buildRotorsStack(res, true);
     }
 
     private List<Character> randomCreateListForStartPosition(DTO_MachineInfo dto_machineInfo,List<Pair<String ,Pair<Integer,Integer>>> rotorsIDList,String abc, int numOfRotors) {
@@ -302,7 +305,7 @@ public class ConsoleUI implements UIprogram{
             String reflectorID = createReflectorID(dto_machineInfo.getNumOfReflectors());
             List<Pair<Character, Character>> plugBoard = createPlugBoard(dto_machineInfo.getABC());
             DTO_CodeDescription res = new DTO_CodeDescription(dto_machineInfo.getABC(),rotorsIDList,startPositionList,reflectorID,plugBoard);
-            engine.buildRotorsStack(res);
+            engine.buildRotorsStack(res, true);
         }
         catch(Exception e) {
             System.out.println("you enter wrong input!\nDo you wnat  ");
@@ -526,28 +529,5 @@ public class ConsoleUI implements UIprogram{
 
     public boolean validateXMLFile(String xmlPath) {
         return xmlPath.endsWith(".xml");
-    }
-
-    public String  foo() throws Exception {
-
-
-        engine.createEnigmaMachineFromXML("C:\\Users\\shaya\\IdeaProjects\\EnigmaMachine\\Engine\\src\\Resources\\ex1-sanity-paper-enigma.xml"); // throws exception
-        //engine.createEnigmaMachineFromXML("C:\\Users\\shaya\\IdeaProjects\\EnigmaMachine\\Engine\\src\\Resources\\ex1-sanity-small.xml");
-        //engine.createEnigmaMachineFromXML("C:/Users/idofa/Desktop/College/JAVA/EnigmaMachine/Engine/src/Resources/ex1-sanity-small.xml");
-        List<String> rotorsIDList = new ArrayList<>(Arrays.asList("3", "2","1"));
-        List<Character> startPositionList = new ArrayList<>(Arrays.asList('X', 'D','O'));
-        //List<String> rotorsIDList = new ArrayList<>(Arrays.asList("1","2"));
-        //List<Character> startPositionList = new ArrayList<>(Arrays.asList('C','C'));
-        String reflectorID = "I";
-        //engine.buildRotorsStack(rotorsIDList, startPositionList, reflectorID);
-        List<Pair<Character, Character>> listPlugBoard = new ArrayList<>();
-        //listPlugBoard.add(new Pair<>('A', 'F'));
-        engine.getMachine().buildPlugBoard(listPlugBoard);
-
-        String res =  engine.encodeDecodeMsg("THERAINISDROPPING");
-        showMachineStatus(engine.createMachineInfoDTO());
-        return res;
-
-
     }
 }

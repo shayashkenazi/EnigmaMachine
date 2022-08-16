@@ -6,8 +6,8 @@ public enum UserOptions {
     ENCODE_DECODE("Insert input to Encode/ Decode"),
     CODE_INITIALIZE("Init Machine Details"),
     HISTORIC_AND_STATISTIC("Show Historic and Statistic"),
-    SAVE_MACHINE_INFORMATION("Bonus - Save all the machine data to load it later"),
-    LOAD_MACHINE_INFORMATION("Bonus - Load all the machine data from your previous save"),
+    SAVE_MACHINE_INFORMATION("Save Machine data (Bonus)"),
+    LOAD_MACHINE_INFORMATION("Load Machine data from your previous save (Bonus)"),
     EXIT("Exit");
 
     private final String description;

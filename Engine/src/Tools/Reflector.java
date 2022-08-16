@@ -1,6 +1,6 @@
 package Tools;
 
-public class Reflector extends Switcher{
+public class Reflector extends Switcher {
 
     public Reflector (String ID,int lengthABC) {
         super(ID,lengthABC);

@@ -3,11 +3,12 @@ package Tools;
 import DTOs.DTO_CodeDescription;
 import javafx.util.Pair;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Machine {
+public class Machine implements Serializable {
 
     private Map<String, Rotor> rotorsMap;
     private Map<String,Reflector> reflectorsMap;
@@ -16,7 +17,7 @@ public class Machine {
     private String abc;
     private int rotorsCount;
     private PlugBoard plugBoard = new PlugBoard();
-    private int numOfProccessedMsg = 0;
+    private int numOfProccessedMsg = 0; // TODO: delete this and use the UsageHistory
 
 
     public int getNumOfProccessedMsg() { return numOfProccessedMsg; }

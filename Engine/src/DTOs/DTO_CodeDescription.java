@@ -2,10 +2,11 @@ package DTOs;
 
 import javafx.util.Pair;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DTO_CodeDescription {
+public class DTO_CodeDescription implements Serializable {
 
     private List<Pair<String ,Pair<Integer,Integer>>> rotorInUseIDList;
     private List<Character> startingPositionList;

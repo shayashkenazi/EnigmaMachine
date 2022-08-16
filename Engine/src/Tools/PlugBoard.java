@@ -2,10 +2,11 @@ package Tools;
 
 import javafx.util.Pair;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PlugBoard {
+public class PlugBoard implements Serializable {
 
     private Map<Character,Character> plugBoardMapFirstSide = new HashMap<>();
     private Map<Character,Character> plugBoardMapSecondSide = new HashMap<>();
