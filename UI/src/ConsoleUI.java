@@ -31,9 +31,8 @@ public class ConsoleUI implements UIprogram{
 
         switch (userOption) {
 
-            case LOAD_XML:
+            case LOAD_XML: // 1
                 createEnigmaMachineFromXmlIfPossible();
-                System.out.println("Operation scudded!");
                 break;
 
             case SHOW_MACHINE_STATUS: // only if xml is loaded AND code had been chosen
@@ -54,9 +53,8 @@ public class ConsoleUI implements UIprogram{
                 PrintEncodeDecodeMsgIfPossible();
                 break;
 
-            case CODE_INITIALIZE:
+            case CODE_INITIALIZE: // 6
                 engine.getMachine().initializePositionsForRotorsInStack();
-                System.out.println("Operation scudded!");
                 break;
 
             case HISTORIC_AND_STATISTIC: // 7
@@ -96,15 +94,13 @@ public class ConsoleUI implements UIprogram{
     @Override
     public void saveInfoToFile() {
 
-        System.out.println("Please enter the full path AND file name that you would like to save your data to.");
+        System.out.print("Please enter the full path AND file name that you would like to save your data to: ");
         try {
             engine.saveInfoToFile(sc.nextLine());
-        }
-        catch (FileNotFoundException fe) {
-            System.out.println("???"); // TODO: should I make the file for him or the method does that
+            System.out.println("Operation scudded! Data was saved.");
         }
         catch (Exception e) {
-            System.out.println("See problem in class ConsoleUI, saveInfoToFile method"); // TODO: correct this exception
+            System.out.println("Something went wrong with file saving. did you enter a valid path?");
         }
     }
 
@@ -114,14 +110,15 @@ public class ConsoleUI implements UIprogram{
         System.out.println("Please enter the full path AND file name that you would like to load your data from.");
         try {
             engine.loadInfoFromFile(sc.nextLine());
+            System.out.println("Operation scudded! Data was loaded.");
             isXmlLoaded = true;
             isCodeChosen = true;
         }
         catch (FileNotFoundException fe) {
-            System.out.println("The file you entered is NOT exist!"); // TODO: should I make the file for him or the method does that
+            System.out.println("The file you entered is NOT exist!");
         }
         catch (Exception e) {
-            System.out.println("See problem in class ConsoleUI, loadInfoFromFile() method"); // TODO: correct this exception
+            System.out.println("Something went wrong with file loading. did you save info first?");
         }
     }
 
@@ -138,6 +135,10 @@ public class ConsoleUI implements UIprogram{
         String tempChoice = sc.nextLine();
         try {
             userOption = validateUserChoiceAndConvertToEnum(Integer.parseInt(tempChoice));
+        }
+        catch (NumberFormatException nfe) {
+            System.out.println("Error - Please select a Number!");
+            return false;
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
@@ -179,9 +180,32 @@ public class ConsoleUI implements UIprogram{
         else if (!isCodeChosen)
             System.out.println("Error - In order to select this option, you should load machine code first!");
         else {
-            System.out.print("Please enter the message you would like to Encode / Decode: ");
-            System.out.println("The message after process is: " + engine.encodeDecodeMsg(sc.nextLine()));
+            StringBuilder sb = new StringBuilder();
+            sb.append("Please enter the message you would like to Encode / Decode. ");
+            sb.append("Your letters should be from these options: [");
+            sb.append(String.join(",", engine.getMachine().getAbc()));
+            sb.append("]:  ");
+            System.out.print(sb);
+
+            String msg = sc.nextLine();
+            if (!isMsgAllFromAbc(msg)) {
+                System.out.println("Error - Your message should contain only letters from the abc!");
+            }
+            else {
+                sb = new StringBuilder("The message after process is: ");
+                sb.append(engine.encodeDecodeMsg(msg));
+                System.out.println(sb);
+            }
         }
+    }
+
+    private boolean isMsgAllFromAbc(String msg) {
+
+        for (int i = 0; i < msg.length(); i++){
+            if (!engine.getMachine().isCharInACB(msg.charAt(i)))
+                return false;
+        }
+        return true;
     }
 
     private void createEnigmaMachineFromXmlIfPossible() { // Not from load option
@@ -194,6 +218,7 @@ public class ConsoleUI implements UIprogram{
         else {
             try {
                 engine.createEnigmaMachineFromXML(xmlPath, true);
+                System.out.println("Operation scudded! xml file was loaded.");
                 isXmlLoaded = true;
             }
             catch (Exception e) {
@@ -207,7 +232,7 @@ public class ConsoleUI implements UIprogram{
         if (!isXmlLoaded) {
             System.out.println("Error - In order to select this option, you should load xml file first!");
         }
-        /*else if (!isCodeChosen) {
+        /*else if (!isCodeChosen) { // TODO: why it's in a comment? we don't need this?
             System.out.print("Error - In order to select this option, you should load machine code first!");
         }*/
         else
@@ -228,6 +253,7 @@ public class ConsoleUI implements UIprogram{
         List<Pair<Character, Character>> plugBoard = randomCreatePlugBoard(dto_machineInfo.getABC());
         DTO_CodeDescription res = new DTO_CodeDescription(dto_machineInfo.getABC(),rotorsIDList,startPositionList,reflectorID,plugBoard);
         engine.buildRotorsStack(res, true);
+        System.out.println("Operation scudded! Random code was built.");
     }
 
     private List<Character> randomCreateListForStartPosition(DTO_MachineInfo dto_machineInfo,List<Pair<String ,Pair<Integer,Integer>>> rotorsIDList,String abc, int numOfRotors) {
@@ -309,7 +335,7 @@ public class ConsoleUI implements UIprogram{
             engine.buildRotorsStack(res, true);
         }
         catch(Exception e) {
-            System.out.println("you enter wrong input!\nDo you wnat  ");
+            System.out.println("you enter wrong input!");
         }
     }
 
@@ -431,7 +457,7 @@ public class ConsoleUI implements UIprogram{
                                       DTO_MachineInfo dto_machineInfo) throws Exception{
         List<Character> rotorsStartPositionList = new ArrayList<>();
         Set <Character> set = new HashSet<>();
-        String msg = "Please chose " + numOfRotor + "start position from the abc - " + abc;
+        String msg = "Please chose " + numOfRotor + " start position from the abc - " + abc;
         String temp;
         System.out.println(msg);
         temp = sc.nextLine();
@@ -475,7 +501,7 @@ public class ConsoleUI implements UIprogram{
         System.out.println("1.    a) Number of Possible Rotors: " + machineInfo.getNumOfPossibleRotors() );
         System.out.println("      b) Number of Rotors in use: " + machineInfo.getNumOfUsedRotors());
         System.out.println("2. Number of Reflectors: " + machineInfo.getNumOfReflectors());
-        System.out.println("3. Machine number of messages processed - " + engine.getUsageHistory().getNumOfProcessMsg());
+        System.out.println("3. Machine number of messages processed: " + engine.getUsageHistory().getNumOfProcessMsg());
         if(isXmlLoaded && isCodeChosen) {
             System.out.println("4.  Description for the original code:");
             printDescriptionFormat(engine.getUsageHistory().getFirstCodeDescription());

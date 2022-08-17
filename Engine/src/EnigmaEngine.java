@@ -12,7 +12,7 @@ import java.util.*;
 public class EnigmaEngine implements EngineCapabilities{
 
     private Machine machine;
-    private UsageHistory usageHistory/* = new UsageHistory()*/;
+    private UsageHistory usageHistory;
 
 
     @Override
@@ -67,11 +67,10 @@ public class EnigmaEngine implements EngineCapabilities{
     }
 
     @Override
-    public void saveInfoToFile(String filePathAndName) throws FileNotFoundException, Exception {
+    public void saveInfoToFile(String filePathAndName) throws Exception {
 
         FileOutputStream fos = new FileOutputStream(filePathAndName);
         ObjectOutputStream out = new ObjectOutputStream(fos);
-        // TODO: Do I need to create the file ?
         out.writeObject(usageHistory);
         out.close(); // TODO: do I need to close it sooner?
     }
@@ -137,14 +136,14 @@ public class EnigmaEngine implements EngineCapabilities{
 
         String res = createStringFromIntegerList(encodedDecodedMsgAsIntegerList);
         String resMsg = machine.buildStringWithPlugBoard(res);
-        
+
         long end = System.nanoTime();
         usageHistory.addMsgAndTimeToCurrentCodeSegment(msgToEncodeDecode, resMsg, end - start);
 
         return resMsg;
     }
 
-    private Integer encodeDecodeLetterAsInteger(Integer letterAsInt) { // maybe we should get as a Cheracter?? and convert inside
+    private Integer encodeDecodeLetterAsInteger(Integer letterAsInt) {
 
         Integer encodeDecodeLetterAsInteger = letterAsInt;
         Rotor currentRotor = (Rotor)machine.getRotorsStack().get(0);

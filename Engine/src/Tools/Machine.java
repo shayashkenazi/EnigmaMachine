@@ -17,11 +17,11 @@ public class Machine implements Serializable {
     private String abc;
     private int rotorsCount;
     private PlugBoard plugBoard = new PlugBoard();
-    private int numOfProccessedMsg = 0; // TODO: delete this and use the UsageHistory
 
+    public boolean isCharInACB(Character ch) {
+        return abcMap.containsKey(ch);
+    }
 
-    public int getNumOfProccessedMsg() { return numOfProccessedMsg; }
-    public void increaseNumOfProccessedMsg() { numOfProccessedMsg++; }
     public int getRotorsMapSize() {
         return rotorsMap.size();
     }
@@ -89,6 +89,7 @@ public class Machine implements Serializable {
             Rotor currRotor = (Rotor)rotorsStack.get(rotorInd);
             currRotor.initilaizeCurrentPosition();
         }
+        System.out.println("Operation scudded! The Positions of the Rotors was initialized.");
     }
 
     public void buildPlugBoard(List<Pair<Character,Character>> listOfPlugBoard ) {
