@@ -504,11 +504,11 @@ public class ConsoleUI implements UIprogram{
         System.out.println("3. Machine number of messages processed: " + engine.getUsageHistory().getNumOfProcessMsg());
         if(isXmlLoaded && isCodeChosen) {
             System.out.println("4.  Description for the original code:");
-            printDescriptionFormat(engine.getUsageHistory().getFirstCodeDescription());
+            printDescriptionFormat(engine.getUsageHistory().getCurrentCodeDescription());
         }
         if(isXmlLoaded && isCodeChosen) {
             System.out.println("5.  Description for the current code:");
-            printDescriptionFormat(engine.getUsageHistory().getCurrentCodeDescription());
+            printDescriptionFormat(engine.createCodeDescriptionDTO());
         }
         /*System.out.println("Machine Status:");
         System.out.println("1.    a) Number of Possible Rotors: " + machineInfo.getNumOfPossibleRotors() );
