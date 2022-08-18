@@ -10,7 +10,6 @@ public class DTO_MachineInfo {
     private Integer numOfPossibleRotors;
     private List<Integer> notchPositionList;
     private Integer numOfReflectors;
-    private Integer numOfMsgProcessed;
     private Integer numOfUsedRotors;
 
     public DTO_MachineInfo (String abc, Integer numOfPossibleRotors, Integer numOfUsedRotors,

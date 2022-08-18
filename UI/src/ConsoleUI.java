@@ -41,12 +41,10 @@ public class ConsoleUI implements UIprogram{
 
             case CREATE_SPECIFIC_MACHINE: // only if xml is loaded
                 createSpecificMachineSetting();
-                isCodeChosen = true;
                 break;
 
             case CREATE_RANDOM_MACHINE: // only if xml is loaded
                 createRandomMachineSetting();
-                isCodeChosen = true;
                 break;
 
             case ENCODE_DECODE:
@@ -61,7 +59,7 @@ public class ConsoleUI implements UIprogram{
                 if (isXmlLoaded)
                     showHistoryAndStatistics();
                 else
-                    System.out.print("Error - In order to select this option, you should load xml file first!");
+                    System.out.println("Error - In order to select this option, you should load xml file first!");
 
                 break;
 
@@ -77,6 +75,8 @@ public class ConsoleUI implements UIprogram{
 
     @Override
     public void showHistoryAndStatistics() {
+        System.out.println("--------------------------------------------");
+        System.out.println("History and Statistics:");
         for (Pair<DTO_CodeDescription, List<Pair<Pair<String, String>, Long>>> codeAndList
                 : engine.getUsageHistory().getData()) {
 
@@ -89,6 +89,7 @@ public class ConsoleUI implements UIprogram{
                 index++;
             }
         }
+        System.out.println("--------------------------------------------");
     }
 
     @Override
@@ -253,6 +254,7 @@ public class ConsoleUI implements UIprogram{
         List<Pair<Character, Character>> plugBoard = randomCreatePlugBoard(dto_machineInfo.getABC());
         DTO_CodeDescription res = new DTO_CodeDescription(dto_machineInfo.getABC(),rotorsIDList,startPositionList,reflectorID,plugBoard);
         engine.buildRotorsStack(res, true);
+        isCodeChosen = true;
         System.out.println("Operation scudded! Random code was built.");
     }
 
@@ -327,15 +329,16 @@ public class ConsoleUI implements UIprogram{
     public void createSpecificMachineSetting() {
         try {
             DTO_MachineInfo dto_machineInfo = engine.createMachineInfoDTO();
-            List<Pair<String ,Pair<Integer,Integer>>> rotorsIDList = createIDListForRotors(dto_machineInfo.getNumOfPossibleRotors());
+            List<Pair<String ,Pair<Integer,Integer>>> rotorsIDList = createIDListForRotors(dto_machineInfo);
             List<Character>  startPositionList = createListForStartPosition(dto_machineInfo.getABC(),rotorsIDList.size(),rotorsIDList,dto_machineInfo);
             String reflectorID = createReflectorID(dto_machineInfo.getNumOfReflectors());
             List<Pair<Character, Character>> plugBoard = createPlugBoard(dto_machineInfo.getABC());
             DTO_CodeDescription res = new DTO_CodeDescription(dto_machineInfo.getABC(),rotorsIDList,startPositionList,reflectorID,plugBoard);
             engine.buildRotorsStack(res, true);
+            isCodeChosen = true;
         }
         catch(Exception e) {
-            System.out.println("you enter wrong input!");
+            System.out.println(e.getMessage());
         }
     }
 
@@ -376,9 +379,11 @@ public class ConsoleUI implements UIprogram{
         return MapNumbers.get(Integer.parseInt(temp));
     }
 
-    private List<Pair<String ,Pair<Integer,Integer>>> createIDListForRotors(int numOfRotors) throws Exception{
+    private List<Pair<String ,Pair<Integer,Integer>>> createIDListForRotors(DTO_MachineInfo dto_machineInfo) throws Exception{
 
-        String msg = "Please chose rotors numbers from 1 to - " + numOfRotors + " separate by comma";
+        StringBuilder msg = new StringBuilder("Please choose rotors numbers from 1 to " +
+                         dto_machineInfo.getNumOfPossibleRotors() + " separate by comma\n");
+        msg.append("You You should select exactly " + dto_machineInfo.getNumOfUsedRotors() + " Rotors");
         String temp;
         List<Pair<String ,Pair<Integer,Integer>>> rotorsIDList = new ArrayList<>();
         Set <Integer> set = new HashSet<>();
@@ -386,8 +391,12 @@ public class ConsoleUI implements UIprogram{
         temp = sc.nextLine();
         List<String> items = Arrays.asList(temp.split(","));
 
+        if (items.size() != dto_machineInfo.getNumOfUsedRotors())
+            throw new Exception("Error - You should select exactly " + dto_machineInfo.getNumOfUsedRotors()
+                                 + " Rotors!");
+
         for(String str : items) {
-            checkIntInput(str,numOfRotors,set);
+            checkIntInput(str, dto_machineInfo.getNumOfPossibleRotors(), set);
         }
         for(String str : items) {
             rotorsIDList.add(new Pair<>(str,null));
@@ -398,11 +407,11 @@ public class ConsoleUI implements UIprogram{
         return rotorsIDList;
     }
 
-    private void checkIntInput(String input, int size,Set <Integer> set) throws Exception{
+    private void checkIntInput(String input, int size,Set <Integer> set) throws Exception {
 
         int check = Integer.parseInt(input);
         if (check < 1 || check > size)
-            throw new Exception("Please chose intreeger in the range!");
+            throw new Exception("Please chose integer in the range!");
         if(set.contains(check))
             throw new Exception("you enter duplicate rotor");
         else
