@@ -472,7 +472,7 @@ public class ConsoleUI implements UIprogram{
         for(char ch : chars) {
             rotorsStartPositionList.add(ch);
             Pair<String, Pair<Integer, Integer>> tmp = rotorIDList.get(index);
-            int curNotch = dto_machineInfo.getNotchPositionList().get(index);
+            int curNotch = dto_machineInfo.getNotchPositionList().get(Integer.parseInt(tmp.getKey()) -1);
             rotorIDList.set(index++,new Pair<>(tmp.getKey(),new Pair<>(curNotch,abc.indexOf(ch))));
 
         }
@@ -526,7 +526,6 @@ public class ConsoleUI implements UIprogram{
     }
 
     private void printDescriptionFormat(DTO_CodeDescription dto_codeDescription) {
-
         StringBuilder sb = new StringBuilder();
         sb.append("<");
         int index = 0;
