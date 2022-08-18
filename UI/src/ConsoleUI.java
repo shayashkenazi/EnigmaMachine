@@ -463,17 +463,18 @@ public class ConsoleUI implements UIprogram{
         temp = sc.nextLine();
         temp = temp.toUpperCase();
         char[] chars = temp.toCharArray();
+
         if(chars.length != numOfRotor)
             throw new Exception("you enter less letters than number of rotors!");
         for(char ch : chars) {
             checkCharInput(ch,abc,set);
         }
         int index = 0;
-        for(char ch : chars) {
-            rotorsStartPositionList.add(ch);
+        for(int i = chars.length -1; i >= 0; i--) {
+            rotorsStartPositionList.add(chars[i]);
             Pair<String, Pair<Integer, Integer>> tmp = rotorIDList.get(index);
             int curNotch = dto_machineInfo.getNotchPositionList().get(Integer.parseInt(tmp.getKey()) -1);
-            rotorIDList.set(index++,new Pair<>(tmp.getKey(),new Pair<>(curNotch,abc.indexOf(ch))));
+            rotorIDList.set(index++,new Pair<>(tmp.getKey(),new Pair<>(curNotch,abc.indexOf(chars[i]))));
 
         }
         Collections.reverse(rotorsStartPositionList);
@@ -529,12 +530,18 @@ public class ConsoleUI implements UIprogram{
         StringBuilder sb = new StringBuilder();
         sb.append("<");
         int index = 0;
-        for (Pair<String ,Pair<Integer,Integer>> rotorId : dto_codeDescription.getRotorsInUseIDList()) {
+        /*for (Pair<String ,Pair<Integer,Integer>> rotorId : dto_codeDescription.getRotorsInUseIDList()) {
+            int distance = Math.floorMod(dto_codeDescription.getNotch(rotorId) - dto_codeDescription.getCurrent(rotorId), dto_codeDescription.getABC().length()) ; //'% dto_codeDescription.'
+            sb.append(rotorId.getKey()).append("(").append(distance).append("),"); // need to have curr index eac h rotor
+        }*/
+        for(int i = dto_codeDescription.getRotorsInUseIDList().size() - 1; i >= 0; i--)
+        {
+            Pair<String ,Pair<Integer,Integer>> rotorId = dto_codeDescription.getRotorsInUseIDList().get(i);
             int distance = Math.floorMod(dto_codeDescription.getNotch(rotorId) - dto_codeDescription.getCurrent(rotorId), dto_codeDescription.getABC().length()) ; //'% dto_codeDescription.'
             sb.append(rotorId.getKey()).append("(").append(distance).append("),"); // need to have curr index eac h rotor
         }
-        sb.deleteCharAt(sb.length() - 1); // for the last ','
-        sb.append("><").append(String.join(",", dto_codeDescription.getStartingPositionList().toString()
+        sb.replace(sb.length() - 1,sb.length() - 1,">"); // for the last ','
+        sb.append("<").append(String.join(",", dto_codeDescription.getStartingPositionList().toString()
                 .replace(" ", "")
                 .replace("[", "")
                 .replace("]", ""))).append(">");
