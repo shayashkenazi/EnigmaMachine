@@ -477,7 +477,6 @@ public class ConsoleUI implements UIprogram{
             rotorIDList.set(index++,new Pair<>(tmp.getKey(),new Pair<>(curNotch,abc.indexOf(chars[i]))));
 
         }
-        Collections.reverse(rotorsStartPositionList);
         return rotorsStartPositionList;
     }
     private void checkCharInput(char input, String abc,Set <Character> set) throws Exception{
