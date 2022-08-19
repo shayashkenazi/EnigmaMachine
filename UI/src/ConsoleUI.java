@@ -271,7 +271,7 @@ public class ConsoleUI implements UIprogram{
             set.add(abc.charAt(randomNum));
             rotorsStartPositionList.add(abc.charAt(randomNum));
             Pair<String, Pair<Integer, Integer>> tmp = rotorsIDList.get(i);
-            int curNotch = dto_machineInfo.getNotchPositionList().get(i);
+            int curNotch = dto_machineInfo.getNotchPositionList().get(Integer.parseInt(tmp.getKey()) -1);
             rotorsIDList.set(i,new Pair<>(tmp.getKey(),new Pair<>(curNotch,randomNum)));
         }
      return rotorsStartPositionList;
