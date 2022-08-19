@@ -29,12 +29,15 @@ public class EnigmaEngine implements EngineCapabilities{
     public DTO_MachineInfo createMachineInfoDTO() {
 
         List<Integer> notchPositionList = new LinkedList<>();
+        List<String> listOfSpecificRotorAbcOrder = new ArrayList<>();
 
-        for (int i = 0; i < machine.getRotorsMapSize(); i++)
-            notchPositionList.add(machine.getRotorsMap().get(String.valueOf(i+1)).getNotch());
+        for (int i = 0; i < machine.getRotorsMapSize(); i++) {
+            notchPositionList.add(machine.getRotorsMap().get(String.valueOf(i + 1)).getNotch());
+            listOfSpecificRotorAbcOrder.add(machine.getOrderOfSpecificRotor(machine.getRotorsMap().get(String.valueOf(i + 1))));
+        }
 
         return new DTO_MachineInfo(machine.getAbc(), machine.getRotorsMapSize(), machine.getRotorsInUseCount(),
-                                   notchPositionList, machine.getReflectorsMapSize());
+                                   notchPositionList, machine.getReflectorsMapSize(),listOfSpecificRotorAbcOrder);
     }
 
     @Override

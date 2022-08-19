@@ -272,7 +272,7 @@ public class ConsoleUI implements UIprogram{
             rotorsStartPositionList.add(abc.charAt(randomNum));
             Pair<String, Pair<Integer, Integer>> tmp = rotorsIDList.get(i);
             int curNotch = dto_machineInfo.getNotchPositionList().get(Integer.parseInt(tmp.getKey()) -1);
-            rotorsIDList.set(i,new Pair<>(tmp.getKey(),new Pair<>(curNotch,randomNum)));
+            rotorsIDList.set(i,new Pair<>(tmp.getKey(),new Pair<>(curNotch,dto_machineInfo.getABCOrderOfSpecificRotor(Integer.parseInt(tmp.getKey()) -1).indexOf(randomNum))));
         }
      return rotorsStartPositionList;
     }
@@ -461,7 +461,7 @@ public class ConsoleUI implements UIprogram{
             rotorsStartPositionList.add(chars[i]);
             Pair<String, Pair<Integer, Integer>> tmp = rotorIDList.get(index);
             int curNotch = dto_machineInfo.getNotchPositionList().get(Integer.parseInt(tmp.getKey()) -1);
-            rotorIDList.set(index++,new Pair<>(tmp.getKey(),new Pair<>(curNotch,abc.indexOf(chars[i]))));
+            rotorIDList.set(index++,new Pair<>(tmp.getKey(),new Pair<>(curNotch,dto_machineInfo.getABCOrderOfSpecificRotor(Integer.parseInt(tmp.getKey()) -1).indexOf(chars[i]))));
 
         }
         return rotorsStartPositionList;

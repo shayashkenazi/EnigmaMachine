@@ -119,4 +119,12 @@ public class Machine implements Serializable {
         }
         return '@'; // TBD
     }
+    public String getOrderOfSpecificRotor(Rotor rotor) {
+        StringBuilder sb = new StringBuilder();
+        for(Pair<Integer, Integer> pair : rotor.inputOutput) {
+            sb.append(abc.charAt(pair.getKey()));
+        }
+        return sb.toString();
+
+    }
 }
