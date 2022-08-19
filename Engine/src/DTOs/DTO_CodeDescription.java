@@ -1,9 +1,7 @@
 package DTOs;
 
 import javafx.util.Pair;
-
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class DTO_CodeDescription implements Serializable {
@@ -11,7 +9,7 @@ public class DTO_CodeDescription implements Serializable {
     private List<Pair<String ,Pair<Integer,Integer>>> rotorInUseIDList;
     private List<Character> startingPositionList;
     private String reflectorID;
-    private List<Pair<Character, Character>> plugsInUseList; // maybe Pair<int, int> ?
+    private List<Pair<Character, Character>> plugsInUseList;
     private String abc;
 
 
@@ -31,6 +29,5 @@ public class DTO_CodeDescription implements Serializable {
     public List<Character> getStartingPositionList() { return startingPositionList; }
     public String getReflectorID() { return reflectorID; }
     public List<Pair<Character, Character>> getPlugsInUseList() { return plugsInUseList; }
-    public int getNumOfUsedRotors() { return rotorInUseIDList.size(); }
     public String getABC() { return abc; }
 }
