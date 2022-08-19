@@ -338,7 +338,7 @@ public class ConsoleUI implements UIprogram{
             isCodeChosen = true;
         }
         catch(Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error - " + e.getMessage());
         }
     }
 
@@ -429,29 +429,6 @@ public class ConsoleUI implements UIprogram{
         set.add(tempChars[1]);
     }
 
-
-    /*private void getStringAndAddToList(int numOfRotors, List<String> rotorsIDList, String msg) {
-        String temp;
-        System.out.println(msg);
-        temp = sc.nextLine();
-        while(!checkIntChoice(temp,msg) || !checkRange(temp,numOfRotors,msg)) {
-            temp = sc.nextLine();
-        }
-        rotorsIDList.add(temp);
-        System.out.println("your choice is - " + temp );
-
-    }*/
-    /*private String getCharAndAddToList(int numOfRotors, List<Character> rotorsIDList, String msg) {
-        String temp;
-        System.out.println(msg);
-        temp = sc.nextLine();
-        while(!checkIntChoice(temp,msg) || !checkRange(temp,numOfRotors,msg)) {
-            temp = sc.nextLine();
-        }
-        rotorsIDList.add(temp.charAt(0));
-        System.out.println("your choice is - " + temp );
-        return temp;
-    }*/
     private void checkRange(String input, int size) throws Exception {
 
         int check = Integer.parseInt(input);
@@ -467,6 +444,7 @@ public class ConsoleUI implements UIprogram{
         List<Character> rotorsStartPositionList = new ArrayList<>();
         Set <Character> set = new HashSet<>();
         String msg = "Please chose " + numOfRotor + " start position from the abc - " + abc;
+        msg += "\nFor Example: ABF";
         String temp;
         System.out.println(msg);
         temp = sc.nextLine();
@@ -519,29 +497,13 @@ public class ConsoleUI implements UIprogram{
             System.out.println("5.  Description for the current code:");
             printDescriptionFormat(engine.createCodeDescriptionDTO());
         }
-        /*System.out.println("Machine Status:");
-        System.out.println("1.    a) Number of Possible Rotors: " + machineInfo.getNumOfPossibleRotors() );
-        System.out.println("      b) Number of Rotors in use: " + machineInfo.getNumOfUsedRotors());
-        System.out.println("2. Notches Positions for every Rotor:");
-        int rotorNumber = 0;
-        for (Integer notchPos : machineInfo.getNotchPositionList()) {
-            System.out.println("  The Notch position for Rotor number: " + rotorNumber + " is: " + notchPos);
-            rotorNumber++;
-        }
-        System.out.println("3. Number of Reflectors: " + machineInfo.getNumOfReflectors());
-        System.out.println("4. Number of Processed messages: " + machineInfo.getNumOfMsgProcessed());
-        System.out.println("5. Description for the current code:");
-        printDescriptionFormat(machineInfo);*/
     }
 
     private void printDescriptionFormat(DTO_CodeDescription dto_codeDescription) {
         StringBuilder sb = new StringBuilder();
         sb.append("<");
         int index = 0;
-        /*for (Pair<String ,Pair<Integer,Integer>> rotorId : dto_codeDescription.getRotorsInUseIDList()) {
-            int distance = Math.floorMod(dto_codeDescription.getNotch(rotorId) - dto_codeDescription.getCurrent(rotorId), dto_codeDescription.getABC().length()) ; //'% dto_codeDescription.'
-            sb.append(rotorId.getKey()).append("(").append(distance).append("),"); // need to have curr index eac h rotor
-        }*/
+
         for(int i = dto_codeDescription.getRotorsInUseIDList().size() - 1; i >= 0; i--)
         {
             Pair<String ,Pair<Integer,Integer>> rotorId = dto_codeDescription.getRotorsInUseIDList().get(i);
