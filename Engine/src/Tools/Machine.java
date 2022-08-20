@@ -89,7 +89,6 @@ public class Machine implements Serializable {
             Rotor currRotor = (Rotor)rotorsStack.get(rotorInd);
             currRotor.initilaizeCurrentPosition();
         }
-        System.out.println("Operation scudded! The Positions of the Rotors was initialized.");
     }
 
     public void buildPlugBoard(List<Pair<Character,Character>> listOfPlugBoard ) {

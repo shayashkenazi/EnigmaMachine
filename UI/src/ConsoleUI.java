@@ -3,6 +3,7 @@ import DTOs.DTO_MachineInfo;
 import javafx.util.Pair;
 
 import java.io.FileNotFoundException;
+import java.text.DecimalFormat;
 import java.time.Duration;
 import java.util.*;
 
@@ -52,7 +53,7 @@ public class ConsoleUI implements UIprogram{
                 break;
 
             case CODE_INITIALIZE: // 6
-                engine.getMachine().initializePositionsForRotorsInStack();
+                initCodeIfPossible();
                 break;
 
             case HISTORIC_AND_STATISTIC: // 7
@@ -70,6 +71,18 @@ public class ConsoleUI implements UIprogram{
             case LOAD_MACHINE_INFORMATION: // Bonus
                 loadInfoFromFile();
                 break;
+        }
+    }
+
+    private void initCodeIfPossible () {
+
+        if (!isXmlLoaded)
+            System.out.println("Error - In order to select this option, you should load xml file first!");
+        if (!isCodeChosen)
+            System.out.print("Error - In order to select this option, you should load machine code first!");
+        if (isXmlLoaded && isCodeChosen){
+            engine.getMachine().initializePositionsForRotorsInStack();
+            System.out.println("Operation scudded! The Positions of the Rotors was initialized.");
         }
     }
 
@@ -127,8 +140,9 @@ public class ConsoleUI implements UIprogram{
 
         //StringBuilder sb = new StringBuilder();
         String s = new String();
+        DecimalFormat df = new DecimalFormat("#,###");
         s += "   " + index + ". <" + msgAndTime.getKey().getKey() + "> " + "--> <" + msgAndTime.getKey().getValue() + ">"
-                + " (" + msgAndTime.getValue() + " nano-seconds)";
+                + " (" + df.format(msgAndTime.getValue()) + " nano-seconds)";
         System.out.println(s);
     }
 
@@ -182,10 +196,10 @@ public class ConsoleUI implements UIprogram{
             System.out.println("Error - In order to select this option, you should load machine code first!");
         else {
             StringBuilder sb = new StringBuilder();
-            sb.append("Please enter the message you would like to Encode / Decode. ");
+            sb.append("Please enter the message you would like to Encode / Decode.\n");
             sb.append("Your letters should be from these options: [");
             sb.append(String.join(",", engine.getMachine().getAbc()));
-            sb.append("]:  ");
+            sb.append("]:\n");
             System.out.print(sb);
 
             String msg = sc.nextLine();
@@ -344,7 +358,7 @@ public class ConsoleUI implements UIprogram{
     }
 
     private List<Pair<Character, Character>> createPlugBoard(String abc) throws Exception {
-        String msg = "please chose your plugboard letters:";
+        String msg = "please chose your plugboard letters (or just Enter for none):";
         String temp;
         System.out.println(msg);
         temp = sc.nextLine();

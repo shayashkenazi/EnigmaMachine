@@ -78,7 +78,7 @@ public class EnigmaEngine implements EngineCapabilities{
     }
 
     @Override
-    public void loadInfoFromFile(String filePathAndName) throws FileNotFoundException, Exception {
+    public void loadInfoFromFile(String filePathAndName) throws Exception {
 
         // TODO: Do I need to handle situation that the user did NOT save any data? (check if null?)
         FileInputStream fis = new FileInputStream(filePathAndName);
@@ -111,7 +111,7 @@ public class EnigmaEngine implements EngineCapabilities{
     }
 
     @Override
-    public List<Integer> createIntegerListFromString(String msg) { // TBD - should it be privete?
+    public List<Integer> createIntegerListFromString(String msg) {
 
         List<Integer> list = new ArrayList<>();
         for (int i = 0; i < msg.length(); i++)
@@ -120,7 +120,7 @@ public class EnigmaEngine implements EngineCapabilities{
     }
 
     @Override
-    public String createStringFromIntegerList(List<Integer> integerList) { // TBD - should it be privete?
+    public String createStringFromIntegerList(List<Integer> integerList) {
 
         String str = new String();
         for (Integer integer : integerList)
@@ -174,7 +174,7 @@ public class EnigmaEngine implements EngineCapabilities{
         int index = 0;
         Rotor currentRotor = (Rotor)machine.getRotorsStack().get(index++);
         currentRotor.rotateRotor();
-        while(index != machine.getRotorsStack().size() - 1) // TBD run as a rotor reflection ,while I'm not reflector
+        while(index != machine.getRotorsStack().size() - 1)
         {
             if(currentRotor.getCurrentPairIndex() == currentRotor.getNotch())
             {
