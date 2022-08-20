@@ -60,7 +60,7 @@ public class EnigmaEngine implements EngineCapabilities{
         }
 
         String reflectorID = machine.getRotorsStack().get(machine.getRotorsInUseCount()).getID();
-        List<Pair<Character, Character>> plugsInUseList = new LinkedList<>();
+        List<Pair<Character, Character>> plugsInUseList = new ArrayList<>();
 
         for (Map.Entry<Character, Character> entry : machine.getFirstSidePlugBoardMap().entrySet()) // One side is enough
             plugsInUseList.add(new Pair<>(entry.getKey(), entry.getValue()));
