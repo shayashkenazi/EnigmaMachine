@@ -550,4 +550,5 @@ public class ConsoleUI implements UIprogram{
     public boolean validateXMLFile(String xmlPath) {
         return xmlPath.endsWith(".xml");
     }
+
 }
