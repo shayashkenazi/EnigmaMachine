@@ -60,6 +60,7 @@ public class Machine implements Serializable {
     public void setABC(String ABC) {this.abc = ABC; }
     public void buildRotorsStack(DTO_CodeDescription codeDescription) {
         rotorsStack.clear();
+        plugBoard = new PlugBoard();
         for (int i = 0; i < codeDescription.getRotorsInUseIDList().size(); i++) { // Set all the info for the Rotors
 
             Rotor currentRotor = rotorsMap.get(codeDescription.getRotorsInUseIDList().get(i).getKey()); // get the rotor with the same ID

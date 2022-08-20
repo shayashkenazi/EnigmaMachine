@@ -4,12 +4,13 @@ import javafx.util.Pair;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class PlugBoard implements Serializable {
 
-    private Map<Character,Character> plugBoardMapFirstSide = new HashMap<>();
-    private Map<Character,Character> plugBoardMapSecondSide = new HashMap<>();
+    private Map<Character,Character> plugBoardMapFirstSide = new LinkedHashMap<>();
+    private Map<Character,Character> plugBoardMapSecondSide = new LinkedHashMap<>();
 
     public Map<Character,Character> getFirstSidePlugBoardMap() { return plugBoardMapFirstSide;}
     public Map<Character,Character> getSecondSidePlugBoardMap() { return plugBoardMapSecondSide;}
