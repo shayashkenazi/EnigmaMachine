@@ -35,7 +35,7 @@ public class Factory {
         checkRomaNumerals(cteEnigma.getCTEMachine().getCTEReflectors().getCTEReflector());
         for (CTEReflector cteReflector : cteEnigma.getCTEMachine().getCTEReflectors().getCTEReflector()) {
 
-            reflectors.put(cteReflector.getId(),createReflector(cteReflector));
+            reflectors.put(cteReflector.getId().toUpperCase(),createReflector(cteReflector));
         }
 
         return reflectors;
@@ -61,10 +61,10 @@ public class Factory {
         MapNumbers.put("VI", 0);
         MapNumbers.put("V", 0);
         for (CTEReflector cteRef : reflectorArrayList) {
-            if (MapNumbers.containsKey(cteRef.getId())) {
-                int count = MapNumbers.get(cteRef.getId());
+            if (MapNumbers.containsKey(cteRef.getId().toUpperCase())) {
+                int count = MapNumbers.get(cteRef.getId().toUpperCase());
                 MapNumbers.put(cteRef.getId(), count + 1);
-                if (MapNumbers.get(cteRef.getId()) != 1)
+                if (MapNumbers.get(cteRef.getId().toUpperCase()) != 1)
                     throw new Exception("Same reflector ID insert");
             } else
                 throw new Exception("reflector ID incorrect");
@@ -79,7 +79,6 @@ public class Factory {
                 break;
             size--;
         }
-
     }
 
     private void checkDuplicatesAtReflect(List<CTEReflect> curReflect) throws Exception {
@@ -105,8 +104,8 @@ public class Factory {
         {
             if(pos.getLeft().length() != 1 || pos.getRight().length() != 1)
                 throw new Exception("There is incorrect input");
-            if(!mapCheck.containsKey(pos.getRight().charAt(0)))
-                mapCheck.put(pos.getRight().charAt(0),pos.getLeft().charAt(0));
+            if(!mapCheck.containsKey(pos.getRight().toUpperCase().charAt(0)))
+                mapCheck.put(pos.getRight().toUpperCase().charAt(0),pos.getLeft().toUpperCase().charAt(0));
             else
                 throw new Exception("There is duplicate Right!");
         }
@@ -148,7 +147,7 @@ public class Factory {
 
     private Map<Character,Integer> createABC() throws Exception {
 
-        String abc = cteEnigma.getCTEMachine().getABC().trim();
+        String abc = cteEnigma.getCTEMachine().getABC().trim().toUpperCase();
         if (abc.length() % 2 != 0)
             throw new Exception(" ABC is NOT Even!");
         Map<Character,Integer> map = new HashMap<>();
@@ -166,7 +165,7 @@ public class Factory {
         checkDuplicatesAtRotor(cteRotor.getCTEPositioning());
         int i = 0;
         for (CTEPositioning position : cteRotor.getCTEPositioning()) {
-            rotor.setPair(i, tempABC.get(position.getRight().charAt(0)),tempABC.get(position.getLeft().charAt(0)));
+            rotor.setPair(i, tempABC.get(position.getRight().toUpperCase().charAt(0)),tempABC.get(position.getLeft().toUpperCase().charAt(0)));
             //rotor.setPair(i, tempABC.get(position.getLeft().charAt(0)),tempABC.get(position.getRight().charAt(0)));
             i++;
         }
@@ -174,8 +173,7 @@ public class Factory {
     }
 
     private String createAbc() {
-        String abc = cteEnigma.getCTEMachine().getABC().trim();
-        return abc;
+        return cteEnigma.getCTEMachine().getABC().trim();
     }
 
     public Machine createMachine() throws Exception {
@@ -188,5 +186,4 @@ public class Factory {
         machine.setReflectors(createReflectors());
         return machine;
     }
-
 }

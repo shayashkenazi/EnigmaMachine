@@ -242,6 +242,7 @@ public class ConsoleUI implements UIprogram{
             }
             catch (Exception e) {
                 System.out.println(e.getMessage());
+                isXmlLoaded = false;
             }
         }
     }
@@ -357,6 +358,7 @@ public class ConsoleUI implements UIprogram{
         }
         catch(Exception e) {
             System.out.println("Error - " + e.getMessage());
+            isCodeChosen = false;
         }
     }
 
