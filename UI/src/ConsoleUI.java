@@ -290,7 +290,7 @@ public class ConsoleUI implements UIprogram{
             rotorsStartPositionList.add(abc.charAt(randomNum));
             Pair<String, Pair<Integer, Integer>> tmp = rotorsIDList.get(i);
             int curNotch = dto_machineInfo.getNotchPositionList().get(Integer.parseInt(tmp.getKey()) -1);
-            rotorsIDList.set(i,new Pair<>(tmp.getKey(),new Pair<>(curNotch,dto_machineInfo.getABCOrderOfSpecificRotor(Integer.parseInt(tmp.getKey()) -1).indexOf(randomNum))));
+            rotorsIDList.set(i,new Pair<>(tmp.getKey(),new Pair<>(curNotch,dto_machineInfo.getABCOrderOfSpecificRotor(Integer.parseInt(tmp.getKey()) -1).indexOf(abc.charAt(randomNum)))));
         }
      return rotorsStartPositionList;
     }
