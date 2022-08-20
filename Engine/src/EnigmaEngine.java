@@ -30,7 +30,6 @@ public class EnigmaEngine implements EngineCapabilities{
 
         List<Integer> notchPositionList = new LinkedList<>();
         List<String> listOfSpecificRotorAbcOrder = new ArrayList<>();
-
         for (int i = 0; i < machine.getRotorsMapSize(); i++) {
             notchPositionList.add(machine.getRotorsMap().get(String.valueOf(i + 1)).getNotch());
             listOfSpecificRotorAbcOrder.add(machine.getOrderOfSpecificRotor(machine.getRotorsMap().get(String.valueOf(i + 1))));
@@ -52,12 +51,12 @@ public class EnigmaEngine implements EngineCapabilities{
 
         List<Pair<String ,Pair<Integer,Integer>>> rotorInUseIDList = new ArrayList<>();
         List<Character> startingPositionList = new LinkedList<>(); // maybe make it <Character, Integer> like in Rotor class field
-
+        String str;
         for (int i = 0; i < machine.getRotorsInUseCount(); i++) { // The last one is a Reflector
-
             Rotor currentRotor = (Rotor)machine.getRotorsStack().get(i);
             rotorInUseIDList.add(new Pair<>(currentRotor.getID(),new Pair<>(currentRotor.getNotch(),currentRotor.getCurrentPairIndex())));
-            startingPositionList.add(currentRotor.getFirstPairPosition().getKey());
+            str = machine.getOrderOfSpecificRotor(currentRotor);
+            startingPositionList.add(str.charAt(currentRotor.getCurrentPairIndex()));
         }
 
         String reflectorID = machine.getRotorsStack().get(machine.getRotorsInUseCount()).getID();

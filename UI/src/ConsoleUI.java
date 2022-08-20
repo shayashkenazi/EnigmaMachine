@@ -189,6 +189,7 @@ public class ConsoleUI implements UIprogram{
             System.out.print(sb);
 
             String msg = sc.nextLine();
+            msg = msg.toUpperCase();
             if (!isMsgAllFromAbc(msg)) {
                 System.out.println("Error - Your message should contain only letters from the abc!");
             }
@@ -511,11 +512,13 @@ public class ConsoleUI implements UIprogram{
             sb.append(rotorId.getKey()).append("(").append(distance).append("),"); // need to have curr index eac h rotor
         }
         sb.replace(sb.length() - 1,sb.length() - 1,">"); // for the last ','
+        Collections.reverse(dto_codeDescription.getStartingPositionList());
         sb.append("<").append(String.join(",", dto_codeDescription.getStartingPositionList().toString()
                 .replace(" ", "")
                 .replace("[", "")
                 .replace("]", ""))).append(">");
         sb.append("<").append(dto_codeDescription.getReflectorID()).append(">");
+        Collections.reverse(dto_codeDescription.getStartingPositionList());
 
         if (dto_codeDescription.getPlugsInUseList().size() != 0) {
             sb.append("<");
