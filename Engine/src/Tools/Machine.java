@@ -80,7 +80,7 @@ public class Machine implements Serializable {
                 return i;
             i++;
         }
-        return -1;
+        return -1234;
     }
 
     public void initializePositionsForRotorsInStack() {

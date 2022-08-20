@@ -19,23 +19,6 @@ public abstract class Switcher implements Serializable {
     }
 
     public abstract int Switch(int input,boolean direction);
-    /*public int SwitchFromReflectorToRotors(int input) { // from the first rotor to the reflector
-        Integer ch = inputOutput.get(input).getKey();
-        for(int i = 0; i < inputOutput.size(); i++) {
-            if(inputOutput.get(i).getValue().equals(ch))
-                return i;
-        }
-        return -1; // checking if exception
-    }
-    public int SwitchFromRototrsToReflectors(int input) { // from the reflector to the start rotor
-
-        Integer ch = inputOutput.get(input).getValue();
-        for(int i = 0; i < inputOutput.size(); i++) {
-            if(inputOutput.get(i).getKey().equals(ch))
-                return i;
-        }
-        return -1; // checking if exception
-    }*/
 
     public String getID(){ return id;}
 

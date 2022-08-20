@@ -48,7 +48,7 @@ public class ConsoleUI implements UIprogram{
                 createRandomMachineSetting();
                 break;
 
-            case ENCODE_DECODE:
+            case ENCODE_DECODE: // 5
                 PrintEncodeDecodeMsgIfPossible();
                 break;
 
@@ -204,7 +204,10 @@ public class ConsoleUI implements UIprogram{
 
             String msg = sc.nextLine();
             msg = msg.toUpperCase();
-            if (!isMsgAllFromAbc(msg)) {
+            if (msg.isEmpty()) {
+                System.out.println("Error - Your message is Empty!");
+            }
+            else if (!isMsgAllFromAbc(msg)) {
                 System.out.println("Error - Your message should contain only letters from the abc!");
             }
             else {
@@ -359,6 +362,7 @@ public class ConsoleUI implements UIprogram{
 
     private List<Pair<Character, Character>> createPlugBoard(String abc) throws Exception {
         String msg = "please chose your plugboard letters (or just Enter for none):";
+        msg += "\nFor Example: AB for A | B";
         String temp;
         System.out.println(msg);
         temp = sc.nextLine();
