@@ -83,19 +83,26 @@ public class Factory {
 
     private void checkDuplicatesAtReflect(List<CTEReflect> curReflect) throws Exception {
         Map<Integer, Integer> mapCheck = new HashMap<>();
+        Set<Integer> set = new HashSet<>();
         for(CTEReflect ref: curReflect )
         {
             if(ref.getInput() == ref.getOutput())
                 throw new Exception("There is the same input output at reflector!");
+            if(ref.getInput() < 1 || ref.getOutput() < 1 || ref.getInput() > curReflect.size()*2 || ref.getOutput() > curReflect.size()*2)
+                throw new Exception("There is the input output out of range!");
             if(!mapCheck.containsKey(ref.getInput()))
                 mapCheck.put(ref.getInput(),ref.getOutput());
             else
                 throw new Exception("There is duplicate input!");
+            if(set.contains(ref.getInput()) || set.contains(ref.getOutput()))
+                throw new Exception("There is duplicate input output!");
+            set.add(ref.getInput());
+            set.add(ref.getOutput());
         }
         if(!isOneToOne(mapCheck))
             throw new Exception("There is duplicate output!");
         if(mapCheck.size() * 2 != createABC().size())
-            throw new Exception("Not all the abs assert!");
+            throw new Exception("Not all the abc assert!");
     }
 
     private void checkDuplicatesAtRotor(List<CTEPositioning> curRotorPosition) throws Exception {
@@ -112,7 +119,7 @@ public class Factory {
         if(!isOneToOne(mapCheck))
             throw new Exception("There is duplicate Left!");
         if(mapCheck.size() != createABC().size())
-            throw new Exception("Not all the abs assert!");
+            throw new Exception("Not all the specific abc assert!");
 
     }
     private boolean isOneToOne(Map<?, ?> map) {
