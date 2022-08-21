@@ -36,15 +36,15 @@ public class ConsoleUI implements UIprogram{
                 createEnigmaMachineFromXmlIfPossible();
                 break;
 
-            case SHOW_MACHINE_STATUS: // only if xml is loaded AND code had been chosen
+            case SHOW_MACHINE_STATUS: // 2 (only if xml is loaded AND code had been chosen)
                 showMachineStatusIfPossible();
                 break;
 
-            case CREATE_SPECIFIC_MACHINE: // only if xml is loaded
+            case CREATE_SPECIFIC_MACHINE: // 3 (only if xml is loaded)
                 createSpecificMachineSetting();
                 break;
 
-            case CREATE_RANDOM_MACHINE: // only if xml is loaded
+            case CREATE_RANDOM_MACHINE: // 4 (only if xml is loaded)
                 createRandomMachineSettingIfPossible();
                 break;
 
@@ -86,7 +86,7 @@ public class ConsoleUI implements UIprogram{
         if (!isXmlLoaded)
             System.out.println("Error - In order to select this option, you should load xml file first!");
         if (!isCodeChosen)
-            System.out.print("Error - In order to select this option, you should load machine code first!");
+            System.out.println("Error - In order to select this option, you should load machine code first!");
         if (isXmlLoaded && isCodeChosen){
             engine.getMachine().initializePositionsForRotorsInStack();
             System.out.println("Operation scudded! The Positions of the Rotors was initialized.");
@@ -353,6 +353,12 @@ public class ConsoleUI implements UIprogram{
     }
     @Override
     public void createSpecificMachineSetting() {
+
+        if (!isXmlLoaded) {
+            System.out.println("Error - In order to select this option, you should load xml file first!");
+            return;
+        }
+
         try {
             DTO_MachineInfo dto_machineInfo = engine.createMachineInfoDTO();
             List<Pair<String ,Pair<Integer,Integer>>> rotorsIDList = createIDListForRotors(dto_machineInfo);
