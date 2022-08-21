@@ -45,7 +45,7 @@ public class ConsoleUI implements UIprogram{
                 break;
 
             case CREATE_RANDOM_MACHINE: // only if xml is loaded
-                createRandomMachineSetting();
+                createRandomMachineSettingIfPossible();
                 break;
 
             case ENCODE_DECODE: // 5
@@ -72,6 +72,13 @@ public class ConsoleUI implements UIprogram{
                 loadInfoFromFile();
                 break;
         }
+    }
+
+    private void createRandomMachineSettingIfPossible() {
+        if (!isXmlLoaded)
+            System.out.println("Error - In order to select this option, you should load xml file first!");
+        else
+            createRandomMachineSetting();
     }
 
     private void initCodeIfPossible () {
