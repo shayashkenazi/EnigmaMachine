@@ -531,7 +531,7 @@ public class ConsoleUI implements UIprogram{
             int distance = Math.floorMod(dto_codeDescription.getNotch(rotorId) - dto_codeDescription.getCurrent(rotorId), dto_codeDescription.getABC().length()) ; //'% dto_codeDescription.'
             sb.append(rotorId.getKey()).append("(").append(distance).append("),"); // need to have curr index eac h rotor
         }
-        sb.replace(sb.length() - 1,sb.length() - 1,">"); // for the last ','
+        sb.replace(sb.length() - 1,sb.length(),">"); // for the last ','
         Collections.reverse(dto_codeDescription.getStartingPositionList());
         sb.append("<").append(String.join(",", dto_codeDescription.getStartingPositionList().toString()
                 .replace(" ", "")
@@ -546,7 +546,7 @@ public class ConsoleUI implements UIprogram{
                 Pair<Character, Character> pair = dto_codeDescription.getPlugsInUseList().get(i);
                 sb.append(pair.getKey()).append("|").append(pair.getValue()).append(",");
             }
-            sb.replace(sb.length() - 1,sb.length() - 1,">");// replace the last ',' with '>'
+            sb.replace(sb.length() - 1,sb.length(),">");// replace the last ',' with '>'
         }
 
         System.out.println(sb.toString());
