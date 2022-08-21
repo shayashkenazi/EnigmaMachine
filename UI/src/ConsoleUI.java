@@ -535,6 +535,7 @@ public class ConsoleUI implements UIprogram{
         Collections.reverse(dto_codeDescription.getStartingPositionList());
         sb.append("<").append(String.join(",", dto_codeDescription.getStartingPositionList().toString()
                 .replace(" ", "")
+                .replace(",", "")
                 .replace("[", "")
                 .replace("]", ""))).append(">");
         sb.append("<").append(dto_codeDescription.getReflectorID()).append(">");
