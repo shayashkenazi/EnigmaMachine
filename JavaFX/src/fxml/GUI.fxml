@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -20,7 +21,25 @@
       </HBox>
       <TabPane prefHeight="308.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab fx:id="tab_machine" text="Machine" />
+          <Tab fx:id="tab_machine" text="Machine">
+               <content>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <TextArea fx:id="tf_machineDetails" prefHeight="115.0" prefWidth="600.0" />
+                        <HBox prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <HBox prefHeight="100.0" prefWidth="352.0">
+                                 <children>
+                                    <Button fx:id="btn_RandomCode" mnemonicParsing="false" onAction="#randomCodeBtnClick" text="Random code" />
+                                    <Button fx:id="btn_SetCode" mnemonicParsing="false" onAction="#setCodeBtnClick" text="Set code" />
+                                 </children>
+                              </HBox>
+                              <TextArea fx:id="tf_machineConfiguration" prefHeight="100.0" prefWidth="302.0" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </content></Tab>
           <Tab fx:id="tab_EncryptDecrypt" text="Encrypt / Decrypt" />
             <Tab fx:id="tab_bruteForce" text="Brute Force" />
         </tabs>
