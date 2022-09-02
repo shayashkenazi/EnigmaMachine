@@ -1,5 +1,4 @@
 import CodeSet.CodeSetController;
-import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -7,29 +6,25 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.TextFlow;
-import javafx.stage.FileChooser;
-import javafx.util.Pair;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
-public class Controller implements Initializable {
+public class MainController implements Initializable {
 
     private EngineCapabilities engine = new EnigmaEngine();
     //private boolean isXmlLoaded = false;
     private boolean isCodeChosen = false;
     private final BooleanProperty isXmlLoaded = new SimpleBooleanProperty(false);
+    private CodeSetController codeSet;
 
     @FXML
     private VBox vb_MainApp;
@@ -85,10 +80,12 @@ public class Controller implements Initializable {
             return;
         }
         FXMLLoader loader = new FXMLLoader();
-        URL urlFXML = getClass().getClassLoader().getResource("C:\\Users\\shaya\\IdeaProjects\\EnigmaMachineQ1\\JavaFX\\src\\CodeSet\\SetCode.fxml");
-        loader.setLocation(urlFXML);
+        URL u =getClass().getResource("/src/CodeSet/SetCode.fxml");
+        Parent f = FXMLLoader.load(getClass().getResource(  "C:\\Users\\shaya\\IdeaProjects\\EnigmaMachineQ1\\JavaFX\\src\\fxml\\GUI.fxml"));
+        //loader.setLocation(urlFXML);
         VBox tmp = vb_MainApp;
         CodeSetController codeSet = new CodeSetController();
+
         VBox tmp1 = loader.load();
         codeSet.createSetCodeController(engine.createMachineInfoDTO());
         vb_MainApp = codeSet.getCodeSetVbox();
