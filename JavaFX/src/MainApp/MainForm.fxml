@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="vb_MainApp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainController">
+<VBox fx:id="vb_MainApp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainApp.AppController">
    <children>
       <Label alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" text="The Enigma Machine" textAlignment="CENTER" />
       <HBox prefHeight="55.0" prefWidth="667.0">
@@ -28,7 +28,7 @@
                         <TextArea fx:id="tf_machineDetails" prefHeight="115.0" prefWidth="600.0" />
                         <HBox prefHeight="100.0" prefWidth="200.0">
                            <children>
-                              <HBox prefHeight="100.0" prefWidth="352.0">
+                              <HBox fx:id="hb_setCode" prefHeight="100.0" prefWidth="352.0">
                                  <children>
                                     <Button fx:id="btn_RandomCode" mnemonicParsing="false" onAction="#randomCodeBtnClick" text="Random code" />
                                     <Button fx:id="btn_SetCode" mnemonicParsing="false" onAction="#setCodeBtnClick" text="Set code" />
