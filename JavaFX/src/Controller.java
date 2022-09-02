@@ -1,13 +1,17 @@
+import CodeSet.CodeSetController;
 import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.util.Pair;
@@ -15,6 +19,7 @@ import javafx.util.Pair;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -26,7 +31,8 @@ public class Controller implements Initializable {
     private boolean isCodeChosen = false;
     private final BooleanProperty isXmlLoaded = new SimpleBooleanProperty(false);
 
-
+    @FXML
+    private VBox vb_MainApp;
     @FXML
     private Button btn_loadFile;
     @FXML
@@ -35,10 +41,8 @@ public class Controller implements Initializable {
     private TextArea tf_machineDetails;
     @FXML
     private Button btn_RandomCode;
-
     @FXML
     private Button btn_SetCode;
-
     @FXML
     private TextArea tf_machineConfiguration;
     @FXML
@@ -75,25 +79,19 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    void setCodeBtnClick(ActionEvent event) {
+    void setCodeBtnClick(ActionEvent event) throws IOException {
         if (!isXmlLoaded.getValue()) {
             JOptionPane.showMessageDialog(null, "you should load xml file first!", "???", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        try {
-            DTO_MachineInfo dto_machineInfo = engine.createMachineInfoDTO();
-            List<Pair<String , Pair<Integer,Integer>>> rotorsIDList = createIDListForRotors(dto_machineInfo);
-            List<Character>  startPositionList = createListForStartPosition(dto_machineInfo.getABC(),rotorsIDList.size(),rotorsIDList,dto_machineInfo);
-            String reflectorID = createReflectorID(dto_machineInfo.getNumOfReflectors());
-            List<Pair<Character, Character>> plugBoard = createPlugBoard(dto_machineInfo.getABC());
-            DTO_CodeDescription res = new DTO_CodeDescription(dto_machineInfo.getABC(),rotorsIDList,startPositionList,reflectorID,plugBoard);
-            engine.buildRotorsStack(res, true);
-            isCodeChosen = true;
-        }
-        catch(Exception e) {
-            System.out.println("Error - " + e.getMessage());
-            isCodeChosen = false;
-        }
+        FXMLLoader loader = new FXMLLoader();
+        URL urlFXML = getClass().getClassLoader().getResource("C:\\Users\\shaya\\IdeaProjects\\EnigmaMachineQ1\\JavaFX\\src\\CodeSet\\SetCode.fxml");
+        loader.setLocation(urlFXML);
+        VBox tmp = vb_MainApp;
+        CodeSetController codeSet = new CodeSetController();
+        VBox tmp1 = loader.load();
+        codeSet.createSetCodeController(engine.createMachineInfoDTO());
+        vb_MainApp = codeSet.getCodeSetVbox();
     }
 
     private String setMachineSettingsTextArea(boolean isLoaded) {
@@ -124,7 +122,5 @@ public class Controller implements Initializable {
         isXmlLoaded.addListener((obs, old, newValue) -> {
           tf_xmlPath.setText(newValue ? engine.getUsageHistory().getXmlPath() : "");
         });
-
-
     }
 }
