@@ -29,18 +29,15 @@ public class AppController implements Initializable {
 
     private CodeSetController codeSetController;
 
+    @FXML private ScrollPane sp_mainPage;
     @FXML private VBox vb_MainApp;
     @FXML private Button btn_loadFile;
     @FXML private TextField tf_xmlPath;
     @FXML private TextArea tf_machineDetails;
-    @FXML
-    private HBox hb_setCode;
-    @FXML
-    private Button btn_RandomCode;
-    @FXML
-    private Button btn_SetCode;
-    @FXML
-    private TextArea tf_machineConfiguration;
+    @FXML private HBox hb_setCode;
+    @FXML private Button btn_RandomCode;
+    @FXML private Button btn_SetCode;
+    @FXML private TextArea tf_machineConfiguration;
     @FXML
     void loadFileBtnClick(ActionEvent event) {
 
@@ -81,7 +78,7 @@ public class AppController implements Initializable {
         }
         codeSetController.createSetCodeController(engine.createMachineInfoDTO());
         VBox new1 = codeSetController.getCodeSetVbox();
-        vb_MainApp = new1;
+        sp_mainPage.setContent(new1);
     }
 
     public void setCodeSetController(CodeSetController codeSetController) {

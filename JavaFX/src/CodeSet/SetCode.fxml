@@ -6,8 +6,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<ScrollPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<ScrollPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CodeSet.CodeSetController">
    <content>
       <VBox fx:id="vb_mainSetCode" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
          <children>
@@ -18,7 +17,7 @@
             </Label>
             <ScrollPane>
                <content>
-                  <VBox fx:id="vb_rotors" alignment="TOP_RIGHT" prefHeight="200.0" prefWidth="100.0">
+                  <VBox fx:id="vb_rotors" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="582.0">
                      <children>
                         <Label text="Rotors" />
                      </children>

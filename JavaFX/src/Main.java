@@ -1,4 +1,5 @@
 import CodeSet.CodeSetController;
+import MainApp.AppController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -23,8 +24,12 @@ public class Main extends Application {
         fxmlLoader = new FXMLLoader();
         url = getClass().getResource("/MainApp/MainForm.fxml");
         fxmlLoader.setLocation(url);
-        VBox root = fxmlLoader.load(url.openStream());
+        ScrollPane root = fxmlLoader.load(url.openStream());
+        AppController appController = fxmlLoader.getController();
 
+        appController.setCodeSetController(codeSetController);
+
+        // Start Scene
         Scene scene = new Scene(root, 600, 400);
         primaryStage.setScene(scene);
         primaryStage.show();
