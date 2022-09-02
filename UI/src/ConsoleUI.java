@@ -1,10 +1,11 @@
 import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
+import EnginePackage.EngineCapabilities;
+import EnginePackage.EnigmaEngine;
 import javafx.util.Pair;
 
 import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
-import java.time.Duration;
 import java.util.*;
 
 public class ConsoleUI implements UIprogram{

@@ -1,16 +1,17 @@
+package MainApp;
+
 import CodeSet.CodeSetController;
 import DTOs.DTO_MachineInfo;
+import EnginePackage.EngineCapabilities;
+import EnginePackage.EnigmaEngine;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -26,12 +27,14 @@ public class AppController implements Initializable {
     private boolean isCodeChosen = false;
     private final BooleanProperty isXmlLoaded = new SimpleBooleanProperty(false);
 
-    private CodeSetController codeSet;
+    private CodeSetController codeSetController;
 
     @FXML private VBox vb_MainApp;
     @FXML private Button btn_loadFile;
     @FXML private TextField tf_xmlPath;
     @FXML private TextArea tf_machineDetails;
+    @FXML
+    private HBox hb_setCode;
     @FXML
     private Button btn_RandomCode;
     @FXML
@@ -51,7 +54,6 @@ public class AppController implements Initializable {
             JOptionPane.showMessageDialog(null, "Could NOT choose a file!", "???", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
 
         try {
             engine.createEnigmaMachineFromXML(fileChooser.getSelectedFile().getAbsolutePath(), true);
@@ -77,18 +79,15 @@ public class AppController implements Initializable {
             JOptionPane.showMessageDialog(null, "you should load xml file first!", "???", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        FXMLLoader loader = new FXMLLoader(); // TODO: Delete
-        URL u =getClass().getResource("/src/CodeSet/SetCode.fxml");
-        Parent f = FXMLLoader.load(getClass().getResource(  "C:\\Users\\shaya\\IdeaProjects\\EnigmaMachineQ1\\JavaFX\\src\\fxml\\GUI.fxml"));
-        //loader.setLocation(urlFXML);
-        VBox tmp = vb_MainApp;
-        CodeSetController codeSet = new CodeSetController();
-
-        VBox tmp1 = loader.load();
-        codeSet.createSetCodeController(engine.createMachineInfoDTO());
-        vb_MainApp = codeSet.getCodeSetVbox();
+        codeSetController.createSetCodeController(engine.createMachineInfoDTO());
+        VBox new1 = codeSetController.getCodeSetVbox();
+        vb_MainApp = new1;
     }
 
+    public void setCodeSetController(CodeSetController codeSetController) {
+        this.codeSetController = codeSetController;
+        codeSetController.setMainController(this);
+    }
     private String setMachineSettingsTextArea(boolean isLoaded) {
         if(isLoaded) {
             return showMachineStatus(engine.createMachineInfoDTO());

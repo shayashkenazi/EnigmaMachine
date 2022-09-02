@@ -1,6 +1,7 @@
 package CodeSet;
 
 import DTOs.DTO_MachineInfo;
+import MainApp.AppController;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -35,6 +36,9 @@ public class CodeSetController implements Initializable {
             vb_rotors.getChildren().add(curHBox);
         }
 
+    }
+    public void setMainController(AppController mainController) {
+        this.appController = mainController;
     }
     public VBox getCodeSetVbox(){return vb_mainSetCode;}
 
