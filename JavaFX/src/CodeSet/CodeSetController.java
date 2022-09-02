@@ -14,17 +14,11 @@ import java.util.ResourceBundle;
 
 public class CodeSetController implements Initializable {
 
+    private AppController appController;
 
-    private int numOfUseRotors;
-
-    @FXML
-    private VBox vb_mainSetCode;
-
-    @FXML
-    private VBox vb_rotors;
-
-    @FXML
-    private VBox vb_plugBoard;
+    @FXML private VBox vb_mainSetCode;
+    @FXML private VBox vb_rotors;
+    @FXML private VBox vb_plugBoard;
 
 
     public void createSetCodeController(DTO_MachineInfo dto_machineInfo) {

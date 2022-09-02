@@ -18,22 +18,20 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class MainController implements Initializable {
+public class AppController implements Initializable {
 
     private EngineCapabilities engine = new EnigmaEngine();
+
     //private boolean isXmlLoaded = false;
     private boolean isCodeChosen = false;
     private final BooleanProperty isXmlLoaded = new SimpleBooleanProperty(false);
+
     private CodeSetController codeSet;
 
-    @FXML
-    private VBox vb_MainApp;
-    @FXML
-    private Button btn_loadFile;
-    @FXML
-    private TextField tf_xmlPath;
-    @FXML
-    private TextArea tf_machineDetails;
+    @FXML private VBox vb_MainApp;
+    @FXML private Button btn_loadFile;
+    @FXML private TextField tf_xmlPath;
+    @FXML private TextArea tf_machineDetails;
     @FXML
     private Button btn_RandomCode;
     @FXML
@@ -79,7 +77,7 @@ public class MainController implements Initializable {
             JOptionPane.showMessageDialog(null, "you should load xml file first!", "???", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        FXMLLoader loader = new FXMLLoader();
+        FXMLLoader loader = new FXMLLoader(); // TODO: Delete
         URL u =getClass().getResource("/src/CodeSet/SetCode.fxml");
         Parent f = FXMLLoader.load(getClass().getResource(  "C:\\Users\\shaya\\IdeaProjects\\EnigmaMachineQ1\\JavaFX\\src\\fxml\\GUI.fxml"));
         //loader.setLocation(urlFXML);
