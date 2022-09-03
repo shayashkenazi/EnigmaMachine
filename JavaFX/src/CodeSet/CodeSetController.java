@@ -1,6 +1,7 @@
 package CodeSet;
 
 import DTOs.DTO_MachineInfo;
+import Interfaces.SubController;
 import MainApp.AppController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,7 +18,7 @@ import javafx.util.Pair;
 import java.net.URL;
 import java.util.*;
 
-public class CodeSetController implements Initializable {
+public class CodeSetController implements Initializable, SubController {
 
     private AppController appController;
     private List<Pair<ChoiceBox<String>,ChoiceBox<Character>>> rotorsChoiceBoxes = new ArrayList<>();
@@ -120,6 +121,7 @@ public class CodeSetController implements Initializable {
         return res2;
     }
 
+    @Override
     public void setMainController(AppController mainController) {
         this.appController = mainController;
     }

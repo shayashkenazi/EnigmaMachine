@@ -3,6 +3,7 @@ package MainApp;
 import CodeSet.CodeSetController;
 import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
+import EncryptDecrypt.EncryptDecryptController;
 import EnginePackage.EngineCapabilities;
 import EnginePackage.EnigmaEngine;
 import com.sun.glass.ui.CommonDialogs;
@@ -23,15 +24,18 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class AppController implements Initializable {
 
     private EngineCapabilities engine = new EnigmaEngine();
     //private boolean isXmlLoaded = false;
-    private boolean isCodeChosen = false;
+    //private boolean isCodeChosen = false;
     private final BooleanProperty isXmlLoaded = new SimpleBooleanProperty(false);
+    private final BooleanProperty isCodeChosen = new SimpleBooleanProperty(false);
     private CodeSetController codeSetController;
+    private EncryptDecryptController encryptDecryptController;
     private Node rootNode;
 
     @FXML private ScrollPane sp_mainPage;
@@ -43,6 +47,11 @@ public class AppController implements Initializable {
     @FXML private Button btn_RandomCode;
     @FXML private Button btn_SetCode;
     @FXML private TextArea tf_machineConfiguration;
+    @FXML private Tab tab_EncryptDecrypt;
+    @FXML private Tab tab_bruteForce;
+    @FXML private Tab tab_machine;
+
+
     @FXML
     void loadFileBtnClick(ActionEvent event) {
 
@@ -75,6 +84,99 @@ public class AppController implements Initializable {
 
     }
 
+    //----------------------------------------- EncryptDecrypt Component -----------------------------------------
+    public void encryptDecryptController_proccessBtnClick() {
+
+        String msg = encryptDecryptController.getTf_input().getText();
+        if (msg.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Your message is Empty!");
+            alert.show();
+        }
+        else if (!isMsgAllFromAbc(msg)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Your message should contain only letters from the abc!");
+            alert.show();
+        }
+        else {
+            encryptDecryptController.getTf_output().setText(engine.encodeDecodeMsg(msg));
+        }
+
+        // Update Statistics
+        encryptDecryptController.getTa_statistics().setText(showHistoryAndStatistics());
+    }
+
+    public String showHistoryAndStatistics() {
+
+        StringBuilder sb = new StringBuilder();
+        for (Pair<DTO_CodeDescription, List<Pair<Pair<String, String>, Long>>> codeAndList
+                : engine.getUsageHistory().getData()) {
+
+            sb.append(printDescriptionFormat(codeAndList.getKey()));
+
+            int index = 1;
+            for (Pair<Pair<String, String>, Long> msgAndTime : codeAndList.getValue()) {
+
+                sb.append("\n");
+                sb.append(createEncodedAndDecodedMsgAndTime(msgAndTime, index));
+                index++;
+            }
+        }
+        sb.append("\n");
+        return sb.toString();
+    }
+
+    private String createEncodedAndDecodedMsgAndTime(Pair<Pair<String, String>, Long> msgAndTime, int index) {
+
+        String s = new String();
+        DecimalFormat df = new DecimalFormat("#,###");
+        s += "   " + index + ". <" + msgAndTime.getKey().getKey() + "> " + "--> <" + msgAndTime.getKey().getValue() + ">"
+                + " (" + df.format(msgAndTime.getValue()) + " nano-seconds)";
+        return s;
+    }
+
+    private String printDescriptionFormat(DTO_CodeDescription dto_codeDescription) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<");
+        int index = 0;
+
+        for(int i = dto_codeDescription.getRotorsInUseIDList().size() - 1; i >= 0; i--)
+        {
+            Pair<String ,Pair<Integer,Integer>> rotorId = dto_codeDescription.getRotorsInUseIDList().get(i);
+            int distance = Math.floorMod(dto_codeDescription.getNotch(rotorId) - dto_codeDescription.getCurrent(rotorId), dto_codeDescription.getABC().length()) ; //'% dto_codeDescription.'
+            sb.append(rotorId.getKey()).append("(").append(distance).append("),"); // need to have curr index eac h rotor
+        }
+        sb.replace(sb.length() - 1,sb.length(),">"); // for the last ','
+        Collections.reverse(dto_codeDescription.getStartingPositionList());
+        sb.append("<").append(String.join(",", dto_codeDescription.getStartingPositionList().toString()
+                .replace(" ", "")
+                .replace(",", "")
+                .replace("[", "")
+                .replace("]", ""))).append(">");
+        sb.append("<").append(dto_codeDescription.getReflectorID()).append(">");
+        Collections.reverse(dto_codeDescription.getStartingPositionList());
+
+        if (dto_codeDescription.getPlugsInUseList().size() != 0) {
+            sb.append("<");
+            for (int i = 0; i < dto_codeDescription.getPlugsInUseList().size(); i++) {
+                Pair<Character, Character> pair = dto_codeDescription.getPlugsInUseList().get(i);
+                sb.append(pair.getKey()).append("|").append(pair.getValue()).append(",");
+            }
+            sb.replace(sb.length() - 1,sb.length(),">");// replace the last ',' with '>'
+        }
+
+        return sb.toString();
+    }
+    private boolean isMsgAllFromAbc(String msg) {
+
+        for (int i = 0; i < msg.length(); i++){
+            if (!engine.getMachine().isCharInACB(msg.charAt(i)))
+                return false;
+        }
+        return true;
+    }
+    //----------------------------------------- ?????????????? Component -----------------------------------------
+
     private void createRandomMachineSetting() {
         DTO_MachineInfo dto_machineInfo = engine.createMachineInfoDTO();
         List<Pair<String ,Pair<Integer,Integer>>>  rotorsIDList = randomCreateIDListForRotors(dto_machineInfo.getNumOfPossibleRotors(),dto_machineInfo.getNumOfUsedRotors());
@@ -83,7 +185,7 @@ public class AppController implements Initializable {
         List<Pair<Character, Character>> plugBoard = randomCreatePlugBoard(dto_machineInfo.getABC());
         DTO_CodeDescription res = new DTO_CodeDescription(dto_machineInfo.getABC(),rotorsIDList,startPositionList,reflectorID,plugBoard);
         engine.buildRotorsStack(res, true);
-        isCodeChosen = true;
+        isCodeChosen.set(true);
     }
     private List<Pair<String ,Pair<Integer,Integer>>>  randomCreateIDListForRotors(int numOfRotors,int numOfUsedRotors) {
         List<Pair<String ,Pair<Integer,Integer>>>  rotorsIDList = new ArrayList<>();
@@ -153,6 +255,10 @@ public class AppController implements Initializable {
         return res;
     }
 
+    public void setTab_EncryptDecrypt(Node encryptDecryptComponent) {
+        this.tab_EncryptDecrypt.setContent(encryptDecryptComponent);
+    }
+
     @FXML
     void setCodeBtnClick(ActionEvent event) throws IOException {
         if (!isXmlLoaded.getValue()) {
@@ -173,7 +279,7 @@ public class AppController implements Initializable {
         List<Pair<Character, Character>> plugBoard = createPlugBoard();
         DTO_CodeDescription res = new DTO_CodeDescription(engine.createMachineInfoDTO().getABC(),rotorsIDList,startPositionList,reflectorID,plugBoard);
         engine.buildRotorsStack(res, true);
-        isCodeChosen = true;
+        isCodeChosen.set(true);
         sp_mainPage.setContent(rootNode);
     }
 
@@ -187,8 +293,7 @@ public class AppController implements Initializable {
         return plugBoardList;
     }
 
-    private List<Pair<String ,Pair<Integer,Integer>>> createIDListForRotors(List<Character> startPositionList)
-    {
+    private List<Pair<String ,Pair<Integer,Integer>>> createIDListForRotors(List<Character> startPositionList) {
         DTO_MachineInfo dto_machineInfo = engine.createMachineInfoDTO();
         List<Pair<String ,Pair<Integer,Integer>>> rotorsIDList = new ArrayList<>();
         for(Pair<ChoiceBox<String>, ChoiceBox<Character>> pair :codeSetController.getRotorsChoiceBoxes()){
@@ -207,6 +312,12 @@ public class AppController implements Initializable {
         this.codeSetController = codeSetController;
         codeSetController.setMainController(this);
     }
+
+    public void setEncryptDecryptController(EncryptDecryptController encryptDecryptController) {
+        this.encryptDecryptController = encryptDecryptController;
+        encryptDecryptController.setMainController(this);
+    }
+
     private String setMachineSettingsTextArea(boolean isLoaded) {
         if(isLoaded) {
             return showMachineStatus(engine.createMachineInfoDTO());
@@ -228,12 +339,25 @@ public class AppController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        tab_EncryptDecrypt.setDisable(true);
+        btn_RandomCode.setDisable(true);
+        btn_SetCode.setDisable(true);
+
         isXmlLoaded.addListener((obs, old, newValue) -> {
             tf_machineDetails.setText(setMachineSettingsTextArea(newValue));
         });
 
         isXmlLoaded.addListener((obs, old, newValue) -> {
           tf_xmlPath.setText(newValue ? engine.getUsageHistory().getXmlPath() : "");
+        });
+
+        isXmlLoaded.addListener((obs, old, newValue) -> {
+            btn_RandomCode.setDisable(!newValue);
+            btn_SetCode.setDisable(!newValue);
+        });
+
+        isCodeChosen.addListener((obs, old, newValue) -> {
+            tab_EncryptDecrypt.setDisable(!(newValue && isXmlLoaded.getValue()));
         });
     }
 }
