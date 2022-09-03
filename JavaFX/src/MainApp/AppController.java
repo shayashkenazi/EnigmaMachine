@@ -1,6 +1,7 @@
 package MainApp;
 
 import CodeSet.CodeSetController;
+import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
 import EnginePackage.EngineCapabilities;
 import EnginePackage.EnigmaEngine;
@@ -22,9 +23,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class AppController implements Initializable {
 
@@ -68,10 +67,90 @@ public class AppController implements Initializable {
     }
     @FXML
     void randomCodeBtnClick(ActionEvent event) {
-        /*if (!isXmlLoaded)
-            System.out.println("Error - In order to select this option, you should load xml file first!");
-        else
-            //createRandomMachineSetting();*/
+        if (!isXmlLoaded.getValue()) {
+            JOptionPane.showMessageDialog(null, "you should load xml file first!", "???", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        createRandomMachineSetting();
+
+    }
+
+    private void createRandomMachineSetting() {
+        DTO_MachineInfo dto_machineInfo = engine.createMachineInfoDTO();
+        List<Pair<String ,Pair<Integer,Integer>>>  rotorsIDList = randomCreateIDListForRotors(dto_machineInfo.getNumOfPossibleRotors(),dto_machineInfo.getNumOfUsedRotors());
+        List<Character>  startPositionList = randomCreateListForStartPosition(dto_machineInfo,rotorsIDList,dto_machineInfo.getABC(),rotorsIDList.size());
+        String reflectorID = randomCreateReflectorID(dto_machineInfo.getNumOfReflectors());
+        List<Pair<Character, Character>> plugBoard = randomCreatePlugBoard(dto_machineInfo.getABC());
+        DTO_CodeDescription res = new DTO_CodeDescription(dto_machineInfo.getABC(),rotorsIDList,startPositionList,reflectorID,plugBoard);
+        engine.buildRotorsStack(res, true);
+        isCodeChosen = true;
+    }
+    private List<Pair<String ,Pair<Integer,Integer>>>  randomCreateIDListForRotors(int numOfRotors,int numOfUsedRotors) {
+        List<Pair<String ,Pair<Integer,Integer>>>  rotorsIDList = new ArrayList<>();
+        Random rand = new Random();
+        Set<Integer > set = new HashSet<>();
+        int randomNum;
+        for(int i = 0; i < numOfUsedRotors; i++){
+            randomNum = rand.nextInt(numOfRotors) + 1;
+            while(set.contains(randomNum)) {
+                randomNum = rand.nextInt(numOfRotors) + 1;
+            }
+            rotorsIDList.add(new Pair<>(String.valueOf(randomNum),null));
+            set.add(randomNum);
+        }
+        return rotorsIDList;
+    }
+    private List<Character> randomCreateListForStartPosition(DTO_MachineInfo dto_machineInfo,List<Pair<String ,Pair<Integer,Integer>>> rotorsIDList,String abc, int numOfRotors) {
+        List<Character> rotorsStartPositionList = new ArrayList<>();
+        Set<Character> set = new HashSet<>();
+        Random rand = new Random();
+        int randomNum;
+        for(int i = 0; i < numOfRotors; i++) {
+            randomNum = rand.nextInt(abc.length());
+            while(set.contains(abc.charAt(randomNum))) {
+                randomNum = rand.nextInt(abc.length());
+            }
+            set.add(abc.charAt(randomNum));
+            rotorsStartPositionList.add(abc.charAt(randomNum));
+            Pair<String, Pair<Integer, Integer>> tmp = rotorsIDList.get(i);
+            int curNotch = dto_machineInfo.getNotchPositionList().get(Integer.parseInt(tmp.getKey()) -1);
+            rotorsIDList.set(i,new Pair<>(tmp.getKey(),new Pair<>(curNotch,dto_machineInfo.getABCOrderOfSpecificRotor(Integer.parseInt(tmp.getKey()) -1).indexOf(abc.charAt(randomNum)))));
+        }
+        return rotorsStartPositionList;
+    }
+    private String randomCreateReflectorID(int numOfReflectors) {
+        Random rand = new Random();
+        Map<Integer, String> MapNumbers = new LinkedHashMap<>();
+        MapNumbers.put(1,"I");
+        MapNumbers.put(2,"II");
+        MapNumbers.put(3,"III");
+        MapNumbers.put(4,"VI");
+        MapNumbers.put(5,"V");
+        return MapNumbers.get(rand.nextInt(numOfReflectors) + 1);
+
+    }
+
+    private List<Pair<Character, Character>> randomCreatePlugBoard(String abc) {
+        List<Pair<Character, Character>> res = new ArrayList<>();
+        Random rand = new Random();
+        int randomNum = rand.nextInt(abc.length()/2 + 1);
+        int randLetter1,randLetter2;
+        Set<Integer > set = new HashSet<>();
+        for(int i = 0; i < randomNum; i++){
+            randLetter1 = rand.nextInt(abc.length()) ;
+            randLetter2 = rand.nextInt(abc.length()) ;
+            while(set.contains(randLetter1)) {
+                randLetter1 = rand.nextInt(abc.length());
+            }
+            set.add(randLetter1);
+            while(set.contains(randLetter2)) {
+                randLetter2 = rand.nextInt(abc.length());
+            }
+            set.add(randLetter2);
+            res.add(new Pair<>(abc.charAt(randLetter1),abc.charAt(randLetter2)));
+
+        }
+        return res;
     }
 
     @FXML
@@ -85,12 +164,30 @@ public class AppController implements Initializable {
         rootNode = sp_mainPage.getContent();
         sp_mainPage.setContent(new1);
     }
-
+    public DTO_MachineInfo getDtoMachineInfo() { return engine.createMachineInfoDTO();}
     public void codeSetController_setBtnClick() {
-        List<Pair<String ,Pair<Integer,Integer>>> rotorsIDList = createIDListForRotors();
+
+        List<Character> startPositionList = new ArrayList<>();
+        List<Pair<String ,Pair<Integer,Integer>>> rotorsIDList = createIDListForRotors(startPositionList);
+        String reflectorID = codeSetController.getReflector().getValue();
+        List<Pair<Character, Character>> plugBoard = createPlugBoard();
+        DTO_CodeDescription res = new DTO_CodeDescription(engine.createMachineInfoDTO().getABC(),rotorsIDList,startPositionList,reflectorID,plugBoard);
+        engine.buildRotorsStack(res, true);
+        isCodeChosen = true;
         sp_mainPage.setContent(rootNode);
     }
-    private List<Pair<String ,Pair<Integer,Integer>>> createIDListForRotors()
+
+    private List<Pair<Character, Character>> createPlugBoard() {
+        DTO_MachineInfo dto_machineInfo = engine.createMachineInfoDTO();
+        List<Pair<Character, Character>> plugBoardList = new ArrayList<>();
+
+        for(Pair<ChoiceBox<Character>, ChoiceBox<Character>> pair :codeSetController.getPlugBoardList()) {
+            plugBoardList.add(new Pair<>(pair.getKey().getValue(),pair.getValue().getValue()));
+        }
+        return plugBoardList;
+    }
+
+    private List<Pair<String ,Pair<Integer,Integer>>> createIDListForRotors(List<Character> startPositionList)
     {
         DTO_MachineInfo dto_machineInfo = engine.createMachineInfoDTO();
         List<Pair<String ,Pair<Integer,Integer>>> rotorsIDList = new ArrayList<>();
@@ -99,7 +196,10 @@ public class AppController implements Initializable {
             int curNotch = dto_machineInfo.getNotchPositionList().get(Integer.parseInt(curRotorId) -1);
             char curStartPosition = pair.getValue().getValue();
             rotorsIDList.add(new Pair<> (curRotorId,new Pair<>(curNotch,dto_machineInfo.getABCOrderOfSpecificRotor(Integer.parseInt(curRotorId) -1).indexOf(curStartPosition))));
+            startPositionList.add(pair.getValue().getValue());
         }
+        Collections.reverse(rotorsIDList);
+        Collections.reverse(startPositionList);
         return rotorsIDList;
     }
 

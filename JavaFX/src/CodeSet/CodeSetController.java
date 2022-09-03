@@ -22,11 +22,13 @@ public class CodeSetController implements Initializable {
     private AppController appController;
     private List<Pair<ChoiceBox<String>,ChoiceBox<Character>>> rotorsChoiceBoxes = new ArrayList<>();
 
+    private List<Pair<ChoiceBox<Character>,ChoiceBox<Character>>> plugBoardList = new ArrayList<>();
     @FXML private VBox vb_mainSetCode;
     @FXML private VBox vb_rotors;
     @FXML private VBox vb_plugBoard;
     @FXML private Button btn_cancel;
     @FXML private Button btn_set;
+    @FXML private Button btn_addPairToPlugBoard;
     @FXML private ScrollPane sp_rotors;
     @FXML private ChoiceBox<String> cb_reflector;
 
@@ -35,7 +37,23 @@ public class CodeSetController implements Initializable {
         appController.codeSetController_setBtnClick();
 
     }
+    @FXML void addToPlugBoardBtnClick(ActionEvent event) {
+
+        HBox curHBox = new HBox(40);
+        curHBox.setAlignment(Pos.CENTER);
+        DTO_MachineInfo dto_machineInfo = appController.getDtoMachineInfo();
+        ChoiceBox<Character> choiceChar1 = new ChoiceBox<>();
+        choiceChar1.setItems(getChoicesABC(dto_machineInfo.getABC()));
+        curHBox.getChildren().add(choiceChar1);
+        ChoiceBox<Character> choiceChar2 = new ChoiceBox<>();
+        choiceChar2.setItems(getChoicesABC(dto_machineInfo.getABC()));
+        curHBox.getChildren().add(choiceChar2);
+        vb_plugBoard.getChildren().add(curHBox);
+        plugBoardList.add(new Pair<>(choiceChar1,choiceChar2));
+
+    }
     public List<Pair<ChoiceBox<String>,ChoiceBox<Character>>> getRotorsChoiceBoxes (){return rotorsChoiceBoxes;}
+    public List<Pair<ChoiceBox<Character>,ChoiceBox<Character>>> getPlugBoardList (){return plugBoardList;}
     public ChoiceBox<String> getReflector(){return cb_reflector;}
     public void createSetCodeController(DTO_MachineInfo dto_machineInfo) {
 
@@ -59,10 +77,13 @@ public class CodeSetController implements Initializable {
             curHBox.getChildren().add(choiceStartingPoint);
             vb_rotors.getChildren().add(curHBox);
             //add to list of choice boxes
-            rotorsChoiceBoxes.add(new Pair(choiceRotor,choiceStartingPoint));
+            rotorsChoiceBoxes.add(new Pair<>(choiceRotor,choiceStartingPoint));
             cb_reflector.setItems(getIdReflectors(dto_machineInfo.getNumOfReflectors()));
 
         }
+
+    }
+    public void createRandomSetCodeController(DTO_MachineInfo dto_machineInfo) {
 
     }
     private ObservableList<String> getIntRange(int numOfRotors) {

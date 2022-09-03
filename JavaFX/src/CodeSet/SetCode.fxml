@@ -29,9 +29,10 @@
             <ChoiceBox fx:id="cb_reflector" prefWidth="150.0" />
             <ScrollPane prefHeight="200.0" prefWidth="200.0">
                <content>
-                  <VBox fx:id="vb_plugBoard" alignment="TOP_RIGHT" prefHeight="200.0" prefWidth="115.0">
+                  <VBox fx:id="vb_plugBoard" alignment="TOP_RIGHT" prefHeight="200.0" prefWidth="584.0">
                      <children>
                         <Label text="PlugBoard" />
+                        <Button fx:id="btn_addPairToPlugBoard" mnemonicParsing="false" onAction="#addToPlugBoardBtnClick" text="Add new pair to plug board" />
                      </children>
                   </VBox>
                </content>
