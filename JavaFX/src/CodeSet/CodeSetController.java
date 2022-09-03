@@ -4,13 +4,13 @@ import DTOs.DTO_MachineInfo;
 import MainApp.AppController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,17 +25,30 @@ public class CodeSetController implements Initializable {
     @FXML private VBox vb_mainSetCode;
     @FXML private VBox vb_rotors;
     @FXML private VBox vb_plugBoard;
+    @FXML private Button btn_cancel;
+    @FXML private Button btn_set;
+    @FXML private ScrollPane sp_rotors;
+
+    @FXML void setBtnClick(ActionEvent event) {
+        appController.codeSetController_setBtnClick();
+    }
 
 
     public void createSetCodeController(DTO_MachineInfo dto_machineInfo) {
+
+        vb_rotors.setPrefWidth(sp_rotors.getPrefWidth());
 
         for(int i = 0; i < dto_machineInfo.getNumOfUsedRotors(); i++){
             HBox curHBox = new HBox(40);
             curHBox.setAlignment(Pos.CENTER);
             int rotorNum = i + 1;
             Label label = new Label("Rotor number " + rotorNum);
-            ChoiceBox<Integer> choiceRotor = new ChoiceBox<>();
+            ChoiceBox<String> choiceRotor = new ChoiceBox<>();
+
+            // Choose rotors
             choiceRotor.setItems(getIntRange(dto_machineInfo.getNumOfUsedRotors()));
+            
+            // Choose Starting Point
             ChoiceBox<Character> choiceStartingPoint = new ChoiceBox<>();
             curHBox.getChildren().add(label);
             curHBox.getChildren().add(choiceRotor);
@@ -44,13 +57,13 @@ public class CodeSetController implements Initializable {
         }
 
     }
-    private ObservableList<Integer> getIntRange(int numOfRotors) {
+    private ObservableList<String> getIntRange(int numOfRotors) {
 
-        List<Integer> res1 = new ArrayList<>();
-        for (int i = 0; i < numOfRotors; i++)
-            res1.add(i + 1);
+        List<String> res1 = new ArrayList<>();
+        for (int i = 1; i <= numOfRotors; i++)
+            res1.add(String.valueOf(i));
 
-        ObservableList<Integer> res2 = FXCollections.observableArrayList(res1);
+        ObservableList<String> res2 = FXCollections.observableArrayList(res1);
         return res2;
     }
 

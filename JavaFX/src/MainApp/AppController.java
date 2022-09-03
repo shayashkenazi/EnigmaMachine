@@ -4,17 +4,21 @@ import CodeSet.CodeSetController;
 import DTOs.DTO_MachineInfo;
 import EnginePackage.EngineCapabilities;
 import EnginePackage.EnigmaEngine;
+import com.sun.glass.ui.CommonDialogs;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -22,12 +26,11 @@ import java.util.ResourceBundle;
 public class AppController implements Initializable {
 
     private EngineCapabilities engine = new EnigmaEngine();
-
     //private boolean isXmlLoaded = false;
     private boolean isCodeChosen = false;
     private final BooleanProperty isXmlLoaded = new SimpleBooleanProperty(false);
-
     private CodeSetController codeSetController;
+    private Node rootNode;
 
     @FXML private ScrollPane sp_mainPage;
     @FXML private VBox vb_MainApp;
@@ -41,20 +44,18 @@ public class AppController implements Initializable {
     @FXML
     void loadFileBtnClick(ActionEvent event) {
 
-        JFileChooser fileChooser = new JFileChooser();
-        FileNameExtensionFilter xmlFilter = new FileNameExtensionFilter("xml files (*.xml)", "xml");
-        fileChooser.setFileFilter(xmlFilter);
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("xml files", "*.xml"));
 
-        int returnCode = fileChooser.showOpenDialog(null);
+        File fileSelected = fileChooser.showOpenDialog(null);
 
-        if (returnCode != JFileChooser.APPROVE_OPTION) {
+        if (fileSelected == null) {
             JOptionPane.showMessageDialog(null, "Could NOT choose a file!", "???", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         try {
-            engine.createEnigmaMachineFromXML(fileChooser.getSelectedFile().getAbsolutePath(), true);
-            //tf_xmlPath.textProperty().set(fileChooser.getSelectedFile().getAbsolutePath()); // TODO: binding
+            engine.createEnigmaMachineFromXML(fileSelected.getAbsolutePath(), true);
             isXmlLoaded.set(true);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Could NOT choose a file!", "???", JOptionPane.ERROR_MESSAGE);
@@ -78,7 +79,12 @@ public class AppController implements Initializable {
         }
         codeSetController.createSetCodeController(engine.createMachineInfoDTO());
         VBox new1 = codeSetController.getCodeSetVbox();
+        rootNode = sp_mainPage.getContent();
         sp_mainPage.setContent(new1);
+    }
+
+    public void codeSetController_setBtnClick() {
+        sp_mainPage.setContent(rootNode);
     }
 
     public void setCodeSetController(CodeSetController codeSetController) {
