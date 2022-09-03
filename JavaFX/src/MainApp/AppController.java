@@ -15,12 +15,15 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
+import javafx.util.Pair;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class AppController implements Initializable {
@@ -84,7 +87,20 @@ public class AppController implements Initializable {
     }
 
     public void codeSetController_setBtnClick() {
+        List<Pair<String ,Pair<Integer,Integer>>> rotorsIDList = createIDListForRotors();
         sp_mainPage.setContent(rootNode);
+    }
+    private List<Pair<String ,Pair<Integer,Integer>>> createIDListForRotors()
+    {
+        DTO_MachineInfo dto_machineInfo = engine.createMachineInfoDTO();
+        List<Pair<String ,Pair<Integer,Integer>>> rotorsIDList = new ArrayList<>();
+        for(Pair<ChoiceBox<String>, ChoiceBox<Character>> pair :codeSetController.getRotorsChoiceBoxes()){
+            String curRotorId = pair.getKey().getValue();
+            int curNotch = dto_machineInfo.getNotchPositionList().get(Integer.parseInt(curRotorId) -1);
+            char curStartPosition = pair.getValue().getValue();
+            rotorsIDList.add(new Pair<> (curRotorId,new Pair<>(curNotch,dto_machineInfo.getABCOrderOfSpecificRotor(Integer.parseInt(curRotorId) -1).indexOf(curStartPosition))));
+        }
+        return rotorsIDList;
     }
 
     public void setCodeSetController(CodeSetController codeSetController) {

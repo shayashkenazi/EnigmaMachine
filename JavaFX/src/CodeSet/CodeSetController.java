@@ -8,19 +8,19 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.util.Pair;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class CodeSetController implements Initializable {
 
     private AppController appController;
+    private List<Pair<ChoiceBox<String>,ChoiceBox<Character>>> rotorsChoiceBoxes = new ArrayList<>();
 
     @FXML private VBox vb_mainSetCode;
     @FXML private VBox vb_rotors;
@@ -28,12 +28,15 @@ public class CodeSetController implements Initializable {
     @FXML private Button btn_cancel;
     @FXML private Button btn_set;
     @FXML private ScrollPane sp_rotors;
+    @FXML private ChoiceBox<String> cb_reflector;
 
     @FXML void setBtnClick(ActionEvent event) {
+
         appController.codeSetController_setBtnClick();
+
     }
-
-
+    public List<Pair<ChoiceBox<String>,ChoiceBox<Character>>> getRotorsChoiceBoxes (){return rotorsChoiceBoxes;}
+    public ChoiceBox<String> getReflector(){return cb_reflector;}
     public void createSetCodeController(DTO_MachineInfo dto_machineInfo) {
 
         vb_rotors.setPrefWidth(sp_rotors.getPrefWidth());
@@ -43,17 +46,22 @@ public class CodeSetController implements Initializable {
             curHBox.setAlignment(Pos.CENTER);
             int rotorNum = i + 1;
             Label label = new Label("Rotor number " + rotorNum);
+
             ChoiceBox<String> choiceRotor = new ChoiceBox<>();
 
             // Choose rotors
             choiceRotor.setItems(getIntRange(dto_machineInfo.getNumOfUsedRotors()));
-            
             // Choose Starting Point
             ChoiceBox<Character> choiceStartingPoint = new ChoiceBox<>();
+            choiceStartingPoint.setItems(getChoicesABC(dto_machineInfo.getABC()));
             curHBox.getChildren().add(label);
             curHBox.getChildren().add(choiceRotor);
             curHBox.getChildren().add(choiceStartingPoint);
             vb_rotors.getChildren().add(curHBox);
+            //add to list of choice boxes
+            rotorsChoiceBoxes.add(new Pair(choiceRotor,choiceStartingPoint));
+            cb_reflector.setItems(getIdReflectors(dto_machineInfo.getNumOfReflectors()));
+
         }
 
     }
@@ -63,6 +71,30 @@ public class CodeSetController implements Initializable {
         for (int i = 1; i <= numOfRotors; i++)
             res1.add(String.valueOf(i));
 
+        ObservableList<String> res2 = FXCollections.observableArrayList(res1);
+        return res2;
+    }
+    private ObservableList<Character> getChoicesABC(String abc) {
+
+        List<Character> res1 = new ArrayList<>();
+        for (int i = 0; i < abc.length(); i++)
+            res1.add(abc.charAt(i));
+
+        ObservableList<Character> res2 = FXCollections.observableArrayList(res1);
+        return res2;
+    }
+    private ObservableList<String> getIdReflectors(int numOfReflectors) {
+
+        Map<Integer, String> MapNumbers = new LinkedHashMap<>();
+        MapNumbers.put(1,"I");
+        MapNumbers.put(2,"II");
+        MapNumbers.put(3,"III");
+        MapNumbers.put(4,"VI");
+        MapNumbers.put(5,"V");
+        List<String> res1 = new ArrayList<>();
+        for(int i = 0; i < numOfReflectors; i++) {
+            res1.add(MapNumbers.get(i+1));
+        }
         ObservableList<String> res2 = FXCollections.observableArrayList(res1);
         return res2;
     }

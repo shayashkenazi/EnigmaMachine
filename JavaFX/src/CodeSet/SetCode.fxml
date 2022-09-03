@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CodeSet.CodeSetController">
+<ScrollPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CodeSet.CodeSetController">
    <content>
       <VBox fx:id="vb_mainSetCode" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
          <children>
@@ -26,7 +26,7 @@
                   </VBox>
                </content>
             </ScrollPane>
-            <ChoiceBox prefWidth="150.0" />
+            <ChoiceBox fx:id="cb_reflector" prefWidth="150.0" />
             <ScrollPane prefHeight="200.0" prefWidth="200.0">
                <content>
                   <VBox fx:id="vb_plugBoard" alignment="TOP_RIGHT" prefHeight="200.0" prefWidth="115.0">
