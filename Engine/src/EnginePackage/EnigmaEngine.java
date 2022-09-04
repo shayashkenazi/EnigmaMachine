@@ -74,13 +74,12 @@ public class EnigmaEngine implements EngineCapabilities{
         FileOutputStream fos = new FileOutputStream(filePathAndName);
         ObjectOutputStream out = new ObjectOutputStream(fos);
         out.writeObject(usageHistory);
-        out.close(); // TODO: do I need to close it sooner?
+        out.close();
     }
 
     @Override
     public void loadInfoFromFile(String filePathAndName) throws Exception {
 
-        // TODO: Do I need to handle situation that the user did NOT save any data? (check if null?)
         FileInputStream fis = new FileInputStream(filePathAndName);
         ObjectInputStream in = new ObjectInputStream(fis);
 
@@ -143,6 +142,17 @@ public class EnigmaEngine implements EngineCapabilities{
         usageHistory.addMsgAndTimeToCurrentCodeSegment(msgToEncodeDecode, resMsg, end - start);
 
         return resMsg;
+    }
+
+    @Override
+    public Character encodeDecodeCharacter(Character ch) {
+
+        Character charAfterPlugBoard = machine.buildCharacterWithPlugBoard(ch);
+        Integer charAsInteger = machine.convertCharToInt(charAfterPlugBoard);
+        Integer encodeDecodeCharacterAsInteger = encodeDecodeLetterAsInteger(charAsInteger);
+        Character res = machine.convertIntToChar(encodeDecodeCharacterAsInteger);
+        Character resChar = machine.buildCharacterWithPlugBoard(res);
+        return resChar;
     }
 
     private Integer encodeDecodeLetterAsInteger(Integer letterAsInt) {

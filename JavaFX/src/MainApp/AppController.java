@@ -6,12 +6,10 @@ import DTOs.DTO_MachineInfo;
 import EncryptDecrypt.EncryptDecryptController;
 import EnginePackage.EngineCapabilities;
 import EnginePackage.EnigmaEngine;
-import com.sun.glass.ui.CommonDialogs;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -20,7 +18,6 @@ import javafx.stage.FileChooser;
 import javafx.util.Pair;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -30,13 +27,13 @@ import java.util.*;
 public class AppController implements Initializable {
 
     private EngineCapabilities engine = new EnigmaEngine();
-    //private boolean isXmlLoaded = false;
-    //private boolean isCodeChosen = false;
     private final BooleanProperty isXmlLoaded = new SimpleBooleanProperty(false);
     private final BooleanProperty isCodeChosen = new SimpleBooleanProperty(false);
     private CodeSetController codeSetController;
     private EncryptDecryptController encryptDecryptController;
     private Node rootNode;
+    private DTO_MachineInfo dto_machineInfo;
+    private DTO_CodeDescription dto_codeDescription;
 
     @FXML private ScrollPane sp_mainPage;
     @FXML private VBox vb_MainApp;
@@ -84,7 +81,41 @@ public class AppController implements Initializable {
 
     }
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
+        tab_EncryptDecrypt.setDisable(true);
+        btn_RandomCode.setDisable(true);
+        btn_SetCode.setDisable(true);
+
+        isXmlLoaded.addListener((obs, old, newValue) -> {
+            tf_machineDetails.setText(setMachineSettingsTextArea(newValue));
+
+            if (newValue)
+                dto_machineInfo = engine.createMachineInfoDTO();
+        });
+
+        isXmlLoaded.addListener((obs, old, newValue) -> {
+            tf_xmlPath.setText(newValue ? engine.getUsageHistory().getXmlPath() : "");
+        });
+
+        isXmlLoaded.addListener((obs, old, newValue) -> {
+            btn_RandomCode.setDisable(!newValue);
+            btn_SetCode.setDisable(!newValue);
+        });
+
+        isCodeChosen.addListener((obs, old, newValue) -> {
+            tab_EncryptDecrypt.setDisable(!(newValue && isXmlLoaded.getValue()));
+            encryptDecryptController.initializeTab();
+            if (newValue)
+                dto_codeDescription = engine.createCodeDescriptionDTO();
+        });
+    }
+
     //----------------------------------------- EncryptDecrypt Component -----------------------------------------
+/*    @FXML void EncryptDecryptTabClick(ActionEvent event) {
+        encryptDecryptController.initializeTab();
+    }*/
     public void encryptDecryptController_proccessBtnClick() {
 
         String msg = encryptDecryptController.getTf_input().getText();
@@ -104,6 +135,11 @@ public class AppController implements Initializable {
 
         // Update Statistics
         encryptDecryptController.getTa_statistics().setText(showHistoryAndStatistics());
+    }
+
+    public Character encryptDecryptController_keyboardBtnClick(Character btnChar) {
+
+        return engine.encodeDecodeCharacter(btnChar);
     }
 
     public String showHistoryAndStatistics() {
@@ -167,6 +203,7 @@ public class AppController implements Initializable {
 
         return sb.toString();
     }
+
     private boolean isMsgAllFromAbc(String msg) {
 
         for (int i = 0; i < msg.length(); i++){
@@ -175,10 +212,46 @@ public class AppController implements Initializable {
         }
         return true;
     }
+
+    public String createCodeConfigurationFormat() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("<");
+        int index = 0;
+
+        for(int i = dto_codeDescription.getRotorsInUseIDList().size() - 1; i >= 0; i--)
+        {
+            Pair<String , Pair<Integer,Integer>> rotorId = dto_codeDescription.getRotorsInUseIDList().get(i);
+            int distance = Math.floorMod(dto_codeDescription.getNotch(rotorId) - dto_codeDescription.getCurrent(rotorId), dto_codeDescription.getABC().length()) ; //'% dto_codeDescription.'
+            sb.append(rotorId.getKey()).append("(").append(distance).append("),"); // need to have curr index eac h rotor
+        }
+        sb.replace(sb.length() - 1,sb.length(),">"); // for the last ','
+        Collections.reverse(dto_codeDescription.getStartingPositionList());
+        sb.append("<").append(String.join(",", dto_codeDescription.getStartingPositionList().toString()
+                .replace(" ", "")
+                .replace(",", "")
+                .replace("[", "")
+                .replace("]", ""))).append(">");
+        sb.append("<").append(dto_codeDescription.getReflectorID()).append(">");
+        Collections.reverse(dto_codeDescription.getStartingPositionList());
+
+        if (dto_codeDescription.getPlugsInUseList().size() != 0) {
+            sb.append("<");
+            for (int i = 0; i < dto_codeDescription.getPlugsInUseList().size(); i++) {
+                Pair<Character, Character> pair = dto_codeDescription.getPlugsInUseList().get(i);
+                sb.append(pair.getKey()).append("|").append(pair.getValue()).append(",");
+            }
+            sb.replace(sb.length() - 1,sb.length(),">");// replace the last ',' with '>'
+        }
+
+        return sb.toString();
+    }
+
+
     //----------------------------------------- ?????????????? Component -----------------------------------------
 
     private void createRandomMachineSetting() {
-        DTO_MachineInfo dto_machineInfo = engine.createMachineInfoDTO();
+
         List<Pair<String ,Pair<Integer,Integer>>>  rotorsIDList = randomCreateIDListForRotors(dto_machineInfo.getNumOfPossibleRotors(),dto_machineInfo.getNumOfUsedRotors());
         List<Character>  startPositionList = randomCreateListForStartPosition(dto_machineInfo,rotorsIDList,dto_machineInfo.getABC(),rotorsIDList.size());
         String reflectorID = randomCreateReflectorID(dto_machineInfo.getNumOfReflectors());
@@ -336,28 +409,7 @@ public class AppController implements Initializable {
     return sb.toString();
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public DTO_MachineInfo getDto_machineInfo() { return dto_machineInfo; }
 
-        tab_EncryptDecrypt.setDisable(true);
-        btn_RandomCode.setDisable(true);
-        btn_SetCode.setDisable(true);
-
-        isXmlLoaded.addListener((obs, old, newValue) -> {
-            tf_machineDetails.setText(setMachineSettingsTextArea(newValue));
-        });
-
-        isXmlLoaded.addListener((obs, old, newValue) -> {
-          tf_xmlPath.setText(newValue ? engine.getUsageHistory().getXmlPath() : "");
-        });
-
-        isXmlLoaded.addListener((obs, old, newValue) -> {
-            btn_RandomCode.setDisable(!newValue);
-            btn_SetCode.setDisable(!newValue);
-        });
-
-        isCodeChosen.addListener((obs, old, newValue) -> {
-            tab_EncryptDecrypt.setDisable(!(newValue && isXmlLoaded.getValue()));
-        });
-    }
+    public DTO_CodeDescription getDtoCodeDescription() { return dto_codeDescription; }
 }

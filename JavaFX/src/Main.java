@@ -44,6 +44,7 @@ public class Main extends Application {
 
         appController.setTab_EncryptDecrypt(encryptDecryptComponent);
 
+
         // Start Scene
         Scene scene = new Scene(root, 600, 400);
         primaryStage.setScene(scene);

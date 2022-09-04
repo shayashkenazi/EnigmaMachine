@@ -106,6 +106,10 @@ public class Machine implements Serializable {
         return res;
     }
 
+    public Character buildCharacterWithPlugBoard(Character ch) {
+        return plugBoard.switchChar(ch);
+    }
+
     public Integer convertCharToInt(Character charToConvert) {
         return abcMap.get(charToConvert);
     }

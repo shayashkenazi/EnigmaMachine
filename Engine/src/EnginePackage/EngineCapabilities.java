@@ -22,4 +22,5 @@ public interface EngineCapabilities {
     DTO_CodeDescription createCodeDescriptionDTO();
     void saveInfoToFile(String filePathAndName) throws FileNotFoundException, Exception;
     void loadInfoFromFile(String filePathAndName) throws FileNotFoundException, Exception;
+    Character encodeDecodeCharacter(Character ch);
 }
