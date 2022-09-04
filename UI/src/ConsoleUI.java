@@ -272,7 +272,6 @@ public class ConsoleUI implements UIprogram{
     }
 
 
-
     public void createRandomMachineSetting() {
         DTO_MachineInfo dto_machineInfo = engine.createMachineInfoDTO();
         List<Pair<String ,Pair<Integer,Integer>>>  rotorsIDList = randomCreateIDListForRotors(dto_machineInfo.getNumOfPossibleRotors(),dto_machineInfo.getNumOfUsedRotors());

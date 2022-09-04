@@ -9,7 +9,7 @@ import java.io.*;
 
 import java.util.*;
 
-public class EnigmaEngine implements EngineCapabilities{
+public class EnigmaEngine implements EngineCapabilities,Serializable{
 
     private Machine machine;
     private UsageHistory usageHistory;
@@ -24,7 +24,21 @@ public class EnigmaEngine implements EngineCapabilities{
         return machine;
     }
 
-
+    @Override
+    public EnigmaEngine clone(){
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(this);
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            return (EnigmaEngine) ois.readObject();
+        } catch (IOException e) {
+            return null;
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+    }
     @Override
     public DTO_MachineInfo createMachineInfoDTO() {
 

@@ -1,6 +1,7 @@
 package EnginePackage;
 
-import Generated.*;
+//import Generated.*;
+import DecryptionManager.Generated.*;
 import Tools.*;
 
 import javax.xml.bind.*;
@@ -8,10 +9,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Factory {
 
-    private final static String JAXB_XML_GAME_PACKAGE_NAME = "Generated";
+    private final static String JAXB_XML_GAME_PACKAGE_NAME = "DecryptionManager.Generated";
     private final CTEEnigma cteEnigma;
 
     public CTEEnigma getCteEnigma() {
@@ -185,6 +187,26 @@ public class Factory {
         return cteEnigma.getCTEMachine().getABC().trim();
     }
 
+    private Set<String> createDictionary(){
+
+        String words = cteEnigma.getCTEDecipher().getCTEDictionary().getWords();
+        String[] allWords = words.split(" ");
+
+        Set<String> set = new HashSet<>(Arrays.asList(allWords));
+
+        return set;
+
+    }
+    private Set<Character> createExcludeChars(){
+        String exclude = cteEnigma.getCTEDecipher().getCTEDictionary().getExcludeChars();
+        List<Character> myChars = exclude
+                .chars()
+                .mapToObj(e -> (char)e)
+                .collect(Collectors.toList());
+        Set<Character> set = new HashSet<>(myChars);
+        return set;
+    }
+
     public Machine createMachine() throws Exception {
 
         Machine machine = new Machine();
@@ -193,6 +215,8 @@ public class Factory {
         machine.setRotorsCount(cteEnigma.getCTEMachine().getRotorsCount());
         machine.setRotors(createRotors());
         machine.setReflectors(createReflectors());
+        machine.setMyDictionary(createDictionary());
+        machine.setExcludeChars(createExcludeChars());
         return machine;
     }
 }

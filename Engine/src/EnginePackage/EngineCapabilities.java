@@ -23,4 +23,5 @@ public interface EngineCapabilities {
     void saveInfoToFile(String filePathAndName) throws FileNotFoundException, Exception;
     void loadInfoFromFile(String filePathAndName) throws FileNotFoundException, Exception;
     Character encodeDecodeCharacter(Character ch);
+    EnigmaEngine clone();
 }

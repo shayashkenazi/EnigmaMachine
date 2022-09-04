@@ -3,10 +3,11 @@ package Tools;
 import DTOs.DTO_CodeDescription;
 import javafx.util.Pair;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Machine implements Serializable {
 
@@ -17,6 +18,23 @@ public class Machine implements Serializable {
     private String abc;
     private int rotorsCount;
     private PlugBoard plugBoard = new PlugBoard();
+    private Set<String> myDictionary;
+    private Set<Character> excludeChars;
+    /*@Override
+    public Machine clone(){
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(this);
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            return (Machine) ois.readObject();
+        } catch (IOException e) {
+            return null;
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+    }*/
 
     public boolean isCharInACB(Character ch) {
         return abcMap.containsKey(ch);
@@ -58,6 +76,9 @@ public class Machine implements Serializable {
         this.abcMap = mapABC;
     }
     public void setABC(String ABC) {this.abc = ABC; }
+
+    public void setMyDictionary(Set myDictionary){ this.myDictionary = myDictionary;}
+    public void setExcludeChars(Set excludeChars){this.excludeChars = excludeChars;}
     public void buildRotorsStack(DTO_CodeDescription codeDescription) {
         rotorsStack.clear();
         plugBoard = new PlugBoard();
