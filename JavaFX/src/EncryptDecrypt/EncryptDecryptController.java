@@ -49,7 +49,7 @@ public class EncryptDecryptController implements SubController {
         btn_proccess.setDisable(true);
         btn_done.setDisable(true);
 
-        ta_codeConfiguration.setText(appController.createCodeConfigurationFormat());
+        //ta_codeConfiguration.setText(appController.createCodeConfigurationFormat());
 
         initializeKeyboard(dto_machineInfo);
 
@@ -62,13 +62,13 @@ public class EncryptDecryptController implements SubController {
         });
 
         // Code Configuration
-        btn_proccess.setOnAction(event -> {
+/*        btn_proccess.setOnAction(event -> {
             ta_codeConfiguration.setText(appController.createCodeConfigurationFormat());
         });
 
         btn_done.setOnAction(event -> {
             ta_codeConfiguration.setText(appController.createCodeConfigurationFormat());
-        });
+        });*/
     }
 
     @Override
@@ -110,5 +110,6 @@ public class EncryptDecryptController implements SubController {
     public TextArea getTa_statistics() { return ta_statistics; }
 
     public FlowPane getFp_keyboard() { return fp_keyboard; }
+    public TextArea getTa_codeConfiguration() { return ta_codeConfiguration; }
 
 }

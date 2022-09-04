@@ -37,16 +37,11 @@ public class AppController implements Initializable {
 
     @FXML private ScrollPane sp_mainPage;
     @FXML private VBox vb_MainApp;
-    @FXML private Button btn_loadFile;
     @FXML private TextField tf_xmlPath;
-    @FXML private TextArea tf_machineDetails;
+    @FXML private TextArea tf_machineDetails, tf_machineConfiguration;
     @FXML private HBox hb_setCode;
-    @FXML private Button btn_RandomCode;
-    @FXML private Button btn_SetCode;
-    @FXML private TextArea tf_machineConfiguration;
-    @FXML private Tab tab_EncryptDecrypt;
-    @FXML private Tab tab_bruteForce;
-    @FXML private Tab tab_machine;
+    @FXML private Button btn_RandomCode, btn_SetCode, btn_loadFile;
+    @FXML private Tab tab_EncryptDecrypt, tab_bruteForce, tab_machine;
 
 
     @FXML
@@ -107,8 +102,13 @@ public class AppController implements Initializable {
         isCodeChosen.addListener((obs, old, newValue) -> {
             tab_EncryptDecrypt.setDisable(!(newValue && isXmlLoaded.getValue()));
             encryptDecryptController.initializeTab();
-            if (newValue)
+            if (newValue) {
                 dto_codeDescription = engine.createCodeDescriptionDTO();
+                //update Code Configuration in all sub-components
+                String codeConfigurationText = createDescriptionFormat(dto_codeDescription);
+                encryptDecryptController.getTa_codeConfiguration().setText(codeConfigurationText);
+                tf_machineConfiguration.setText(codeConfigurationText);
+            }
         });
     }
 
@@ -148,7 +148,7 @@ public class AppController implements Initializable {
         for (Pair<DTO_CodeDescription, List<Pair<Pair<String, String>, Long>>> codeAndList
                 : engine.getUsageHistory().getData()) {
 
-            sb.append(printDescriptionFormat(codeAndList.getKey()));
+            sb.append(createDescriptionFormat(codeAndList.getKey()));
 
             int index = 1;
             for (Pair<Pair<String, String>, Long> msgAndTime : codeAndList.getValue()) {
@@ -171,7 +171,7 @@ public class AppController implements Initializable {
         return s;
     }
 
-    private String printDescriptionFormat(DTO_CodeDescription dto_codeDescription) {
+    private String createDescriptionFormat(DTO_CodeDescription dto_codeDescription) {
         StringBuilder sb = new StringBuilder();
         sb.append("<");
         int index = 0;
