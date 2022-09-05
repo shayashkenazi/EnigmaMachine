@@ -3,6 +3,7 @@ package DecryptionManager;
 
 import EnginePackage.EnigmaEngine;
 import Tools.Machine;
+import Tools.Reflector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,13 @@ public class DecryptionManager {
     }
     private void runTasks(){
         poolMission.shutdown();
+    }
+
+    private void setMachineReflector(String reflectorID,Machine machine){
+
+        int size = copyEngine.getMachine().getRotorsStack().size();
+        Reflector ref = (Reflector)copyEngine.getMachine().getRotorsStack().get(size - 1);
+        machine.getRotorsStack().set(size - 1,ref);
     }
 
 
