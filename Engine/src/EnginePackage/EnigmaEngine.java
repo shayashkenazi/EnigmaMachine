@@ -180,7 +180,7 @@ public class EnigmaEngine implements EngineCapabilities,Serializable{
 
         for (Switcher switcher : machine.getRotorsStack()){
 
-            encodeDecodeLetterAsInteger = switcher.Switch(encodeDecodeLetterAsInteger, true); // maybe the opposite ??
+            encodeDecodeLetterAsInteger = switcher.Switch(encodeDecodeLetterAsInteger, true);
             trackChanges.add(encodeDecodeLetterAsInteger);
         }
 
@@ -204,6 +204,31 @@ public class EnigmaEngine implements EngineCapabilities,Serializable{
             {
                 currentRotor = (Rotor)machine.getRotorsStack().get(index++);
                 currentRotor.rotateRotor();
+            }
+            else
+                break;
+        }
+    }
+
+    @Override
+    public void moveRotorsToPosition(int stepSize) {
+
+        for (int i = 0; i < stepSize; i++)
+            rotateRotorByABC();
+    }
+
+    @Override
+    public void rotateRotorByABC() {
+
+        Rotor currRotor = (Rotor)machine.getRotorsStack().get(0);
+        currRotor.rotateRotor();
+
+        for (int i = 1; i < machine.getRotorsInUseCount(); i++) {
+
+            if (currRotor.getCurrentPairIndex() == 0) {
+
+                currRotor = (Rotor)machine.getRotorsStack().get(i);
+                currRotor.rotateRotor();
             }
             else
                 break;

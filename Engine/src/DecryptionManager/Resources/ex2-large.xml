@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2008 rel. 2 (http://www.altova.com) by mazuki (darksiderg) -->
-<CTE-Enigma xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../../Downloads/Enigma-Ex2.xsd">
+<CTE-Enigma xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Enigma-Ex2.xsd">
 	<CTE-Machine rotors-count="5">
 		<ABC>ABCDEFGHIJKLMNOPQRSTUVWXYZ !?'</ABC>
 		<CTE-Rotors>

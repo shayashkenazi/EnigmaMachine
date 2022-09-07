@@ -1,8 +1,11 @@
 package MainApp;
 
+import BruteForce.BruteForceController;
 import CodeSet.CodeSetController;
 import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
+import DecryptionManager.DecryptionManager;
+import DecryptionManager.DecryptionTask;
 import EncryptDecrypt.EncryptDecryptController;
 import EnginePackage.EngineCapabilities;
 import EnginePackage.EnigmaEngine;
@@ -31,6 +34,7 @@ public class AppController implements Initializable {
     private final BooleanProperty isCodeChosen = new SimpleBooleanProperty(false);
     private CodeSetController codeSetController;
     private EncryptDecryptController encryptDecryptController;
+    private BruteForceController bruteForceController;
     private Node rootNode;
     private DTO_MachineInfo dto_machineInfo;
     private DTO_CodeDescription dto_codeDescription;
@@ -74,6 +78,11 @@ public class AppController implements Initializable {
         }
         createRandomMachineSetting();
 
+        //update Code Configuration in all sub-components
+        dto_codeDescription = engine.createCodeDescriptionDTO();
+        String codeConfigurationText = createDescriptionFormat(dto_codeDescription);
+        encryptDecryptController.getTa_codeConfiguration().setText(codeConfigurationText);
+        tf_machineConfiguration.setText(codeConfigurationText);
     }
 
     @Override
@@ -332,6 +341,10 @@ public class AppController implements Initializable {
         this.tab_EncryptDecrypt.setContent(encryptDecryptComponent);
     }
 
+    public void setTab_BruteForce(Node bruteForceComponent) {
+        this.tab_bruteForce.setContent(bruteForceComponent);
+    }
+
     @FXML
     void setCodeBtnClick(ActionEvent event) throws IOException {
         if (!isXmlLoaded.getValue()) {
@@ -354,6 +367,12 @@ public class AppController implements Initializable {
         engine.buildRotorsStack(res, true);
         isCodeChosen.set(true);
         sp_mainPage.setContent(rootNode);
+
+        //update Code Configuration in all sub-components
+        dto_codeDescription = engine.createCodeDescriptionDTO();
+        String codeConfigurationText = createDescriptionFormat(dto_codeDescription);
+        encryptDecryptController.getTa_codeConfiguration().setText(codeConfigurationText);
+        tf_machineConfiguration.setText(codeConfigurationText);
     }
 
     private List<Pair<Character, Character>> createPlugBoard() {
@@ -391,6 +410,11 @@ public class AppController implements Initializable {
         encryptDecryptController.setMainController(this);
     }
 
+    public void setBruteForceController(BruteForceController bruteForceController) {
+        this.bruteForceController = bruteForceController;
+        bruteForceController.setMainController(this);
+    }
+
     private String setMachineSettingsTextArea(boolean isLoaded) {
         if(isLoaded) {
             return showMachineStatus(engine.createMachineInfoDTO());
@@ -412,4 +436,10 @@ public class AppController implements Initializable {
     public DTO_MachineInfo getDto_machineInfo() { return dto_machineInfo; }
 
     public DTO_CodeDescription getDtoCodeDescription() { return dto_codeDescription; }
+
+    public void testToDeleteShayHomo() { // TODO: DELETEEEEEEEEEEEEEEEEEEEEEEEE
+
+        DecryptionManager DM = new DecryptionManager(engine.clone());
+        DM.createEasyTasks(engine.clone());
+    }
 }

@@ -24,4 +24,6 @@ public interface EngineCapabilities {
     void loadInfoFromFile(String filePathAndName) throws FileNotFoundException, Exception;
     Character encodeDecodeCharacter(Character ch);
     EnigmaEngine clone();
+    void moveRotorsToPosition(int stepSize);
+    void rotateRotorByABC();
 }

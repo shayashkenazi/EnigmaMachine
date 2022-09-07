@@ -1,3 +1,4 @@
+import BruteForce.BruteForceController;
 import CodeSet.CodeSetController;
 import EncryptDecrypt.EncryptDecryptController;
 import MainApp.AppController;
@@ -30,6 +31,13 @@ public class Main extends Application {
         ScrollPane encryptDecryptComponent = fxmlLoader.load(url.openStream());
         EncryptDecryptController encryptDecryptController = fxmlLoader.getController();
 
+        // BruteForce Controller
+        fxmlLoader = new FXMLLoader();
+        url = getClass().getResource("/BruteForce/BruteForce.fxml");
+        fxmlLoader.setLocation(url);
+        ScrollPane bruteForceComponent = fxmlLoader.load(url.openStream());
+        BruteForceController bruteForceController = fxmlLoader.getController();
+
         // MainApp Controller
         fxmlLoader = new FXMLLoader();
         url = getClass().getResource("/MainApp/MainForm.fxml");
@@ -38,11 +46,14 @@ public class Main extends Application {
         AppController appController = fxmlLoader.getController();
 
 
+
         appController.setCodeSetController(codeSetController);
         appController.setEncryptDecryptController(encryptDecryptController);
+        appController.setBruteForceController(bruteForceController);
 
 
         appController.setTab_EncryptDecrypt(encryptDecryptComponent);
+        appController.setTab_BruteForce(bruteForceComponent);
 
 
         // Start Scene
