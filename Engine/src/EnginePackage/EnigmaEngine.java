@@ -234,4 +234,12 @@ public class EnigmaEngine implements EngineCapabilities,Serializable{
                 break;
         }
     }
+    public boolean checkAtDictionary(String sentenceToCheck){
+        String[] allWords = sentenceToCheck.split(" ");
+        for(String str:allWords){
+            if(!machine.getMyDictionary().contains(str))
+                return false;
+        }
+        return true;
+    }
 }

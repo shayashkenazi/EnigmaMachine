@@ -12,20 +12,20 @@
    <content>
       <VBox fx:id="vb_mainSetCode" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
          <children>
+            <ScrollPane fx:id="sp_rotors">
+               <content>
+                  <HBox fx:id="hb_rotors" alignment="TOP_CENTER" prefHeight="100.0" prefWidth="583.0">
+                     <children>
+                        <Label text="Rotors" />
+                     </children>
+                  </HBox>
+               </content>
+            </ScrollPane>
             <Label text="code configuration">
                <font>
                   <Font name="System Bold" size="17.0" />
                </font>
             </Label>
-            <ScrollPane fx:id="sp_rotors">
-               <content>
-                  <VBox fx:id="vb_rotors" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="582.0">
-                     <children>
-                        <Label text="Rotors" />
-                     </children>
-                  </VBox>
-               </content>
-            </ScrollPane>
             <ChoiceBox fx:id="cb_reflector" prefWidth="150.0" />
             <ScrollPane prefHeight="200.0" prefWidth="200.0">
                <content>

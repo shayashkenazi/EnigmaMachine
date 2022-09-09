@@ -26,4 +26,5 @@ public interface EngineCapabilities {
     EnigmaEngine clone();
     void moveRotorsToPosition(int stepSize);
     void rotateRotorByABC();
+    boolean checkAtDictionary(String sentenceToCheck);
 }

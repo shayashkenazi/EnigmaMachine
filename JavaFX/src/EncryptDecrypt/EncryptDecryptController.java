@@ -24,7 +24,8 @@ public class EncryptDecryptController implements SubController {
 
     @FXML private Button btn_clear, btn_proccess, btn_done;
     @FXML private TextField tf_input, tf_output;
-    @FXML private TextArea ta_statistics, ta_codeConfiguration;
+    @FXML private TextArea ta_statistics;
+    @FXML private TextArea ta_codeConfiguration;
     @FXML private FlowPane fp_keyboard;
 
     //----------------------------------------- FXML Methods -----------------------------------------
@@ -60,7 +61,9 @@ public class EncryptDecryptController implements SubController {
         tf_output.textProperty().addListener((observable, oldValue, newValue) -> {
             btn_done.setDisable(newValue.equals(""));
         });
-
+        /*btn_proccess.setOnAction(event -> {
+            ta_codeConfiguration.setText(appController.createCodeConfigurationFormat());
+        });*/
         // Code Configuration
 /*        btn_proccess.setOnAction(event -> {
             ta_codeConfiguration.setText(appController.createCodeConfigurationFormat());
@@ -94,6 +97,7 @@ public class EncryptDecryptController implements SubController {
                     Character resChar = appController.encryptDecryptController_keyboardBtnClick(btn.getText().charAt(0));
                     Button b = keyboardMap.get(resChar);
                     // TODO: add animation
+                    tf_input.appendText(String.valueOf(btn.getText().charAt(0)));
                     tf_output.appendText(String.valueOf(resChar));
                 }
             });

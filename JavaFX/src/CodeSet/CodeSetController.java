@@ -26,6 +26,7 @@ public class CodeSetController implements Initializable, SubController {
     private List<Pair<ChoiceBox<Character>,ChoiceBox<Character>>> plugBoardList = new ArrayList<>();
     @FXML private VBox vb_mainSetCode;
     @FXML private VBox vb_rotors;
+    @FXML private HBox hb_rotors;
     @FXML private VBox vb_plugBoard;
     @FXML private Button btn_cancel;
     @FXML private Button btn_set;
@@ -58,7 +59,7 @@ public class CodeSetController implements Initializable, SubController {
     public ChoiceBox<String> getReflector(){return cb_reflector;}
     public void createSetCodeController(DTO_MachineInfo dto_machineInfo) {
 
-        vb_rotors.setPrefWidth(sp_rotors.getPrefWidth());
+        hb_rotors.setPrefWidth(sp_rotors.getPrefWidth());
 
         for(int i = 0; i < dto_machineInfo.getNumOfUsedRotors(); i++){
             HBox curHBox = new HBox(40);
@@ -69,14 +70,14 @@ public class CodeSetController implements Initializable, SubController {
             ChoiceBox<String> choiceRotor = new ChoiceBox<>();
 
             // Choose rotors
-            choiceRotor.setItems(getIntRange(dto_machineInfo.getNumOfUsedRotors()));
+            choiceRotor.setItems(getIntRange(dto_machineInfo.getNumOfPossibleRotors()));
             // Choose Starting Point
             ChoiceBox<Character> choiceStartingPoint = new ChoiceBox<>();
             choiceStartingPoint.setItems(getChoicesABC(dto_machineInfo.getABC()));
             curHBox.getChildren().add(label);
             curHBox.getChildren().add(choiceRotor);
             curHBox.getChildren().add(choiceStartingPoint);
-            vb_rotors.getChildren().add(curHBox);
+            hb_rotors.getChildren().add(curHBox);
             //add to list of choice boxes
             rotorsChoiceBoxes.add(new Pair<>(choiceRotor,choiceStartingPoint));
             cb_reflector.setItems(getIdReflectors(dto_machineInfo.getNumOfReflectors()));

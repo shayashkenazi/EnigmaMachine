@@ -4,10 +4,7 @@ import DTOs.DTO_CodeDescription;
 import javafx.util.Pair;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Machine implements Serializable {
 
@@ -39,7 +36,7 @@ public class Machine implements Serializable {
     public boolean isCharInACB(Character ch) {
         return abcMap.containsKey(ch);
     }
-
+    public Set<String> getMyDictionary() { return myDictionary; }
     public int getRotorsMapSize() {
         return rotorsMap.size();
     }
@@ -139,7 +136,7 @@ public class Machine implements Serializable {
 
         for (Map.Entry<Character, Integer> entry : abcMap.entrySet()) {
 
-            if (entry.getValue() == intToConvert)
+            if (Objects.equals(entry.getValue(), intToConvert))
                 return entry.getKey();
         }
         return '@'; // TBD

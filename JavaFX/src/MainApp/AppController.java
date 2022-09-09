@@ -144,6 +144,8 @@ public class AppController implements Initializable {
 
         // Update Statistics
         encryptDecryptController.getTa_statistics().setText(showHistoryAndStatistics());
+        dto_codeDescription = engine.createCodeDescriptionDTO();
+
     }
 
     public Character encryptDecryptController_keyboardBtnClick(Character btnChar) {
@@ -439,7 +441,7 @@ public class AppController implements Initializable {
 
     public void testToDeleteShayHomo() { // TODO: DELETEEEEEEEEEEEEEEEEEEEEEEEE
 
-        DecryptionManager DM = new DecryptionManager(engine.clone());
-        DM.createEasyTasks(engine.clone());
+        DecryptionManager DM = new DecryptionManager(engine.clone(),"german poland");
+        DM.createMediumTasks(engine.clone());
     }
 }

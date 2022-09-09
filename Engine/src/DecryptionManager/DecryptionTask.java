@@ -6,28 +6,47 @@ import javafx.util.Pair;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class DecryptionTask implements Runnable {
 
     private EngineCapabilities engine;
     private final int taskSize;
 
-    public DecryptionTask (EngineCapabilities engine, int taskSize) {
+    private BlockingQueue<String> result = new LinkedBlockingQueue<>(10000);
+    private String sentenceToCheck;
+
+    public DecryptionTask (EngineCapabilities engine, int taskSize,String sentenceToCheck) {
         this.engine = engine;
         this.taskSize = taskSize;
+        this.sentenceToCheck = sentenceToCheck;
     }
 
     @Override
     public void run() {
 
         printDescriptionFormat(engine.createCodeDescriptionDTO());
-
         for (int i = 0; i < taskSize; i++) {
 
             EngineCapabilities e = engine.clone();
+            if (checkInDictionary(e))
+                printDetailsThread();
             engine.rotateRotorByABC();
-            e.encodeDecodeMsg("Shay ben zinaaaaaaaaaaaaaa");
         }
+    }
+
+    private void printDetailsThread() {
+        System.out.println(Thread.currentThread().getId() + ": found some words at dictionary!");
+    }
+
+    private boolean checkInDictionary(EngineCapabilities engineClone){
+        String res = engineClone.encodeDecodeMsg(sentenceToCheck.toUpperCase());
+        if(engineClone.checkAtDictionary(res)){
+            result.offer(res);
+            return true;
+        }
+        return false;
     }
 
 
