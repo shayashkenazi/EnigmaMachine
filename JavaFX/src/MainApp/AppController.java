@@ -441,7 +441,7 @@ public class AppController implements Initializable {
 
     public void testToDeleteShayHomo() { // TODO: DELETEEEEEEEEEEEEEEEEEEEEEEEE
 
-        DecryptionManager DM = new DecryptionManager(engine.clone(),"german poland");
-        DM.createMediumTasks(engine.clone());
+        DecryptionManager DM = new DecryptionManager(engine.clone(),"R?!P!JNOJY !F");
+        DM.createEasyTasks(engine.clone());
     }
 }

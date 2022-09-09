@@ -40,6 +40,7 @@ public class Machine implements Serializable {
     public int getRotorsMapSize() {
         return rotorsMap.size();
     }
+    public Map<String,Reflector>  getReflectorsMap() { return reflectorsMap;}
     public Map<String, Rotor> getRotorsMap(){ return rotorsMap;}
     public int getRotorsInUseCount(){ return rotorsCount;}
     public String getAbc() { return abc;}

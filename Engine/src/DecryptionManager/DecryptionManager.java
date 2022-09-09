@@ -36,7 +36,7 @@ public class DecryptionManager {
 
         int size = machine.getRotorsStack().size();
         Reflector ref = (Reflector)machine.getRotorsStack().get(size - 1);
-        machine.getRotorsStack().set(size - 1,ref);
+        machine.getRotorsStack().set(size - 1,machine.getReflectorsMap().get(reflectorID));
     }
 
     //
