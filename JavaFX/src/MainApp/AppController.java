@@ -446,4 +446,15 @@ public class AppController implements Initializable {
         DecryptionManager DM = new DecryptionManager(engine.clone(),"R?!P!JNOJY !F");
         DM.createHardTasks(engine.clone());
     }
+
+    //-------------------------------------- BruteForce Component --------------------------------------
+
+    public void initializeTrieWithDictionary() {
+
+        Set<String> dictionary = engine.getMachine().getMyDictionary();
+
+        for (String word : dictionary) {
+            bruteForceController.getTrie().insert(word);
+        }
+    }
 }
