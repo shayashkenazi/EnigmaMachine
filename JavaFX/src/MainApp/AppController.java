@@ -334,6 +334,8 @@ public class AppController implements Initializable {
         String reflectorID = codeSetController.getReflector().getValue();
         List<Pair<Character, Character>> plugBoard = createPlugBoard();
         DTO_CodeDescription res = new DTO_CodeDescription(engine.createMachineInfoDTO().getABC(),rotorsIDList,startPositionList,reflectorID,plugBoard);
+        if (searchErrorInitInput(rotorsIDList,reflectorID,plugBoard))
+            return;
         engine.buildRotorsStack(res, true);
         isCodeChosen.set(true);
         sp_mainPage.setContent(rootNode);
@@ -344,6 +346,38 @@ public class AppController implements Initializable {
         encryptDecryptController.getTa_codeConfiguration().setText(codeConfigurationText);
         tf_machineConfiguration.setText(codeConfigurationText);
     }
+
+    private boolean searchErrorInitInput(List<Pair<String, Pair<Integer, Integer>>> rotorsIDList, String reflectorID, List<Pair<Character, Character>> plugBoard) {
+        if(!checkRotorsIDList(rotorsIDList))
+            return true;
+        if(reflectorID == null) {
+            JOptionPane.showMessageDialog(null, "you not enter reflector ID", "???", JOptionPane.ERROR_MESSAGE);
+            return true;
+        }
+
+        return false;
+
+    }
+    private boolean checkRotorsIDList(List<Pair<String, Pair<Integer, Integer>>> rotorsIDList) {
+        Set<String> set = new HashSet<>();
+        if(rotorsIDList.size() < engine.getMachine().getRotorsInUseCount())
+        {
+            JOptionPane.showMessageDialog(null,  "Error - You should select exactly " + dto_machineInfo.getNumOfUsedRotors()
+                    + " Rotors!", "???", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        for (Pair<String, Pair<Integer, Integer>> id : rotorsIDList) {
+            if (set.contains(id.getKey())) {
+                JOptionPane.showMessageDialog(null, "you enter duplicate rotor", "???", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            else
+                set.add(id.getKey());
+        }
+        return true;
+    }
+
+
 
     private List<Pair<Character, Character>> createPlugBoard() {
         DTO_MachineInfo dto_machineInfo = engine.createMachineInfoDTO();
