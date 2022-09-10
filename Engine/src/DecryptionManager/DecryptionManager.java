@@ -92,5 +92,37 @@ public class DecryptionManager {
             createEasyTasks(e.clone());
         }
     }
+    public void createHardTasks(EngineCapabilities engineCopy) {
+        String[] arrRotors = new String[engineCopy.getMachine().getRotorsInUseCount()];
+        for (int i = 0; i < engineCopy.getMachine().getRotorsInUseCount(); i++) {
+            arrRotors[i] = engineCopy.getMachine().getRotorsStack().get(i).getID();
+        }
+        permuteAndMedTask(arrRotors,0);
+    }
+    public void permuteAndMedTask(String[] RotorIdArray, int start) {
+        for(int i = start; i < RotorIdArray.length; i++){
+            String temp = RotorIdArray[start];
+            RotorIdArray[start] = RotorIdArray[i];
+            RotorIdArray[i] = temp;
+            permuteAndMedTask(RotorIdArray, start + 1);
+            RotorIdArray[i] = RotorIdArray[start];
+            RotorIdArray[start] = temp;
+        }
+        if (start == RotorIdArray.length - 1) {
+            EngineCapabilities e = updateSpecificRotorsOrder(RotorIdArray,copyEngine.clone());
+            createMediumTasks(e);
+        }
+    }
+    public EngineCapabilities updateSpecificRotorsOrder(String[] rotorsOrder,EngineCapabilities copyEngine) {
+        int index = 0;
+        for (String rotorId : rotorsOrder) {
+            copyEngine.getMachine().getRotorsStack().set(index++, copyEngine.getMachine().getRotorsMap().get(rotorId));
+        }
+        return copyEngine;
+    }
+
+    public void createImpossibleTasks(EngineCapabilities engineCopy) {
+
+    }
 }
 
