@@ -45,7 +45,15 @@ public class Main extends Application {
         ScrollPane root = fxmlLoader.load(url.openStream());
         AppController appController = fxmlLoader.getController();
 
+        // Size Bindings
+       //codeSetComponent.fitToWidthProperty().bind(root.fitToWidthProperty());
+        codeSetComponent.prefWidthProperty().bind(primaryStage.widthProperty());
+        codeSetComponent.prefViewportWidthProperty().bind(primaryStage.widthProperty());
+        codeSetComponent.prefWidthProperty().bind(root.widthProperty());
 
+        primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {
+            System.out.println(codeSetComponent.widthProperty().getValue());
+        });
 
         appController.setCodeSetController(codeSetController);
         appController.setEncryptDecryptController(encryptDecryptController);
@@ -59,6 +67,7 @@ public class Main extends Application {
         // Start Scene
         Scene scene = new Scene(root, 600, 400);
         primaryStage.setScene(scene);
+        primaryStage.setTitle("Enigma Machine");
         primaryStage.show();
     }
 

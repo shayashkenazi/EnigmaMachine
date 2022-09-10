@@ -10,28 +10,32 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <ScrollPane fx:id="sp_mainPage" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainApp.AppController">
    <content>
-      <VBox fx:id="vb_MainApp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
+      <VBox fx:id="vb_MainApp" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
          <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" text="The Enigma Machine" textAlignment="CENTER" />
-            <HBox prefHeight="55.0" prefWidth="667.0">
+            <Label alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" text="The Enigma Machine" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold Italic" size="18.0" />
+               </font></Label>
+            <HBox prefHeight="55.0" prefWidth="667.0" spacing="20.0">
                <children>
                   <Button fx:id="btn_loadFile" mnemonicParsing="false" onAction="#loadFileBtnClick" text="load file" />
                   <TextField fx:id="tf_xmlPath" prefHeight="25.0" prefWidth="502.0" />
                </children>
             </HBox>
-            <TabPane prefHeight="308.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
               <tabs>
                 <Tab fx:id="tab_machine" text="Machine">
                      <content>
                         <VBox prefHeight="200.0" prefWidth="100.0">
                            <children>
                               <TextArea fx:id="tf_machineDetails" prefHeight="115.0" prefWidth="600.0" />
-                              <HBox prefHeight="100.0" prefWidth="200.0">
+                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                                  <children>
-                                    <HBox fx:id="hb_setCode" prefHeight="100.0" prefWidth="352.0">
+                                    <HBox fx:id="hb_setCode" alignment="CENTER" prefHeight="100.0" prefWidth="352.0" spacing="40.0">
                                        <children>
                                           <Button fx:id="btn_RandomCode" mnemonicParsing="false" onAction="#randomCodeBtnClick" text="Random code" />
                                           <Button fx:id="btn_SetCode" mnemonicParsing="false" onAction="#setCodeBtnClick" text="Set code" />
