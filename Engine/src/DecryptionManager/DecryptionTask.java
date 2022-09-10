@@ -26,9 +26,9 @@ public class DecryptionTask implements Runnable {
     @Override
     public void run() {
 
-        printDescriptionFormat(engine.createCodeDescriptionDTO());
-        for (int i = 0; i < taskSize; i++) {
 
+        for (int i = 0; i < taskSize; i++) {
+            printDescriptionFormat(engine.createCodeDescriptionDTO());
             EngineCapabilities e = engine.clone(); // TODO: why do we need to clone ?
             if (checkInDictionary(e))
                 printDetailsThread();

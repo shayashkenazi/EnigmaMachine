@@ -190,6 +190,7 @@ public class Factory {
     private Set<String> createDictionary(){
 
         String words = cteEnigma.getCTEDecipher().getCTEDictionary().getWords();
+        words = words.toUpperCase();
         String[] allWords = words.split(" ");
 
         Set<String> set = new HashSet<>(Arrays.asList(allWords));
