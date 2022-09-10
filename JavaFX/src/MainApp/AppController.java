@@ -144,8 +144,7 @@ public class AppController implements Initializable {
 
         // Update Statistics
         encryptDecryptController.getTa_statistics().setText(showHistoryAndStatistics());
-        dto_codeDescription = engine.createCodeDescriptionDTO();
-
+        encryptDecryptController.getTa_codeConfiguration().setText(createDescriptionFormat(engine.createCodeDescriptionDTO()));
     }
 
     public Character encryptDecryptController_keyboardBtnClick(Character btnChar) {
@@ -182,7 +181,13 @@ public class AppController implements Initializable {
         return s;
     }
 
-    private String createDescriptionFormat(DTO_CodeDescription dto_codeDescription) {
+    public String createDescriptionFormat() {
+
+        DTO_CodeDescription dto_codeDescription = engine.createCodeDescriptionDTO();
+        return createDescriptionFormat(dto_codeDescription);
+    }
+
+    public String createDescriptionFormat(DTO_CodeDescription dto_codeDescription) {
         StringBuilder sb = new StringBuilder();
         sb.append("<");
         int index = 0;
@@ -196,7 +201,6 @@ public class AppController implements Initializable {
         sb.replace(sb.length() - 1,sb.length(),">"); // for the last ','
         Collections.reverse(dto_codeDescription.getStartingPositionList());
         sb.append("<").append(String.join(",", dto_codeDescription.getStartingPositionList().toString()
-                .replace(" ", "")
                 .replace(",", "")
                 .replace("[", "")
                 .replace("]", ""))).append(">");
@@ -223,42 +227,6 @@ public class AppController implements Initializable {
         }
         return true;
     }
-
-    public String createCodeConfigurationFormat() {
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("<");
-        int index = 0;
-
-        for(int i = dto_codeDescription.getRotorsInUseIDList().size() - 1; i >= 0; i--)
-        {
-            Pair<String , Pair<Integer,Integer>> rotorId = dto_codeDescription.getRotorsInUseIDList().get(i);
-            int distance = Math.floorMod(dto_codeDescription.getNotch(rotorId) - dto_codeDescription.getCurrent(rotorId), dto_codeDescription.getABC().length()) ; //'% dto_codeDescription.'
-            sb.append(rotorId.getKey()).append("(").append(distance).append("),"); // need to have curr index eac h rotor
-        }
-        sb.replace(sb.length() - 1,sb.length(),">"); // for the last ','
-        Collections.reverse(dto_codeDescription.getStartingPositionList());
-        sb.append("<").append(String.join(",", dto_codeDescription.getStartingPositionList().toString()
-                .replace(" ", "")
-                .replace(",", "")
-                .replace("[", "")
-                .replace("]", ""))).append(">");
-        sb.append("<").append(dto_codeDescription.getReflectorID()).append(">");
-        Collections.reverse(dto_codeDescription.getStartingPositionList());
-
-        if (dto_codeDescription.getPlugsInUseList().size() != 0) {
-            sb.append("<");
-            for (int i = 0; i < dto_codeDescription.getPlugsInUseList().size(); i++) {
-                Pair<Character, Character> pair = dto_codeDescription.getPlugsInUseList().get(i);
-                sb.append(pair.getKey()).append("|").append(pair.getValue()).append(",");
-            }
-            sb.replace(sb.length() - 1,sb.length(),">");// replace the last ',' with '>'
-        }
-
-        return sb.toString();
-    }
-
-
     //----------------------------------------- ?????????????? Component -----------------------------------------
 
     private void createRandomMachineSetting() {

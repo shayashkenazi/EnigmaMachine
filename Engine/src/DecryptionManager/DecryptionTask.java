@@ -29,7 +29,7 @@ public class DecryptionTask implements Runnable {
         printDescriptionFormat(engine.createCodeDescriptionDTO());
         for (int i = 0; i < taskSize; i++) {
 
-            EngineCapabilities e = engine.clone();
+            EngineCapabilities e = engine.clone(); // TODO: why do we need to clone ?
             if (checkInDictionary(e))
                 printDetailsThread();
             engine.rotateRotorByABC();

@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
 <ScrollPane xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="EncryptDecrypt.EncryptDecryptController">
    <content>
       <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="447.0" prefWidth="686.0" spacing="40.0">
@@ -48,6 +47,7 @@
                            <children>
                               <Button fx:id="btn_proccess" mnemonicParsing="false" onAction="#proccessBtnClick" text="Proccess" />
                               <Button fx:id="btn_clear" mnemonicParsing="false" onAction="#clearBtnClick" text="Clear" />
+                              <Button fx:id="btn_reset" mnemonicParsing="false" onAction="#resetBtnClick" text="Reset" />
                            </children>
                         </VBox>
                      </children>
