@@ -46,14 +46,6 @@ public class Main extends Application {
         AppController appController = fxmlLoader.getController();
 
         // Size Bindings
-       //codeSetComponent.fitToWidthProperty().bind(root.fitToWidthProperty());
-        codeSetComponent.prefWidthProperty().bind(primaryStage.widthProperty());
-        codeSetComponent.prefViewportWidthProperty().bind(primaryStage.widthProperty());
-        codeSetComponent.prefWidthProperty().bind(root.widthProperty());
-
-        primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {
-            System.out.println(codeSetComponent.widthProperty().getValue());
-        });
 
         appController.setCodeSetController(codeSetController);
         appController.setEncryptDecryptController(encryptDecryptController);

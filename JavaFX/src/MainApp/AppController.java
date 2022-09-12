@@ -89,6 +89,7 @@ public class AppController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         tab_EncryptDecrypt.setDisable(true);
+        tab_bruteForce.setDisable(true);
         btn_RandomCode.setDisable(true);
         btn_SetCode.setDisable(true);
 
@@ -110,6 +111,7 @@ public class AppController implements Initializable {
 
         isCodeChosen.addListener((obs, old, newValue) -> {
             tab_EncryptDecrypt.setDisable(!(newValue && isXmlLoaded.getValue()));
+            tab_bruteForce.setDisable(!(newValue && isXmlLoaded.getValue()));
             encryptDecryptController.initializeTab();
             if (newValue) {
                 dto_codeDescription = engine.createCodeDescriptionDTO();
@@ -117,6 +119,8 @@ public class AppController implements Initializable {
                 String codeConfigurationText = createDescriptionFormat(dto_codeDescription);
                 encryptDecryptController.getTa_codeConfiguration().setText(codeConfigurationText);
                 tf_machineConfiguration.setText(codeConfigurationText);
+
+                bruteForceController.initializeTabAfterCodeConfiguration();
             }
         });
     }
@@ -455,6 +459,20 @@ public class AppController implements Initializable {
 
         for (String word : dictionary) {
             bruteForceController.getTrie().insert(word);
+        }
+    }
+
+    public void initializeButtonsWithDictionary() {
+
+        Set<String> dictionary = engine.getMachine().getMyDictionary();
+
+        for (String word : dictionary) {
+
+            Button btn = new Button(word);
+            //btn.setVisible(false);
+            bruteForceController.getFp_dictionary().getChildren().add(btn); // Add buttons to Flow Pane
+            bruteForceController.getDictionaryMap().put(word, btn); // Add buttons to the dictionary
+
         }
     }
 }

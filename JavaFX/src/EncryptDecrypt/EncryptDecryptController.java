@@ -28,12 +28,10 @@ public class EncryptDecryptController implements SubController {
     private AppController appController;
     private Map<Character, Button> keyboardMap;
 
-    @FXML private Button btn_clear, btn_proccess, btn_done;
+    @FXML private Button btn_clear, btn_proccess, btn_done, btn_reset;
     @FXML private TextField tf_input, tf_output;
-    @FXML private TextArea ta_statistics;
-    @FXML private TextArea ta_codeConfiguration;
+    @FXML private TextArea ta_statistics, ta_codeConfiguration;
     @FXML private FlowPane fp_keyboard;
-    @FXML private Button btn_reset;
 
     //----------------------------------------- FXML Methods -----------------------------------------
     @FXML void clearBtnClick(ActionEvent event) {
