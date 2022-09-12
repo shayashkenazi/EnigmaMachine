@@ -48,7 +48,7 @@ public class EncryptDecryptController implements SubController {
     }
 
     @FXML void resetBtnClick(ActionEvent event) {
-
+        appController.resetBtnClick();
     }
     //------------------------------------------------------------------------------------------------
 
@@ -105,7 +105,7 @@ public class EncryptDecryptController implements SubController {
                 public void handle(ActionEvent event) {
                     Character resChar = appController.encryptDecryptController_keyboardBtnClick(btn.getText().charAt(0));
                     Button b = keyboardMap.get(resChar);
-                    // TODO: add animation
+                    // TODO: fix animation
                     makeButtonAnimation(b);
                     tf_input.appendText(String.valueOf(btn.getText().charAt(0)));
                     tf_output.appendText(String.valueOf(resChar));

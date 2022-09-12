@@ -121,6 +121,8 @@ public class AppController implements Initializable {
                 tf_machineConfiguration.setText(codeConfigurationText);
 
                 bruteForceController.initializeTabAfterCodeConfiguration();
+
+                initializeDictionaryListView();
             }
         });
     }
@@ -462,17 +464,19 @@ public class AppController implements Initializable {
         }
     }
 
-    public void initializeButtonsWithDictionary() {
+    public void initializeDictionaryListView() {
 
         Set<String> dictionary = engine.getMachine().getMyDictionary();
 
         for (String word : dictionary) {
-
-            Button btn = new Button(word);
-            //btn.setVisible(false);
-            bruteForceController.getFp_dictionary().getChildren().add(btn); // Add buttons to Flow Pane
-            bruteForceController.getDictionaryMap().put(word, btn); // Add buttons to the dictionary
-
+            bruteForceController.getLv_dictionary().getItems().add(word);
         }
     }
+
+    //-------------------------------------- General --------------------------------------
+
+    public void resetBtnClick() {
+        engine.getMachine().initializePositionsForRotorsInStack();
+    }
+
 }

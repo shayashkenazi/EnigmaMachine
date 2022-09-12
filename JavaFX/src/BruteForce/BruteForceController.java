@@ -4,56 +4,60 @@ import DataStructures.Trie;
 import Interfaces.SubController;
 import MainApp.AppController;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
 import javafx.scene.input.InputMethodEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 
+import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
-public class BruteForceController implements SubController {
+public class BruteForceController implements SubController, Initializable {
 
     private Trie trie = new Trie();
     private AppController appController;
     private Map<String, Button> dictionaryMap = new LinkedHashMap<>();
 
 
-    @FXML private Button btn_clear, btn_proccess, btn_reset;
-    @FXML private TextField tf_codeConfiguration, tf_input, tf_output, tf_searchBar;
-    @FXML private FlowPane fp_dictionary;
+    @FXML private Button btn_clear, btn_proccess, btn_reset, btn_start;
+    @FXML private TextField tf_codeConfiguration, tf_input, tf_output, tf_searchBar, tf_taskSize;
+    @FXML private ListView<String> lv_dictionary;
+    @FXML private ComboBox<String> cb_level;
+    @FXML private Slider s_agents;
 
 
     @FXML void clearBtnClick(ActionEvent event) {
-
+        tf_input.setText("");
+        tf_output.setText("");
     }
 
     @FXML void proccessBtnClick(ActionEvent event) {
-        tf_searchBar.setText("Where are you ???");
+
     }
 
     @FXML void resetBtnClick(ActionEvent event) {
-
+        appController.resetBtnClick();
     }
 
-    @FXML void searchBarTextChanged(InputMethodEvent event) {
+    @FXML void searchBarTextChanged(InputMethodEvent event) { // TODO: Delete - doesn't work
 
-        hideAllDictionaryButtons();
-
+        lv_dictionary.getItems().clear();
         List<String> allChildren = trie.returnAllChildren(tf_searchBar.getText());
 
         for (String childWord : allChildren) {
-            dictionaryMap.get(childWord).setVisible(true);
+            lv_dictionary.getItems().add(childWord);
         }
     }
 
-    private void hideAllDictionaryButtons() {
 
-        for (Map.Entry<String, Button> entry : dictionaryMap.entrySet()) {
-            entry.getValue().setVisible(false);
-        }
+    @FXML void startBtnClick(ActionEvent event) {
+
     }
 
     @Override
@@ -64,13 +68,36 @@ public class BruteForceController implements SubController {
     public void initializeTabAfterCodeConfiguration() {
 
         appController.initializeTrieWithDictionary();
-        appController.initializeButtonsWithDictionary();
-
     }
 
 
     public Trie getTrie() { return trie; }
-    public FlowPane getFp_dictionary() { return fp_dictionary; }
+    public ListView<String> getLv_dictionary() { return lv_dictionary; }
 
     public Map<String, Button> getDictionaryMap() { return dictionaryMap; }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) { // TODO: use Scene Builder
+
+        tf_searchBar.textProperty().addListener((observable, oldValue, newValue) -> {
+            lv_dictionary.getItems().clear();
+
+            List<String> allChildren = trie.returnAllChildren(newValue);
+
+            for (String childWord : allChildren) {
+                lv_dictionary.getItems().add(childWord);
+            }
+        });
+
+        lv_dictionary.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent click) {
+
+                if (click.getClickCount() == 2) {
+                    String itemString = lv_dictionary.getSelectionModel().getSelectedItem();
+                    tf_input.appendText(itemString);
+                }
+            }
+        });
+    }
 }
