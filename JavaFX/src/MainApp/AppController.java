@@ -96,8 +96,10 @@ public class AppController implements Initializable {
         isXmlLoaded.addListener((obs, old, newValue) -> {
             tf_machineDetails.setText(setMachineSettingsTextArea(newValue));
 
-            if (newValue)
+            if (newValue) {
                 dto_machineInfo = engine.createMachineInfoDTO();
+                initializeSliderMaxValue();
+            }
         });
 
         isXmlLoaded.addListener((obs, old, newValue) -> {
@@ -484,10 +486,16 @@ public class AppController implements Initializable {
         }
     }
 
+    public void initializeSliderMaxValue() {
+        int maxAgents = engine.getMachine().getNumOfMaxAgents();
+        bruteForceController.getS_agents().setMax(maxAgents);
+    }
+
     //-------------------------------------- General --------------------------------------
 
     public void resetBtnClick() {
         engine.getMachine().initializePositionsForRotorsInStack();
     }
+
 
 }

@@ -186,6 +186,7 @@ public class Factory {
     private String createAbc() {
         return cteEnigma.getCTEMachine().getABC().trim();
     }
+    private int createNumOfMaxAgents() { return cteEnigma.getCTEDecipher().getAgents(); }
 
     private Set<String> createDictionary(){
 
@@ -218,6 +219,7 @@ public class Factory {
         machine.setReflectors(createReflectors());
         machine.setMyDictionary(createDictionary());
         machine.setExcludeChars(createExcludeChars());
+        machine.setNumOfMaxAgents(createNumOfMaxAgents());
         return machine;
     }
 }

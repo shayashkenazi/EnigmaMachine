@@ -13,10 +13,10 @@ public class DecryptionManager {
 
     private final int capacity = 1000;
     private BlockingQueue<Runnable> tasks = new LinkedBlockingQueue<>(capacity);
-    private int numOfAgents;
     private EnigmaEngine copyEngine;
     private ThreadPoolExecutor poolMission;
     private String sentenceToCheck;
+    private Difficulty difficulty;
 
     public DecryptionManager(EnigmaEngine engine,String sentence){
         copyEngine = engine.clone();

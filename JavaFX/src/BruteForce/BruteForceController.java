@@ -1,6 +1,7 @@
 package BruteForce;
 
 import DataStructures.Trie;
+import DecryptionManager.Difficulty;
 import Interfaces.SubController;
 import MainApp.AppController;
 import javafx.event.ActionEvent;
@@ -28,7 +29,7 @@ public class BruteForceController implements SubController, Initializable {
     @FXML private Button btn_clear, btn_proccess, btn_reset, btn_start;
     @FXML private TextField tf_codeConfiguration, tf_input, tf_output, tf_searchBar, tf_taskSize;
     @FXML private ListView<String> lv_dictionary;
-    @FXML private ComboBox<String> cb_level;
+    @FXML private ComboBox<Difficulty> cb_level;
     @FXML private Slider s_agents;
 
 
@@ -70,12 +71,6 @@ public class BruteForceController implements SubController, Initializable {
         appController.initializeTrieWithDictionary();
     }
 
-
-    public Trie getTrie() { return trie; }
-    public ListView<String> getLv_dictionary() { return lv_dictionary; }
-
-    public Map<String, Button> getDictionaryMap() { return dictionaryMap; }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) { // TODO: use Scene Builder
 
@@ -99,5 +94,32 @@ public class BruteForceController implements SubController, Initializable {
                 }
             }
         });
+
+        // Initialize Slider
+        s_agents.valueProperty().addListener((observable, oldValue, newValue) -> {
+            s_agents.setValue(newValue.intValue());
+        });
+
+        // Initialize difficulty ComboBox
+        cb_level.getItems().add(Difficulty.EASY);
+        cb_level.getItems().add(Difficulty.MEDIUM);
+        cb_level.getItems().add(Difficulty.HARD);
+        cb_level.getItems().add(Difficulty.IMPOSSIBLE);
+
+        // Always keep Task Size Text-Field valid
+        tf_taskSize.textProperty().addListener((observable, oldValue, newValue) -> {
+
+            if (newValue.equals(""))
+                return;
+
+            if (!newValue.matches("^[0-9]*[1-9][0-9]*$")) // Invalid number
+                tf_taskSize.setText(oldValue);
+        });
+
     }
+
+    public Trie getTrie() { return trie; }
+    public ListView<String> getLv_dictionary() { return lv_dictionary; }
+    public Map<String, Button> getDictionaryMap() { return dictionaryMap; }
+    public Slider getS_agents() { return s_agents; }
 }

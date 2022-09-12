@@ -17,6 +17,8 @@ public class Machine implements Serializable {
     private PlugBoard plugBoard = new PlugBoard();
     private Set<String> myDictionary;
     private Set<Character> excludeChars;
+    private int numOfMaxAgents;
+
     /*@Override
     public Machine clone(){
         try {
@@ -33,6 +35,8 @@ public class Machine implements Serializable {
         }
     }*/
 
+    public void setNumOfMaxAgents(int maxAgents) { numOfMaxAgents = maxAgents;}
+    public int getNumOfMaxAgents() { return numOfMaxAgents; }
     public boolean isCharInACB(Character ch) {
         return abcMap.containsKey(ch);
     }
