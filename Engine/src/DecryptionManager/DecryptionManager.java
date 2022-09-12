@@ -1,21 +1,17 @@
 package DecryptionManager;
 
 
-import DTOs.DTO_CodeDescription;
 import EnginePackage.EngineCapabilities;
 import EnginePackage.EnigmaEngine;
 import Tools.Machine;
 import Tools.Reflector;
 import Tools.Rotor;
-import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.*;
 
 public class DecryptionManager {
 
-    private final int capacity = 10;
+    private final int capacity = 1000;
     private BlockingQueue<Runnable> tasks = new LinkedBlockingQueue<>(capacity);
     private int numOfAgents;
     private EnigmaEngine copyEngine;
@@ -122,7 +118,23 @@ public class DecryptionManager {
     }
 
     public void createImpossibleTasks(EngineCapabilities engineCopy) {
-
+        String[] arrRotorsID = new String[engineCopy.getMachine().getRotorsMapSize()];
+        for(int i = 1; i < engineCopy.getMachine().getRotorsMapSize() + 1; i++){
+            arrRotorsID[i-1] =  String.valueOf(i);
+        }
+        String[] res = new String[copyEngine.getMachine().getRotorsInUseCount()];
+        combinationsAndHardTask(arrRotorsID,copyEngine.getMachine().getRotorsInUseCount(),0,res);
+    }
+    private void combinationsAndHardTask(String[] arr, int len, int startPosition, String[] result){
+        if (len == 0){
+            EngineCapabilities e = updateSpecificRotorsOrder(result,copyEngine.clone());
+            createHardTasks(e);
+            return;
+        }
+        for (int i = startPosition; i <= arr.length-len; i++){
+            result[result.length - len] = arr[i];
+            combinationsAndHardTask(arr, len-1, i+1, result);
+        }
     }
 }
 

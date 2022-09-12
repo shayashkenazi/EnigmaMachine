@@ -57,7 +57,7 @@ public class BruteForceController implements SubController, Initializable {
 
 
     @FXML void startBtnClick(ActionEvent event) {
-
+        appController.testToDeleteShayHomo();
     }
 
     @Override

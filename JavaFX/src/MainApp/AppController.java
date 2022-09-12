@@ -460,8 +460,8 @@ public class AppController implements Initializable {
 
     public void testToDeleteShayHomo() { // TODO: DELETEEEEEEEEEEEEEEEEEEEEEEEE
 
-        DecryptionManager DM = new DecryptionManager(engine.clone(),"R?!P!JNOJY !F");
-        DM.createHardTasks(engine.clone());
+        DecryptionManager DM = new DecryptionManager(engine.clone(),"BUYUBKFTYQTER");
+        DM.createImpossibleTasks(engine.clone());
     }
 
     //-------------------------------------- BruteForce Component --------------------------------------
