@@ -336,6 +336,10 @@ public class AppController implements Initializable {
     public void codeSetController_setBtnClick() {
 
         List<Character> startPositionList = new ArrayList<>();
+        if(!checkAllChoose()) {
+            JOptionPane.showMessageDialog(null, "you not enter all details", "???", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         List<Pair<String ,Pair<Integer,Integer>>> rotorsIDList = createIDListForRotors(startPositionList);
         String reflectorID = codeSetController.getReflector().getValue();
         List<Pair<Character, Character>> plugBoard = createPlugBoard();
@@ -382,7 +386,14 @@ public class AppController implements Initializable {
         }
         return true;
     }
+    private boolean checkAllChoose(){
+        for(Pair<ChoiceBox<String>, ChoiceBox<Character>> pair :codeSetController.getRotorsChoiceBoxes()) {
+            if(pair.getValue().getValue() == null || pair.getKey().getValue() == null)
+                return false;
+        }
+        return true;
 
+    }
 
 
     private List<Pair<Character, Character>> createPlugBoard() {
