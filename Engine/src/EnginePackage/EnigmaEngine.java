@@ -142,16 +142,21 @@ public class EnigmaEngine implements EngineCapabilities,Serializable{
     }
 
     @Override
-    public String encodeDecodeMsg(String msgToEncodeDecode) {
-
+    public String encodeDecodeMsg(String msgToEncodeDecode,boolean withPlugBoard) {
+        String MsgAfterPlugBoard,resMsg;
         long start = System.nanoTime();
-        String MsgAfterPlugBoard = machine.buildStringWithPlugBoard(msgToEncodeDecode);
+        if(withPlugBoard)
+            MsgAfterPlugBoard = machine.buildStringWithPlugBoard(msgToEncodeDecode);
+        else
+            MsgAfterPlugBoard = msgToEncodeDecode;
         List<Integer> msgAsIntegerList = createIntegerListFromString(MsgAfterPlugBoard);
         List<Integer> encodedDecodedMsgAsIntegerList = encodeDecodeMsgAsIntegerList(msgAsIntegerList);
 
         String res = createStringFromIntegerList(encodedDecodedMsgAsIntegerList);
-        String resMsg = machine.buildStringWithPlugBoard(res);
-
+        if(withPlugBoard)
+            resMsg = machine.buildStringWithPlugBoard(res);
+        else
+            resMsg = res;
         long end = System.nanoTime();
         usageHistory.addMsgAndTimeToCurrentCodeSegment(msgToEncodeDecode, resMsg, end - start);
 

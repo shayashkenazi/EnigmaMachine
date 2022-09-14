@@ -220,7 +220,7 @@ public class ConsoleUI implements UIprogram{
             }
             else {
                 sb = new StringBuilder("The message after process is: ");
-                sb.append(engine.encodeDecodeMsg(msg));
+                sb.append(engine.encodeDecodeMsg(msg,true));
                 System.out.println(sb);
             }
         }

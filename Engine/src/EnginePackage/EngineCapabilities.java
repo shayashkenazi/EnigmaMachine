@@ -12,7 +12,7 @@ public interface EngineCapabilities {
     List<Integer> encodeDecodeMsgAsIntegerList(List<Integer> msgAsIntegerList);
     List<Integer> createIntegerListFromString(String msg);
     String createStringFromIntegerList(List<Integer> integerList);
-    String encodeDecodeMsg(String msgToEncodeDecode);
+    String encodeDecodeMsg(String msgToEncodeDecode,boolean withPlugBoard);
     void createEnigmaMachineFromXML(String xmlPath, boolean newMachine) throws Exception;
     Machine getMachine();
     DTO_MachineInfo createMachineInfoDTO();

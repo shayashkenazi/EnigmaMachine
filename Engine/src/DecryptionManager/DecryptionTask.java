@@ -41,7 +41,7 @@ public class DecryptionTask implements Runnable {
     }
 
     private boolean checkInDictionary(EngineCapabilities engineClone){
-        String res = engineClone.encodeDecodeMsg(sentenceToCheck.toUpperCase());
+        String res = engineClone.encodeDecodeMsg(sentenceToCheck.toUpperCase(),false);
         if(engineClone.checkAtDictionary(res)){
             result.offer(res);
             return true;

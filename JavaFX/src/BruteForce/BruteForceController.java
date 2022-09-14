@@ -11,7 +11,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.FlowPane;
 
 import java.net.URL;
 import java.util.LinkedHashMap;
@@ -39,7 +38,7 @@ public class BruteForceController implements SubController, Initializable {
     }
 
     @FXML void proccessBtnClick(ActionEvent event) {
-
+        appController.BruteForceController_proccessBtnClick();
     }
 
     @FXML void resetBtnClick(ActionEvent event) {
@@ -58,7 +57,7 @@ public class BruteForceController implements SubController, Initializable {
 
 
     @FXML void startBtnClick(ActionEvent event) {
-        appController.testToDeleteShayHomo();
+        appController.startBruteForce();
     }
 
     @Override
@@ -122,4 +121,16 @@ public class BruteForceController implements SubController, Initializable {
     public ListView<String> getLv_dictionary() { return lv_dictionary; }
     public Map<String, Button> getDictionaryMap() { return dictionaryMap; }
     public Slider getS_agents() { return s_agents; }
+
+    public TextField getTf_input() {
+        return tf_input;
+    }
+
+    public TextField getTf_output() {
+        return tf_output;
+    }
+
+    public TextField getTa_codeConfiguration() {
+        return tf_codeConfiguration;
+    }
 }

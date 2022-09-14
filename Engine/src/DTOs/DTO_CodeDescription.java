@@ -2,6 +2,7 @@ package DTOs;
 
 import javafx.util.Pair;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DTO_CodeDescription implements Serializable {
@@ -30,4 +31,5 @@ public class DTO_CodeDescription implements Serializable {
     public String getReflectorID() { return reflectorID; }
     public List<Pair<Character, Character>> getPlugsInUseList() { return plugsInUseList; }
     public String getABC() { return abc; }
+    public void resetPlugBoard(){ plugsInUseList = new ArrayList<>();}
 }

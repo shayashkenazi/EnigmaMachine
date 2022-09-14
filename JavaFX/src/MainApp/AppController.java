@@ -5,7 +5,6 @@ import CodeSet.CodeSetController;
 import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
 import DecryptionManager.DecryptionManager;
-import DecryptionManager.DecryptionTask;
 import EncryptDecrypt.EncryptDecryptController;
 import EnginePackage.EngineCapabilities;
 import EnginePackage.EnigmaEngine;
@@ -147,12 +146,34 @@ public class AppController implements Initializable {
             alert.show();
         }
         else {
-            encryptDecryptController.getTf_output().setText(engine.encodeDecodeMsg(msg));
+            encryptDecryptController.getTf_output().setText(engine.encodeDecodeMsg(msg,true));
         }
 
         // Update Statistics
         encryptDecryptController.getTa_statistics().setText(showHistoryAndStatistics());
         encryptDecryptController.getTa_codeConfiguration().setText(createDescriptionFormat(engine.createCodeDescriptionDTO()));
+    }
+    public void BruteForceController_proccessBtnClick() {
+
+        String msg = bruteForceController.getTf_input().getText();
+        if (msg.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Your message is Empty!");
+            alert.show();
+        }
+        else if (!isMsgAllFromAbc(msg)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Your message should contain only letters from the abc!");
+            alert.show();
+        }
+        else {
+            bruteForceController.getTf_output().setText(engine.encodeDecodeMsg(msg,false));
+        }
+
+        // Update Statistics
+        DTO_CodeDescription tmpDTO = engine.createCodeDescriptionDTO();
+        tmpDTO.resetPlugBoard();
+        bruteForceController.getTa_codeConfiguration().setText(createDescriptionFormat(tmpDTO));
     }
 
     public Character encryptDecryptController_keyboardBtnClick(Character btnChar) {
@@ -198,20 +219,23 @@ public class AppController implements Initializable {
     public String createDescriptionFormat(DTO_CodeDescription dto_codeDescription) {
         StringBuilder sb = new StringBuilder();
         sb.append("<");
-        int index = 0;
+        int index = dto_codeDescription.getRotorsInUseIDList().size() - 1;
 
         for(int i = dto_codeDescription.getRotorsInUseIDList().size() - 1; i >= 0; i--)
         {
             Pair<String ,Pair<Integer,Integer>> rotorId = dto_codeDescription.getRotorsInUseIDList().get(i);
-            int distance = Math.floorMod(dto_codeDescription.getNotch(rotorId) - dto_codeDescription.getCurrent(rotorId), dto_codeDescription.getABC().length()) ; //'% dto_codeDescription.'
-            sb.append(rotorId.getKey()).append("(").append(distance).append("),"); // need to have curr index eac h rotor
+            sb.append(rotorId.getKey()).append(","); // need to have curr index eac h rotor
         }
         sb.replace(sb.length() - 1,sb.length(),">"); // for the last ','
+        sb.append("<");
         Collections.reverse(dto_codeDescription.getStartingPositionList());
-        sb.append("<").append(String.join(",", dto_codeDescription.getStartingPositionList().toString()
-                .replace(",", "")
-                .replace("[", "")
-                .replace("]", ""))).append(">");
+        for(Character ch : dto_codeDescription.getStartingPositionList()){
+            Pair<String ,Pair<Integer,Integer>> rotorId = dto_codeDescription.getRotorsInUseIDList().get(index);
+            int distance = Math.floorMod(dto_codeDescription.getNotch(rotorId) - dto_codeDescription.getCurrent(rotorId), dto_codeDescription.getABC().length()) ; //'% dto_codeDescription.'
+            sb.append(ch).append("(").append(distance).append("),"); // need to have curr index eac h rotor
+            index--;
+        }
+        sb.replace(sb.length() - 1,sb.length(),">"); // for the last ','
         sb.append("<").append(dto_codeDescription.getReflectorID()).append(">");
         Collections.reverse(dto_codeDescription.getStartingPositionList());
 
@@ -460,8 +484,7 @@ public class AppController implements Initializable {
 
     public DTO_CodeDescription getDtoCodeDescription() { return dto_codeDescription; }
 
-    public void testToDeleteShayHomo() { // TODO: DELETEEEEEEEEEEEEEEEEEEEEEEEE
-
+    public void startBruteForce() { // TODO: DELETEEEEEEEEEEEEEEEEEEEEEEEE
         DecryptionManager DM = new DecryptionManager(engine.clone(),"BUYUBKFTYQTER");
         DM.createImpossibleTasks(engine.clone());
     }
@@ -495,6 +518,7 @@ public class AppController implements Initializable {
 
     public void resetBtnClick() {
         engine.getMachine().initializePositionsForRotorsInStack();
+        encryptDecryptController.getTa_codeConfiguration().setText(createDescriptionFormat(engine.createCodeDescriptionDTO()));
     }
 
 
