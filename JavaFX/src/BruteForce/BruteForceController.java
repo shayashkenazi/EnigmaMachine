@@ -4,6 +4,8 @@ import DataStructures.Trie;
 import DecryptionManager.Difficulty;
 import Interfaces.SubController;
 import MainApp.AppController;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -23,9 +25,10 @@ public class BruteForceController implements SubController, Initializable {
     private Trie trie = new Trie();
     private AppController appController;
     private Map<String, Button> dictionaryMap = new LinkedHashMap<>();
+    BooleanProperty isTaskSizeSelected, isDifficultySelected;
 
 
-    @FXML private Button btn_clear, btn_proccess, btn_reset, btn_start;
+    @FXML private Button btn_clear, btn_proccess, btn_reset, btn_start, btn_pause, btn_stop;
     @FXML private TextField tf_codeConfiguration, tf_input, tf_output, tf_searchBar, tf_taskSize;
     @FXML private ListView<String> lv_dictionary;
     @FXML private ComboBox<Difficulty> cb_level;
@@ -74,6 +77,11 @@ public class BruteForceController implements SubController, Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) { // TODO: use Scene Builder
 
+        isDifficultySelected = new SimpleBooleanProperty(false);
+        isTaskSizeSelected = new SimpleBooleanProperty(false);
+
+        btn_start.disableProperty().bind(isTaskSizeSelected.not().or(isDifficultySelected.not()));
+
         tf_searchBar.textProperty().addListener((observable, oldValue, newValue) -> {
             lv_dictionary.getItems().clear();
 
@@ -83,6 +91,8 @@ public class BruteForceController implements SubController, Initializable {
                 lv_dictionary.getItems().add(childWord);
             }
         });
+
+
 
         lv_dictionary.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -106,14 +116,22 @@ public class BruteForceController implements SubController, Initializable {
         cb_level.getItems().add(Difficulty.HARD);
         cb_level.getItems().add(Difficulty.IMPOSSIBLE);
 
+        cb_level.valueProperty().addListener(observable -> {
+            isDifficultySelected.set(cb_level.getValue() != null);
+        });
+
         // Always keep Task Size Text-Field valid
         tf_taskSize.textProperty().addListener((observable, oldValue, newValue) -> {
 
-            if (newValue.equals(""))
+            if (newValue.equals("")) {
+                isTaskSizeSelected.set(false);
                 return;
+            }
 
             if (!newValue.matches("^[0-9]*[1-9][0-9]*$")) // Invalid number
                 tf_taskSize.setText(oldValue);
+            else
+                isTaskSizeSelected.set(true);
         });
 
     }
