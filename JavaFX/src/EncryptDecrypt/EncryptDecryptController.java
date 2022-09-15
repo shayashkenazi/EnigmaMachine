@@ -70,17 +70,11 @@ public class EncryptDecryptController implements SubController {
         tf_output.textProperty().addListener((observable, oldValue, newValue) -> {
             btn_done.setDisable(newValue.equals(""));
         });
-        /*btn_proccess.setOnAction(event -> {
-            ta_codeConfiguration.setText(appController.createCodeConfigurationFormat());
-        });*/
-        // Code Configuration
-/*        btn_proccess.setOnAction(event -> {
-            ta_codeConfiguration.setText(appController.createCodeConfigurationFormat());
-        });
 
-        btn_done.setOnAction(event -> {
-            ta_codeConfiguration.setText(appController.createCodeConfigurationFormat());
-        });*/
+        // Input
+        tf_input.textProperty().addListener((observable, oldValue, newValue) -> {
+            tf_input.setText(newValue.toUpperCase());
+        });
     }
 
     @Override
