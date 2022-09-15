@@ -34,6 +34,7 @@ public class BruteForceController implements SubController, Initializable {
     @FXML private ComboBox<Difficulty> cb_level;
     @FXML private Slider s_agents;
     @FXML private TextArea ta_candidates;
+    @FXML private ProgressBar pb_progress;
 
 
     @FXML void clearBtnClick(ActionEvent event) {
@@ -61,6 +62,7 @@ public class BruteForceController implements SubController, Initializable {
 
 
     @FXML void startBtnClick(ActionEvent event) {
+        ta_candidates.clear();
         appController.startBruteForce();
     }
 
@@ -92,7 +94,10 @@ public class BruteForceController implements SubController, Initializable {
             }
         });
 
-
+        // Input
+        tf_input.textProperty().addListener((observable, oldValue, newValue) -> {
+            tf_input.setText(newValue.toUpperCase());
+        });
 
         lv_dictionary.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -165,4 +170,6 @@ public class BruteForceController implements SubController, Initializable {
     public int getTaskSize() {
         return Integer.parseInt(tf_taskSize.getText());
     }
+
+    public ProgressBar getPb_progress() { return pb_progress; }
 }
