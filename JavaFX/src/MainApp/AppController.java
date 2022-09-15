@@ -3,6 +3,7 @@ package MainApp;
 import BruteForce.BruteForceController;
 import CodeSet.CodeSetController;
 import DTOs.DTO_CodeDescription;
+import DTOs.DTO_ConsumerPrinter;
 import DTOs.DTO_MachineInfo;
 import DecryptionManager.DecryptionManager;
 import DecryptionManager.Difficulty;
@@ -490,14 +491,16 @@ public class AppController implements Initializable {
 
     public void startBruteForce() { // TODO: DELETEEEEEEEEEEEEEEEEEEEEEEEE
 
-        Consumer<String> MsgConsumer = getMsgConsumer();
+        Thread td1DM;
+        Consumer<DTO_ConsumerPrinter> MsgConsumer = getMsgConsumer();
         DecryptionManager DM = new DecryptionManager(engine.clone(),"XXY!IPOEZMCBU",3,
                 Difficulty.EASY ,1000,MsgConsumer,bruteForceController.getTa_candidates());
         DM.createEasyTasks(engine.clone());
     }
-    private Consumer<String> getMsgConsumer() {
+    private Consumer<DTO_ConsumerPrinter> getMsgConsumer() {
         return cf -> {
-            bruteForceController.getTa_candidates().setText(cf.toString());
+            String configuration = createDescriptionFormat(cf.getDto_codeDescription());
+            bruteForceController.getTa_candidates().appendText(configuration + cf.getMsgResult() + cf.getThreadId());
         };
     }
 

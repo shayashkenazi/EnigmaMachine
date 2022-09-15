@@ -1,6 +1,7 @@
 package DecryptionManager;
 
 
+import DTOs.DTO_ConsumerPrinter;
 import EnginePackage.EngineCapabilities;
 import EnginePackage.EnigmaEngine;
 import Tools.Machine;
@@ -11,6 +12,7 @@ import javafx.scene.control.TextField;
 
 import java.util.concurrent.*;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class DecryptionManager {
 
@@ -24,11 +26,11 @@ public class DecryptionManager {
     private Difficulty difficulty;
     private int numberOfAgents;
     private int taskSize;
-    private Consumer<String> MsgConsumer;
+    private Consumer<DTO_ConsumerPrinter> MsgConsumer;
     private TextArea ta_candidates;
 
     public DecryptionManager(EnigmaEngine engine, String sentence, int numOfAgents,
-                             Difficulty difficulty, int taskSize, Consumer<String> msgConsumer, TextArea ta_candidates){
+                             Difficulty difficulty, int taskSize, Consumer<DTO_ConsumerPrinter> msgConsumer, TextArea ta_candidates){
         copyEngine = engine;
         sentenceToCheck = sentence;
         this.difficulty = difficulty;
@@ -72,13 +74,13 @@ public class DecryptionManager {
             // Full Tasks
             for (int i = 0; i < sizeOfFullTasks; i++) {
 
-                DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), taskSize, sentenceToCheck, results,ta_candidates);
+                DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), taskSize,MsgConsumer, sentenceToCheck, results,ta_candidates);
                 tasks.put(decryptionTask);
                 engineCopy.moveRotorsToPosition(taskSize);
             }
 
             // Last little task
-            DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), lastTaskSize,sentenceToCheck, results,ta_candidates);
+            DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), lastTaskSize,MsgConsumer,sentenceToCheck, results,ta_candidates);
             tasks.put(decryptionTask);
         /*try {
             tasks.put(decryptionTask);
