@@ -14,7 +14,7 @@ import java.util.concurrent.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class DecryptionManager {
+public class DecryptionManager implements Runnable{
 
     private final int capacity = 1000;
     private BlockingQueue<Runnable> tasks = new LinkedBlockingQueue<>(capacity);
@@ -27,10 +27,9 @@ public class DecryptionManager {
     private int numberOfAgents;
     private int taskSize;
     private Consumer<DTO_ConsumerPrinter> MsgConsumer;
-    private TextArea ta_candidates;
 
     public DecryptionManager(EnigmaEngine engine, String sentence, int numOfAgents,
-                             Difficulty difficulty, int taskSize, Consumer<DTO_ConsumerPrinter> msgConsumer, TextArea ta_candidates){
+                             Difficulty difficulty, int taskSize, Consumer<DTO_ConsumerPrinter> msgConsumer){
         copyEngine = engine;
         sentenceToCheck = sentence;
         this.difficulty = difficulty;
@@ -38,7 +37,8 @@ public class DecryptionManager {
         this.taskSize = taskSize;
         poolMission = new ThreadPoolExecutor(numberOfAgents,numberOfAgents,5,TimeUnit.MILLISECONDS, tasks);
         poolResult = new ThreadPoolExecutor(1, 1, 5, TimeUnit.MILLISECONDS, results);
-        this.ta_candidates = ta_candidates;
+        MsgConsumer = msgConsumer;
+
         // TODO: what is keepAlive?
     }
 
@@ -74,13 +74,13 @@ public class DecryptionManager {
             // Full Tasks
             for (int i = 0; i < sizeOfFullTasks; i++) {
 
-                DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), taskSize,MsgConsumer, sentenceToCheck, results,ta_candidates);
+                DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), taskSize,MsgConsumer, sentenceToCheck, results);
                 tasks.put(decryptionTask);
                 engineCopy.moveRotorsToPosition(taskSize);
             }
 
             // Last little task
-            DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), lastTaskSize,MsgConsumer,sentenceToCheck, results,ta_candidates);
+            DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), lastTaskSize,MsgConsumer,sentenceToCheck, results);
             tasks.put(decryptionTask);
         /*try {
             tasks.put(decryptionTask);
@@ -151,6 +151,24 @@ public class DecryptionManager {
         for (int i = startPosition; i <= arr.length-len; i++){
             result[result.length - len] = arr[i];
             combinationsAndHardTask(arr, len-1, i+1, result);
+        }
+    }
+
+    @Override
+    public void run() {
+        switch (difficulty){
+            case EASY:
+                createEasyTasks(copyEngine);
+                break;
+            case MEDIUM:
+                createMediumTasks(copyEngine);
+                break;
+            case HARD:
+                createHardTasks(copyEngine);
+                break;
+            case IMPOSSIBLE:
+                createImpossibleTasks(copyEngine);
+                break;
         }
     }
 }

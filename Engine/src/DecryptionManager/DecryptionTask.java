@@ -19,19 +19,16 @@ public class DecryptionTask implements Runnable {
 
     private BlockingQueue<Runnable> results;
     private String sentenceToCheck;
-    private TextArea ta_candidates;
     private Consumer<DTO_ConsumerPrinter> msgConsumer;
 
 
     public DecryptionTask(EngineCapabilities engine, int taskSize, Consumer<DTO_ConsumerPrinter> msgConsumer,
-                          String sentenceToCheck, BlockingQueue<Runnable> results, TextArea ta_candidates) {
+                          String sentenceToCheck, BlockingQueue<Runnable> results) {
         this.engine = engine;
         this.taskSize = taskSize;
         this.results = results;
         this.sentenceToCheck = sentenceToCheck;
-        this.ta_candidates = ta_candidates;
         this.msgConsumer = msgConsumer;
-
 
     }
 
@@ -46,13 +43,12 @@ public class DecryptionTask implements Runnable {
 
     private void printDetailsThread() {
         System.out.println(Thread.currentThread().getId() + ": found some words at dictionary!");
-
     }
-
     private boolean checkInDictionary(EngineCapabilities engineClone) {
+        DTO_CodeDescription tmpDTO = engineClone.createCodeDescriptionDTO();
         String res = engineClone.encodeDecodeMsg(sentenceToCheck.toUpperCase(), false);
         if (engineClone.checkAtDictionary(res)) {
-            DTO_ConsumerPrinter dto_consumerPrinter = new DTO_ConsumerPrinter(engineClone.createCodeDescriptionDTO(),res,Thread.currentThread().getId());
+            DTO_ConsumerPrinter dto_consumerPrinter = new DTO_ConsumerPrinter(tmpDTO,res,Thread.currentThread().getId());
             msgConsumer.accept(dto_consumerPrinter);
             return true;
         }

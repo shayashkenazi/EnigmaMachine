@@ -156,4 +156,13 @@ public class BruteForceController implements SubController, Initializable {
     public TextArea getTa_candidates() {
         return ta_candidates;
     }
+    public int getNumOfAgents(){
+        return (int)s_agents.getValue();
+    }
+    public Difficulty getDifficulty(){
+        return cb_level.getValue();
+    }
+    public int getTaskSize() {
+        return Integer.parseInt(tf_taskSize.getText());
+    }
 }

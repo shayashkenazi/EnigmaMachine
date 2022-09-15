@@ -489,13 +489,14 @@ public class AppController implements Initializable {
 
     public DTO_CodeDescription getDtoCodeDescription() { return dto_codeDescription; }
 
-    public void startBruteForce() { // TODO: DELETEEEEEEEEEEEEEEEEEEEEEEEE
+    public void startBruteForce() {
 
-        Thread td1DM;
         Consumer<DTO_ConsumerPrinter> MsgConsumer = getMsgConsumer();
-        DecryptionManager DM = new DecryptionManager(engine.clone(),"XXY!IPOEZMCBU",3,
-                Difficulty.EASY ,1000,MsgConsumer,bruteForceController.getTa_candidates());
-        DM.createEasyTasks(engine.clone());
+        DecryptionManager DM = new DecryptionManager(engine.clone(),bruteForceController.getTf_output().getText(),bruteForceController.getNumOfAgents(),
+                bruteForceController.getDifficulty(),bruteForceController.getTaskSize(),MsgConsumer);
+
+        Thread threadDM = new Thread(DM);
+        threadDM.start();
     }
     private Consumer<DTO_ConsumerPrinter> getMsgConsumer() {
         return cf -> {
