@@ -7,10 +7,14 @@ import EnginePackage.EnigmaEngine;
 import Tools.Machine;
 import Tools.Reflector;
 import Tools.Rotor;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
+import javax.jws.Oneway;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -20,26 +24,47 @@ public class DecryptionManager implements Runnable{
     private BlockingQueue<Runnable> tasks = new LinkedBlockingQueue<>(capacity);
     private BlockingQueue<Runnable> results = new LinkedBlockingQueue<>(capacity);
     private EnigmaEngine copyEngine;
-    private ThreadPoolExecutor poolMission;
+    //private ThreadPoolExecutor poolMission;
+    private CustomThreadPoolExecutor poolMission;
     private ThreadPoolExecutor poolResult;
     private String sentenceToCheck;
     private Difficulty difficulty;
     private int numberOfAgents;
     private int taskSize;
     private Consumer<DTO_ConsumerPrinter> MsgConsumer;
+    private IntegerProperty numberOfDoneTasks;
+    private BooleanProperty isDMWorking;
 
-    public DecryptionManager(EnigmaEngine engine, String sentence, int numOfAgents,
-                             Difficulty difficulty, int taskSize, Consumer<DTO_ConsumerPrinter> msgConsumer){
+    public DecryptionManager(EnigmaEngine engine, String sentence, int numOfAgents, Difficulty difficulty,
+                             int taskSize, Consumer<DTO_ConsumerPrinter> msgConsumer,
+                             IntegerProperty numberOfDoneTasks, BooleanProperty isDMWorking){
         copyEngine = engine;
         sentenceToCheck = sentence;
         this.difficulty = difficulty;
         numberOfAgents = numOfAgents;
         this.taskSize = taskSize;
-        poolMission = new ThreadPoolExecutor(numberOfAgents,numberOfAgents,5,TimeUnit.MILLISECONDS, tasks);
+        //poolMission = new ThreadPoolExecutor(numberOfAgents,numberOfAgents,5,TimeUnit.MILLISECONDS, tasks);
+        poolMission = new CustomThreadPoolExecutor(numOfAgents, numOfAgents, 5, TimeUnit.MILLISECONDS, tasks);
         poolResult = new ThreadPoolExecutor(1, 1, 5, TimeUnit.MILLISECONDS, results);
         MsgConsumer = msgConsumer;
+        this.numberOfDoneTasks = numberOfDoneTasks;
+        this.isDMWorking = isDMWorking;
 
         // TODO: what is keepAlive?
+
+        poolMission.beforeExecute(Thread.currentThread(), new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        });
+
+        poolMission.afterExecute(new Runnable() {
+            @Override
+            public void run() {
+                isDMWorking.set(false);
+            }
+        }, null);
     }
 
     private void runTasks(){
@@ -55,8 +80,6 @@ public class DecryptionManager implements Runnable{
 
     //
     public void createEasyTasks(EngineCapabilities engineCopy) {
-
-        int taskSize = 7; // TODO: take this parameter from the fxml property ?? No
 
         // Initialize all Rotors to start index position 0,0,0...
         for (int i = 0; i < engineCopy.getMachine().getRotorsInUseCount(); i++) {
@@ -74,23 +97,17 @@ public class DecryptionManager implements Runnable{
             // Full Tasks
             for (int i = 0; i < sizeOfFullTasks; i++) {
 
-                DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), taskSize,MsgConsumer, sentenceToCheck, results);
+                DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), taskSize, MsgConsumer,
+                                                                   sentenceToCheck, results, numberOfDoneTasks);
                 tasks.put(decryptionTask);
                 engineCopy.moveRotorsToPosition(taskSize);
             }
 
             // Last little task
-            DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), lastTaskSize,MsgConsumer,sentenceToCheck, results);
-            tasks.put(decryptionTask);
-        /*try {
+            DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), lastTaskSize, MsgConsumer,
+                                                               sentenceToCheck, results, numberOfDoneTasks);
             tasks.put(decryptionTask);
         }
-        catch (InterruptedException e){
-            System.out.println(e.getMessage());
-        }*/
-
-        }
-
         catch (Exception ee){
         System.out.println(ee.getMessage());
         }
@@ -142,6 +159,7 @@ public class DecryptionManager implements Runnable{
         String[] res = new String[copyEngine.getMachine().getRotorsInUseCount()];
         combinationsAndHardTask(arrRotorsID,copyEngine.getMachine().getRotorsInUseCount(),0,res);
     }
+
     private void combinationsAndHardTask(String[] arr, int len, int startPosition, String[] result){
         if (len == 0){
             EngineCapabilities e = updateSpecificRotorsOrder(result,copyEngine.clone());
@@ -156,6 +174,7 @@ public class DecryptionManager implements Runnable{
 
     @Override
     public void run() {
+
         switch (difficulty){
             case EASY:
                 createEasyTasks(copyEngine);
@@ -170,6 +189,8 @@ public class DecryptionManager implements Runnable{
                 createImpossibleTasks(copyEngine);
                 break;
         }
+
+
     }
 }
 

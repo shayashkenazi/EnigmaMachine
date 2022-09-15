@@ -10,8 +10,11 @@ import DecryptionManager.Difficulty;
 import EncryptDecrypt.EncryptDecryptController;
 import EnginePackage.EngineCapabilities;
 import EnginePackage.EnigmaEngine;
+import Tools.Machine;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -28,6 +31,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 
@@ -42,6 +46,9 @@ public class AppController implements Initializable {
     private Node rootNode;
     private DTO_MachineInfo dto_machineInfo;
     private DTO_CodeDescription dto_codeDescription;
+    private IntegerProperty allTaskSize = new SimpleIntegerProperty(0);
+    //private AtomicInteger numberOfTasksDone = new AtomicInteger(0);
+    private IntegerProperty numberOfTasksDone = new SimpleIntegerProperty(0);
 
     @FXML private ScrollPane sp_mainPage;
     @FXML private VBox vb_MainApp;
@@ -131,6 +138,7 @@ public class AppController implements Initializable {
                 initializeDictionaryListView();
             }
         });
+
     }
 
     //----------------------------------------- EncryptDecrypt Component -----------------------------------------
@@ -489,21 +497,7 @@ public class AppController implements Initializable {
 
     public DTO_CodeDescription getDtoCodeDescription() { return dto_codeDescription; }
 
-    public void startBruteForce() {
 
-        Consumer<DTO_ConsumerPrinter> MsgConsumer = getMsgConsumer();
-        DecryptionManager DM = new DecryptionManager(engine.clone(),bruteForceController.getTf_output().getText(),bruteForceController.getNumOfAgents(),
-                bruteForceController.getDifficulty(),bruteForceController.getTaskSize(),MsgConsumer);
-
-        Thread threadDM = new Thread(DM);
-        threadDM.start();
-    }
-    private Consumer<DTO_ConsumerPrinter> getMsgConsumer() {
-        return cf -> {
-            String configuration = createDescriptionFormat(cf.getDto_codeDescription());
-            bruteForceController.getTa_candidates().appendText(configuration + cf.getMsgResult() + cf.getThreadId());
-        };
-    }
 
     //-------------------------------------- BruteForce Component --------------------------------------
 
@@ -530,6 +524,50 @@ public class AppController implements Initializable {
         bruteForceController.getS_agents().setMax(maxAgents);
     }
 
+    public void startBruteForce() {
+
+        Consumer<DTO_ConsumerPrinter> MsgConsumer = getMsgConsumer();
+        DecryptionManager DM = new DecryptionManager(engine.clone(), bruteForceController.getTf_output().getText(),
+                bruteForceController.getNumOfAgents(), bruteForceController.getDifficulty(),
+                bruteForceController.getTaskSize(), MsgConsumer, numberOfTasksDone,
+                bruteForceController.getIsDMWorking());
+
+        setAllTaskSize(bruteForceController.getDifficulty());
+
+        Thread threadDM = new Thread(DM);
+        threadDM.start();
+    }
+
+    private Consumer<DTO_ConsumerPrinter> getMsgConsumer() {
+        return cf -> {
+            String configuration = createDescriptionFormat(cf.getDto_codeDescription());
+            bruteForceController.getTa_candidates().appendText(configuration + cf.getMsgResult() + cf.getThreadId());
+        };
+    }
+
+    private void setAllTaskSize(Difficulty difficulty) {
+        Machine machine = engine.getMachine();
+        int easy = (int) Math.pow(machine.getABCsize(), machine.getRotorsInUseCount());
+        int medium = easy * machine.getReflectorsMapSize();
+        int hard = medium * factorial(machine.getRotorsInUseCount());
+        int impossible = Integer.MAX_VALUE; // TODO: FIX !!!!!!!!!!1
+
+        switch (difficulty){
+            case EASY:
+                allTaskSize.setValue(easy);
+                break;
+            case MEDIUM:
+                allTaskSize.setValue(medium);
+                break;
+            case HARD:
+                allTaskSize.setValue(hard);
+                break;
+            case IMPOSSIBLE:
+                allTaskSize.setValue(impossible);
+                break;
+        }
+    }
+
     //-------------------------------------- General --------------------------------------
 
     public void resetBtnClick() {
@@ -537,5 +575,14 @@ public class AppController implements Initializable {
         encryptDecryptController.getTa_codeConfiguration().setText(createDescriptionFormat(engine.createCodeDescriptionDTO()));
     }
 
+    public int factorial (int x) {
+        int res = 1;
 
+        for (int i = 1; i <= x; i++)
+            res *= i;
+        return res;
+    }
+
+    public IntegerProperty getNumberOfTasksDone() { return numberOfTasksDone; }
+    public IntegerProperty getAllTaskSize() { return allTaskSize; }
 }

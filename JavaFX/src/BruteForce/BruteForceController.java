@@ -4,6 +4,7 @@ import DataStructures.Trie;
 import DecryptionManager.Difficulty;
 import Interfaces.SubController;
 import MainApp.AppController;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
@@ -14,6 +15,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
 
+import javax.naming.Binding;
 import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,7 +27,7 @@ public class BruteForceController implements SubController, Initializable {
     private Trie trie = new Trie();
     private AppController appController;
     private Map<String, Button> dictionaryMap = new LinkedHashMap<>();
-    BooleanProperty isTaskSizeSelected, isDifficultySelected;
+    BooleanProperty isTaskSizeSelected, isDifficultySelected, isDMWorking;
 
 
     @FXML private Button btn_clear, btn_proccess, btn_reset, btn_start, btn_pause, btn_stop;
@@ -64,6 +66,7 @@ public class BruteForceController implements SubController, Initializable {
     @FXML void startBtnClick(ActionEvent event) {
         ta_candidates.clear();
         appController.startBruteForce();
+        isDMWorking.set(true);
     }
 
     @Override
@@ -81,6 +84,7 @@ public class BruteForceController implements SubController, Initializable {
 
         isDifficultySelected = new SimpleBooleanProperty(false);
         isTaskSizeSelected = new SimpleBooleanProperty(false);
+        isDMWorking = new SimpleBooleanProperty(false);
 
         btn_start.disableProperty().bind(isTaskSizeSelected.not().or(isDifficultySelected.not()));
 
@@ -139,6 +143,16 @@ public class BruteForceController implements SubController, Initializable {
                 isTaskSizeSelected.set(true);
         });
 
+        isDMWorking.addListener((observable, oldValue, newValue) -> {
+
+            if (newValue) {
+                pb_progress.progressProperty().bind(Bindings.divide(appController.getNumberOfTasksDone(),
+                        appController.getAllTaskSize()));
+            }
+            else {
+                pb_progress.progressProperty().unbind();
+            }
+        });
     }
 
     public Trie getTrie() { return trie; }
@@ -172,4 +186,6 @@ public class BruteForceController implements SubController, Initializable {
     }
 
     public ProgressBar getPb_progress() { return pb_progress; }
+
+    public BooleanProperty getIsDMWorking() { return isDMWorking; }
 }
