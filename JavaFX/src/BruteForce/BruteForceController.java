@@ -30,6 +30,7 @@ public class BruteForceController implements SubController, Initializable {
     @FXML private ListView<String> lv_dictionary;
     @FXML private ComboBox<Difficulty> cb_level;
     @FXML private Slider s_agents;
+    @FXML private TextArea ta_candidates;
 
 
     @FXML void clearBtnClick(ActionEvent event) {
@@ -132,5 +133,9 @@ public class BruteForceController implements SubController, Initializable {
 
     public TextField getTa_codeConfiguration() {
         return tf_codeConfiguration;
+    }
+
+    public TextArea getTa_candidates() {
+        return ta_candidates;
     }
 }

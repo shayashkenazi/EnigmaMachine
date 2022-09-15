@@ -6,7 +6,8 @@ import EnginePackage.EnigmaEngine;
 import Tools.Machine;
 import Tools.Reflector;
 import Tools.Rotor;
-import sun.security.x509.PrivateKeyUsageExtension;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 
 import java.util.concurrent.*;
 import java.util.function.Consumer;
@@ -18,20 +19,24 @@ public class DecryptionManager {
     private BlockingQueue<Runnable> results = new LinkedBlockingQueue<>(capacity);
     private EnigmaEngine copyEngine;
     private ThreadPoolExecutor poolMission;
-    private ThreadPoolExecutor consumer;
+    private ThreadPoolExecutor poolResult;
     private String sentenceToCheck;
     private Difficulty difficulty;
     private int numberOfAgents;
     private int taskSize;
+    private Consumer<String> MsgConsumer;
+    private TextArea ta_candidates;
 
-    public DecryptionManager(EnigmaEngine engine, String sentence, int numOfAgents, Difficulty difficulty, int taskSize){
+    public DecryptionManager(EnigmaEngine engine, String sentence, int numOfAgents,
+                             Difficulty difficulty, int taskSize, Consumer<String> msgConsumer, TextArea ta_candidates){
         copyEngine = engine;
         sentenceToCheck = sentence;
         this.difficulty = difficulty;
         numberOfAgents = numOfAgents;
         this.taskSize = taskSize;
         poolMission = new ThreadPoolExecutor(numberOfAgents,numberOfAgents,5,TimeUnit.MILLISECONDS, tasks);
-        consumer = new ThreadPoolExecutor(1, 1, 5, TimeUnit.MILLISECONDS, results);
+        poolResult = new ThreadPoolExecutor(1, 1, 5, TimeUnit.MILLISECONDS, results);
+        this.ta_candidates = ta_candidates;
         // TODO: what is keepAlive?
     }
 
@@ -62,17 +67,18 @@ public class DecryptionManager {
         int sizeOfFullTasks = (int) (sizeOfAllTasks / taskSize);
         int lastTaskSize = (int) (sizeOfAllTasks % taskSize);
         poolMission.prestartAllCoreThreads();
+        poolResult.prestartAllCoreThreads();
         try {
             // Full Tasks
             for (int i = 0; i < sizeOfFullTasks; i++) {
 
-                DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), taskSize, sentenceToCheck, results);
+                DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), taskSize, sentenceToCheck, results,ta_candidates);
                 tasks.put(decryptionTask);
                 engineCopy.moveRotorsToPosition(taskSize);
             }
 
             // Last little task
-            DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), lastTaskSize,sentenceToCheck, results);
+            DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), lastTaskSize,sentenceToCheck, results,ta_candidates);
             tasks.put(decryptionTask);
         /*try {
             tasks.put(decryptionTask);
@@ -80,15 +86,13 @@ public class DecryptionManager {
         catch (InterruptedException e){
             System.out.println(e.getMessage());
         }*/
+
         }
+
         catch (Exception ee){
         System.out.println(ee.getMessage());
         }
 
-
-        for (Runnable task : tasks){ // TODO: DELETEEEEEEEEEEEEEEE
-            task.run();
-        }
     }
 
     public void createMediumTasks(EngineCapabilities engineCopy) {

@@ -5,6 +5,7 @@ import CodeSet.CodeSetController;
 import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
 import DecryptionManager.DecryptionManager;
+import DecryptionManager.Difficulty;
 import EncryptDecrypt.EncryptDecryptController;
 import EnginePackage.EngineCapabilities;
 import EnginePackage.EnigmaEngine;
@@ -19,12 +20,15 @@ import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.util.Pair;
 
+
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.function.Consumer;
+
 
 public class AppController implements Initializable {
 
@@ -485,8 +489,16 @@ public class AppController implements Initializable {
     public DTO_CodeDescription getDtoCodeDescription() { return dto_codeDescription; }
 
     public void startBruteForce() { // TODO: DELETEEEEEEEEEEEEEEEEEEEEEEEE
-        DecryptionManager DM = new DecryptionManager(engine.clone(),"BUYUBKFTYQTER");
-        DM.createImpossibleTasks(engine.clone());
+
+        Consumer<String> MsgConsumer = getMsgConsumer();
+        DecryptionManager DM = new DecryptionManager(engine.clone(),"XXY!IPOEZMCBU",3,
+                Difficulty.EASY ,1000,MsgConsumer,bruteForceController.getTa_candidates());
+        DM.createEasyTasks(engine.clone());
+    }
+    private Consumer<String> getMsgConsumer() {
+        return cf -> {
+            bruteForceController.getTa_candidates().setText(cf.toString());
+        };
     }
 
     //-------------------------------------- BruteForce Component --------------------------------------

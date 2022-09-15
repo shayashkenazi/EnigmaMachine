@@ -2,6 +2,7 @@ package DecryptionManager;
 
 import DTOs.DTO_CodeDescription;
 import EnginePackage.EngineCapabilities;
+import javafx.scene.control.TextArea;
 import javafx.util.Pair;
 
 import java.util.Collections;
@@ -14,14 +15,18 @@ public class DecryptionTask implements Runnable {
     private EngineCapabilities engine;
     private final int taskSize;
 
-    private BlockingQueue<String> results;
+    private BlockingQueue<Runnable> results;
     private String sentenceToCheck;
+    private TextArea ta_candidates;
 
-    public DecryptionTask (EngineCapabilities engine, int taskSize, String sentenceToCheck, BlockingQueue<String> results) {
+
+    public DecryptionTask(EngineCapabilities engine, int taskSize,
+                          String sentenceToCheck, BlockingQueue<Runnable> results, TextArea ta_candidates) {
         this.engine = engine;
         this.taskSize = taskSize;
         this.results = results;
         this.sentenceToCheck = sentenceToCheck;
+        this.ta_candidates = ta_candidates;
     }
 
     @Override
@@ -29,67 +34,26 @@ public class DecryptionTask implements Runnable {
 
 
         for (int i = 0; i < taskSize; i++) {
-            printDescriptionFormat(engine.createCodeDescriptionDTO());
             EngineCapabilities e = engine.clone(); // TODO: why do we need to clone ?
             if (checkInDictionary(e))
-                printDetailsThread();
-            engine.rotateRotorByABC();
+
+                engine.rotateRotorByABC();
         }
     }
 
     private void printDetailsThread() {
         System.out.println(Thread.currentThread().getId() + ": found some words at dictionary!");
+
     }
 
-    private boolean checkInDictionary(EngineCapabilities engineClone){
-        String res = engineClone.encodeDecodeMsg(sentenceToCheck.toUpperCase(),false);
-        if(engineClone.checkAtDictionary(res)){
-            results.offer(res);
+    private boolean checkInDictionary(EngineCapabilities engineClone) {
+        String res = engineClone.encodeDecodeMsg(sentenceToCheck.toUpperCase(), false);
+        if (engineClone.checkAtDictionary(res)) {
+            engineClone.createCodeDescriptionDTO();
+            results.offer(new MsgPrinter(ta_candidates, res));
             return true;
         }
         return false;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-    private void printDescriptionFormat(DTO_CodeDescription dto_codeDescription) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<");
-        int index = 0;
-
-        for(int i = dto_codeDescription.getRotorsInUseIDList().size() - 1; i >= 0; i--)
-        {
-            Pair<String , Pair<Integer,Integer>> rotorId = dto_codeDescription.getRotorsInUseIDList().get(i);
-            int distance = Math.floorMod(dto_codeDescription.getNotch(rotorId) - dto_codeDescription.getCurrent(rotorId), dto_codeDescription.getABC().length()) ; //'% dto_codeDescription.'
-            sb.append(rotorId.getKey()).append("(").append(distance).append("),"); // need to have curr index eac h rotor
-        }
-        sb.replace(sb.length() - 1,sb.length(),">"); // for the last ','
-        Collections.reverse(dto_codeDescription.getStartingPositionList());
-        sb.append("<").append(String.join(",", dto_codeDescription.getStartingPositionList().toString()
-                .replace(",", "")
-                .replace("[", "")
-                .replace("]", ""))).append(">");
-        sb.append("<").append(dto_codeDescription.getReflectorID()).append(">");
-        Collections.reverse(dto_codeDescription.getStartingPositionList());
-
-        if (dto_codeDescription.getPlugsInUseList().size() != 0) {
-            sb.append("<");
-            for (int i = 0; i < dto_codeDescription.getPlugsInUseList().size(); i++) {
-                Pair<Character, Character> pair = dto_codeDescription.getPlugsInUseList().get(i);
-                sb.append(pair.getKey()).append("|").append(pair.getValue()).append(",");
-            }
-            sb.replace(sb.length() - 1,sb.length(),">");// replace the last ',' with '>'
-        }
-
-        System.out.println(sb.toString());
-    }
 }
