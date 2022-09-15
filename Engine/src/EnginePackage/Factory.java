@@ -191,7 +191,13 @@ public class Factory {
     private Set<String> createDictionary(){
 
         String words = cteEnigma.getCTEDecipher().getCTEDictionary().getWords();
+        words = words.trim();
+        String exclude = cteEnigma.getCTEDecipher().getCTEDictionary().getExcludeChars();
         words = words.toUpperCase();
+        for(int i = 0; i < exclude.length(); i++) {
+            String ch = String.valueOf(exclude.charAt(i));
+            words = words.replace(ch,"");
+        }
         String[] allWords = words.split(" ");
 
         Set<String> set = new HashSet<>(Arrays.asList(allWords));
@@ -217,8 +223,9 @@ public class Factory {
         machine.setRotorsCount(cteEnigma.getCTEMachine().getRotorsCount());
         machine.setRotors(createRotors());
         machine.setReflectors(createReflectors());
-        machine.setMyDictionary(createDictionary());
         machine.setExcludeChars(createExcludeChars());
+        machine.setMyDictionary(createDictionary());
+
         machine.setNumOfMaxAgents(createNumOfMaxAgents());
         return machine;
     }
