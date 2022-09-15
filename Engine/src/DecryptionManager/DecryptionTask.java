@@ -14,12 +14,13 @@ public class DecryptionTask implements Runnable {
     private EngineCapabilities engine;
     private final int taskSize;
 
-    private BlockingQueue<String> result = new LinkedBlockingQueue<>(10000);
+    private BlockingQueue<String> results;
     private String sentenceToCheck;
 
-    public DecryptionTask (EngineCapabilities engine, int taskSize,String sentenceToCheck) {
+    public DecryptionTask (EngineCapabilities engine, int taskSize, String sentenceToCheck, BlockingQueue<String> results) {
         this.engine = engine;
         this.taskSize = taskSize;
+        this.results = results;
         this.sentenceToCheck = sentenceToCheck;
     }
 
@@ -43,7 +44,7 @@ public class DecryptionTask implements Runnable {
     private boolean checkInDictionary(EngineCapabilities engineClone){
         String res = engineClone.encodeDecodeMsg(sentenceToCheck.toUpperCase(),false);
         if(engineClone.checkAtDictionary(res)){
-            result.offer(res);
+            results.offer(res);
             return true;
         }
         return false;

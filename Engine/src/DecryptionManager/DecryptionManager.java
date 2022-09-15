@@ -6,22 +6,33 @@ import EnginePackage.EnigmaEngine;
 import Tools.Machine;
 import Tools.Reflector;
 import Tools.Rotor;
+import sun.security.x509.PrivateKeyUsageExtension;
 
 import java.util.concurrent.*;
+import java.util.function.Consumer;
 
 public class DecryptionManager {
 
     private final int capacity = 1000;
     private BlockingQueue<Runnable> tasks = new LinkedBlockingQueue<>(capacity);
+    private BlockingQueue<Runnable> results = new LinkedBlockingQueue<>(capacity);
     private EnigmaEngine copyEngine;
     private ThreadPoolExecutor poolMission;
+    private ThreadPoolExecutor consumer;
     private String sentenceToCheck;
     private Difficulty difficulty;
+    private int numberOfAgents;
+    private int taskSize;
 
-    public DecryptionManager(EnigmaEngine engine,String sentence){
-        copyEngine = engine.clone();
-        poolMission = new ThreadPoolExecutor(3,3,5,TimeUnit.MILLISECONDS,tasks);
+    public DecryptionManager(EnigmaEngine engine, String sentence, int numOfAgents, Difficulty difficulty, int taskSize){
+        copyEngine = engine;
         sentenceToCheck = sentence;
+        this.difficulty = difficulty;
+        numberOfAgents = numOfAgents;
+        this.taskSize = taskSize;
+        poolMission = new ThreadPoolExecutor(numberOfAgents,numberOfAgents,5,TimeUnit.MILLISECONDS, tasks);
+        consumer = new ThreadPoolExecutor(1, 1, 5, TimeUnit.MILLISECONDS, results);
+        // TODO: what is keepAlive?
     }
 
     private void runTasks(){
@@ -55,13 +66,13 @@ public class DecryptionManager {
             // Full Tasks
             for (int i = 0; i < sizeOfFullTasks; i++) {
 
-                DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), taskSize,sentenceToCheck);
+                DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), taskSize, sentenceToCheck, results);
                 tasks.put(decryptionTask);
                 engineCopy.moveRotorsToPosition(taskSize);
             }
 
             // Last little task
-            DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), lastTaskSize,sentenceToCheck);
+            DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), lastTaskSize,sentenceToCheck, results);
             tasks.put(decryptionTask);
         /*try {
             tasks.put(decryptionTask);

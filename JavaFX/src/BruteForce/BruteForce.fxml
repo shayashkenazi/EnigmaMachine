@@ -79,7 +79,7 @@
                         <VBox alignment="CENTER">
                            <children>
                               <Label text="Number of Agents" />
-                              <Slider fx:id="s_agents" blockIncrement="1.0" majorTickUnit="1.0" max="5.0" minorTickCount="1" showTickLabels="true" />
+                              <Slider fx:id="s_agents" blockIncrement="1.0" majorTickUnit="1.0" max="5.0" min="1.0" minorTickCount="1" showTickLabels="true" />
                            </children>
                         </VBox>
                         <ComboBox fx:id="cb_level" prefWidth="150.0" promptText="difficulty" />
