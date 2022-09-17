@@ -96,7 +96,8 @@
                   <HBox alignment="CENTER" spacing="50.0">
                      <children>
                         <Button fx:id="btn_start" defaultButton="true" mnemonicParsing="false" onAction="#startBtnClick" text="Start" />
-                        <Button fx:id="btn_pause" mnemonicParsing="false" text="Pause" />
+                        <Button fx:id="btn_pause" mnemonicParsing="false" onAction="#pauseBtnClick" text="Pause" />
+                        <Button fx:id="btn_resume" mnemonicParsing="false" onAction="#resumeBtnClick" text="Resume" />
                         <Button fx:id="btn_stop" mnemonicParsing="false" onAction="#stopBtnClick" text="Stop" />
                      </children>
                   </HBox>

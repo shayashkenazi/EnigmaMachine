@@ -31,6 +31,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -47,6 +49,8 @@ public class AppController implements Initializable {
     private Node rootNode;
     private DTO_MachineInfo dto_machineInfo;
     private DTO_CodeDescription dto_codeDescription;
+    private final Object pausingLock = new Object();
+    private boolean isPause = false;
     private IntegerProperty allTaskSize = new SimpleIntegerProperty(0);
     //private AtomicInteger numberOfTasksDone = new AtomicInteger(0);
     private IntegerProperty numberOfTasksDone = new SimpleIntegerProperty(0);;
@@ -58,7 +62,7 @@ public class AppController implements Initializable {
     @FXML private TextField tf_xmlPath;
     @FXML private TextArea tf_machineDetails, tf_machineConfiguration;
     @FXML private HBox hb_setCode;
-    @FXML private Button btn_RandomCode, btn_SetCode, btn_loadFile;
+    @FXML private Button btn_RandomCode, btn_SetCode, btn_loadFile,btn_resume;
     @FXML private Tab tab_EncryptDecrypt, tab_bruteForce, tab_machine;
 
 
@@ -625,5 +629,29 @@ public class AppController implements Initializable {
     public IntegerProperty getAllTaskSize() { return allTaskSize; }
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
+    }
+
+    public void pauseBruteForce() {
+        isPause = true;
+        synchronized (pausingLock) {
+            if(isPause) {
+                while (isPause) {
+                    try {
+                        //startTimeInPause = Instant.now();
+                        pausingLock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                //sumTimeInPause += Duration.between(startTimeInPause, Instant.now()).toMillis();
+            }
+        }
+    }
+
+    public void resumeBruteForce() {
+        synchronized (pausingLock) {
+            isPause = false;
+            pausingLock.notifyAll();
+        }
     }
 }

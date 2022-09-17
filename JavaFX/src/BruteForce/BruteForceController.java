@@ -76,6 +76,14 @@ public class BruteForceController implements SubController, Initializable {
         resetSetting();
         appController.stopBruteForce();
     }
+    @FXML
+    void pauseBtnClick(ActionEvent event) {
+        appController.pauseBruteForce();
+    }
+    @FXML
+    void resumeBtnClick(ActionEvent event) {
+        appController.resumeBruteForce();
+    }
 
     @Override
     public void setMainController(AppController mainController) {
