@@ -101,6 +101,7 @@ public class AppController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        vb_MainApp.getStylesheets().add(getClass().getResource("/CSS/MainCss.css").toExternalForm());
 
         tab_EncryptDecrypt.setDisable(true);
         tab_bruteForce.setDisable(true);
@@ -537,13 +538,15 @@ public class AppController implements Initializable {
     public void startBruteForce() {
         Consumer<DTO_ConsumerPrinter> MsgConsumer = getMsgConsumer();
         Consumer<Integer> showNumberOfTasks = getNumberOfTaskConsumer();
-        DecryptionManager DM = new DecryptionManager(engine.clone(), bruteForceController.getTf_output().getText(),
+        setAllTaskSize(bruteForceController.getDifficulty());
+        Consumer<Integer> checkFinishConsumer =  getCheckFinishConsumer(allTaskSize.get());
+        DecryptionManager DM = new DecryptionManager(engine.clone(),checkFinishConsumer, bruteForceController.getTf_output().getText(),
                 bruteForceController.getNumOfAgents(), bruteForceController.getDifficulty(),
                 bruteForceController.getTaskSize(),
                 MsgConsumer,showNumberOfTasks, numberOfTasksDone,
                 bruteForceController.getIsDMWorking(),allTaskSize.get());
 
-        setAllTaskSize(bruteForceController.getDifficulty());
+
 
         bruteForceThread = new Thread(DM);
         bruteForceThread.start();
@@ -554,6 +557,14 @@ public class AppController implements Initializable {
         return cf -> {
             double res = (double) cf / allTaskSize.getValue();
             bruteForceController.getPb_progress().setProgress(res);
+        };
+    }
+    private Consumer<Integer> getCheckFinishConsumer(Integer numOfAllTasks)
+    {
+        return cf -> {
+            if(cf >= numOfAllTasks){
+                JOptionPane.showMessageDialog(null, "FINISH!", "DM finished", JOptionPane.ERROR_MESSAGE);
+            }
         };
     }
 

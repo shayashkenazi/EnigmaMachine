@@ -30,12 +30,13 @@ public class DecryptionManager implements Runnable{
     private int taskSize;
     private Consumer<DTO_ConsumerPrinter> MsgConsumer;
     private Consumer<Integer> showNumberOfTasksConsumer;
+    private Consumer<Integer> checkFinish;
     private IntegerProperty numberOfDoneTasks;
     private BooleanProperty isDMWorking;
     private AtomicInteger numberOfDoneTasksAtomic = new AtomicInteger(0);
     private int numOfAllTasks;
 
-    public DecryptionManager(EnigmaEngine engine, String sentence, int numOfAgents, Difficulty difficulty,
+    public DecryptionManager(EnigmaEngine engine,Consumer<Integer> checkFinish, String sentence, int numOfAgents, Difficulty difficulty,
                              int taskSize, Consumer<DTO_ConsumerPrinter> msgConsumer,Consumer<Integer> showNumberOfTasks,
                              IntegerProperty numberOfDoneTasks, BooleanProperty isDMWorking,int numOfAllTasks){
         copyEngine = engine;
@@ -51,6 +52,8 @@ public class DecryptionManager implements Runnable{
         this.isDMWorking = isDMWorking;
         this.showNumberOfTasksConsumer = showNumberOfTasks;
         this.numOfAllTasks = numOfAllTasks;
+        this.checkFinish = checkFinish;
+
         // TODO: what is keepAlive?
 
         poolMission.beforeExecute(Thread.currentThread(), new Runnable() {
@@ -65,7 +68,6 @@ public class DecryptionManager implements Runnable{
             public void run() {
                 isDMWorking.set(false);
                 JOptionPane.showMessageDialog(null, "FINISH!", "???", JOptionPane.ERROR_MESSAGE);
-                return;
             }
         }, null);
     }
@@ -96,12 +98,12 @@ public class DecryptionManager implements Runnable{
             int sizeOfFullTasks = (int) (sizeOfAllTasks / taskSize);
             int lastTaskSize = (int) (sizeOfAllTasks % taskSize);
             poolMission.prestartAllCoreThreads();
-            poolResult.prestartAllCoreThreads();
+            //poolResult.prestartAllCoreThreads();
             try {
                 // Full Tasks
                 for (int i = 0; i < sizeOfFullTasks; i++) {
 
-                    DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), taskSize, MsgConsumer, showNumberOfTasksConsumer,
+                    DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(),checkFinish, taskSize,isDMWorking, MsgConsumer, showNumberOfTasksConsumer,
                             sentenceToCheck, results, numberOfDoneTasks, numberOfDoneTasksAtomic);
                     tasks.put(decryptionTask);
                     //showNumberOfTasksConsumer.accept(numberOfDoneTasks.getValue());
@@ -109,10 +111,18 @@ public class DecryptionManager implements Runnable{
                 }
 
                 // Last little task
-                DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), lastTaskSize,
+                DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(),checkFinish, lastTaskSize,isDMWorking,
                         MsgConsumer, showNumberOfTasksConsumer,
                         sentenceToCheck, results, numberOfDoneTasks, numberOfDoneTasksAtomic);
                 tasks.put(decryptionTask);
+                poolMission.shutdown();
+                /*System.out.println(numberOfDoneTasksAtomic.get());
+                System.out.println(Thread.currentThread().getId());*/
+               /* if(!poolMission.awaitTermination(1,TimeUnit.MINUTES))
+                {
+                    poolMission.shutdownNow();
+                }*/
+
 
             } catch (Exception ee) {
                 System.out.println(ee.getMessage());
@@ -194,6 +204,8 @@ public class DecryptionManager implements Runnable{
                 createImpossibleTasks(copyEngine);
                 break;
         }
+        if(numOfAllTasks == numberOfDoneTasks.get())
+            System.out.println("aaaa");
     }
 }
 

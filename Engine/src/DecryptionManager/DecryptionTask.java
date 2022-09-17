@@ -3,6 +3,7 @@ package DecryptionManager;
 import DTOs.DTO_CodeDescription;
 import DTOs.DTO_ConsumerPrinter;
 import EnginePackage.EngineCapabilities;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.scene.control.TextArea;
 import javafx.util.Pair;
@@ -22,12 +23,14 @@ public class DecryptionTask implements Runnable {
     private BlockingQueue<Runnable> results;
     private String sentenceToCheck;
     private Consumer<DTO_ConsumerPrinter> msgConsumer;
+    private Consumer<Integer> checkFinish;
     private IntegerProperty numberOfDoneTasks;
 
     private AtomicInteger numberOfDoneTasksAtomic;
     private Consumer<Integer> showNumberOfTasksConsumer;
+    BooleanProperty isDMWorking;
 
-    public DecryptionTask(EngineCapabilities engine, int taskSize,
+    public DecryptionTask(EngineCapabilities engine,Consumer<Integer> checkFinish, int taskSize,BooleanProperty isDMWorking,
                           Consumer<DTO_ConsumerPrinter> msgConsumer,Consumer<Integer> showNumberOfTasks,
                           String sentenceToCheck, BlockingQueue<Runnable> results, IntegerProperty numberOfDoneTasks,AtomicInteger numberOfTasks) {
         this.engine = engine;
@@ -38,6 +41,8 @@ public class DecryptionTask implements Runnable {
         this.numberOfDoneTasks = numberOfDoneTasks;
         this.showNumberOfTasksConsumer = showNumberOfTasks;
         this.numberOfDoneTasksAtomic = numberOfTasks;
+        this.isDMWorking = isDMWorking;
+        this.checkFinish = checkFinish;
     }
 
     @Override
@@ -49,10 +54,12 @@ public class DecryptionTask implements Runnable {
             engine.rotateRotorByABC();
             numberOfDoneTasksAtomic.incrementAndGet();
             numberOfDoneTasks.set(numberOfDoneTasksAtomic.get());
+            checkFinish.accept(numberOfDoneTasksAtomic.get());
             /*synchronized (numberOfDoneTasks){
                 numberOfDoneTasks.setValue(numberOfDoneTasks.getValue() + 1);
             }*/
         }
+
 
 
     }

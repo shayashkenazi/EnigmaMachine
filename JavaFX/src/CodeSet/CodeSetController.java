@@ -40,7 +40,8 @@ public class CodeSetController implements Initializable, SubController {
 
     }
     @FXML void addToPlugBoardBtnClick(ActionEvent event) {
-
+        vb_plugBoard.getChildren().clear();
+        plugBoardList = new ArrayList<>();
         HBox curHBox = new HBox(40);
         curHBox.setAlignment(Pos.CENTER);
         DTO_MachineInfo dto_machineInfo = appController.getDtoMachineInfo();
@@ -60,7 +61,9 @@ public class CodeSetController implements Initializable, SubController {
     public void createSetCodeController(DTO_MachineInfo dto_machineInfo) {
 
         hb_rotors.setPrefWidth(sp_rotors.getPrefWidth());
-
+        rotorsChoiceBoxes = new ArrayList<>();
+        hb_rotors.getChildren().clear();
+        cb_reflector.setValue("");
         for(int i = 0; i < dto_machineInfo.getNumOfUsedRotors(); i++){
             HBox curHBox = new HBox(40);
             curHBox.setAlignment(Pos.CENTER);

@@ -155,6 +155,13 @@ public class BruteForceController implements SubController, Initializable {
             else
                 isTaskSizeSelected.set(true);
         });
+        /*isDMWorking.addListener((observable, oldValue, newValue) -> {
+
+            if (newValue) {
+               appController.stopBruteForce();
+            }
+
+        });*/
         /*numberOfTasksDone.addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
