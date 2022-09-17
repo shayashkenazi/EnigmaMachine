@@ -6,7 +6,11 @@ import Interfaces.SubController;
 import MainApp.AppController;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -28,7 +32,6 @@ public class BruteForceController implements SubController, Initializable {
     private AppController appController;
     private Map<String, Button> dictionaryMap = new LinkedHashMap<>();
     BooleanProperty isTaskSizeSelected, isDifficultySelected, isDMWorking;
-
 
     @FXML private Button btn_clear, btn_proccess, btn_reset, btn_start, btn_pause, btn_stop;
     @FXML private TextField tf_codeConfiguration, tf_input, tf_output, tf_searchBar, tf_taskSize;
@@ -68,6 +71,11 @@ public class BruteForceController implements SubController, Initializable {
         appController.startBruteForce();
         isDMWorking.set(true);
     }
+    @FXML
+    void stopBtnClick(ActionEvent event) {
+        resetSetting();
+        appController.stopBruteForce();
+    }
 
     @Override
     public void setMainController(AppController mainController) {
@@ -77,6 +85,11 @@ public class BruteForceController implements SubController, Initializable {
     public void initializeTabAfterCodeConfiguration() {
 
         appController.initializeTrieWithDictionary();
+
+    }
+    private void resetSetting(){
+        pb_progress.setProgress(0);
+        ta_candidates.clear();
     }
 
     @Override
@@ -142,17 +155,14 @@ public class BruteForceController implements SubController, Initializable {
             else
                 isTaskSizeSelected.set(true);
         });
-
-        isDMWorking.addListener((observable, oldValue, newValue) -> {
-
-            if (newValue) {
+        /*numberOfTasksDone.addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 pb_progress.progressProperty().bind(Bindings.divide(appController.getNumberOfTasksDone(),
                         appController.getAllTaskSize()));
             }
-            else {
-                pb_progress.progressProperty().unbind();
-            }
-        });
+        });*/
+
     }
 
     public Trie getTrie() { return trie; }

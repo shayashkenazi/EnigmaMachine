@@ -22,36 +22,45 @@ public class DecryptionTask implements Runnable {
     private BlockingQueue<Runnable> results;
     private String sentenceToCheck;
     private Consumer<DTO_ConsumerPrinter> msgConsumer;
-
     private IntegerProperty numberOfDoneTasks;
 
-    public DecryptionTask(EngineCapabilities engine, int taskSize, Consumer<DTO_ConsumerPrinter> msgConsumer,
-                          String sentenceToCheck, BlockingQueue<Runnable> results, IntegerProperty numberOfDoneTasks) {
+    private AtomicInteger numberOfDoneTasksAtomic;
+    private Consumer<Integer> showNumberOfTasksConsumer;
+
+    public DecryptionTask(EngineCapabilities engine, int taskSize,
+                          Consumer<DTO_ConsumerPrinter> msgConsumer,Consumer<Integer> showNumberOfTasks,
+                          String sentenceToCheck, BlockingQueue<Runnable> results, IntegerProperty numberOfDoneTasks,AtomicInteger numberOfTasks) {
         this.engine = engine;
         this.taskSize = taskSize;
         this.results = results;
         this.sentenceToCheck = sentenceToCheck;
         this.msgConsumer = msgConsumer;
         this.numberOfDoneTasks = numberOfDoneTasks;
+        this.showNumberOfTasksConsumer = showNumberOfTasks;
+        this.numberOfDoneTasksAtomic = numberOfTasks;
     }
 
     @Override
     public void run() {
-
+        //showNumberOfTasksConsumer.accept(numberOfDoneTasks.getValue());
         for (int i = 0; i < taskSize; i++) {
             EngineCapabilities e = engine.clone(); // TODO: why do we need to clone ?
-            if (checkInDictionary(e))
-                engine.rotateRotorByABC();
-
-            synchronized (numberOfDoneTasks){
+            checkInDictionary(e);
+            engine.rotateRotorByABC();
+            numberOfDoneTasksAtomic.incrementAndGet();
+            numberOfDoneTasks.set(numberOfDoneTasksAtomic.get());
+            /*synchronized (numberOfDoneTasks){
                 numberOfDoneTasks.setValue(numberOfDoneTasks.getValue() + 1);
-            }
+            }*/
         }
+
 
     }
 
     private boolean checkInDictionary(EngineCapabilities engineClone) {
+        showNumberOfTasksConsumer.accept(numberOfDoneTasksAtomic.get());
         DTO_CodeDescription tmpDTO = engineClone.createCodeDescriptionDTO();
+        tmpDTO.resetPlugBoard();
         String res = engineClone.encodeDecodeMsg(sentenceToCheck.toUpperCase(), false);
         if (engineClone.checkAtDictionary(res)) {
             DTO_ConsumerPrinter dto_consumerPrinter = new DTO_ConsumerPrinter(tmpDTO,res,Thread.currentThread().getId());

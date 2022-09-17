@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane prefWidth="603.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="BruteForce.BruteForceController">
+<ScrollPane prefWidth="603.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="BruteForce.BruteForceController">
    <content>
       <VBox alignment="CENTER" spacing="20.0">
          <children>
@@ -97,7 +97,7 @@
                      <children>
                         <Button fx:id="btn_start" defaultButton="true" mnemonicParsing="false" onAction="#startBtnClick" text="Start" />
                         <Button fx:id="btn_pause" mnemonicParsing="false" text="Pause" />
-                        <Button fx:id="btn_stop" mnemonicParsing="false" text="Stop" />
+                        <Button fx:id="btn_stop" mnemonicParsing="false" onAction="#stopBtnClick" text="Stop" />
                      </children>
                   </HBox>
                </children>
@@ -111,7 +111,7 @@
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Label>
-                        <ProgressBar fx:id="pb_progress" prefHeight="18.0" prefWidth="146.0" progress="0.0" />
+                        <ProgressBar fx:id="pb_progress" prefHeight="18.0" prefWidth="185.0" progress="0.0" />
                      </children>
                      <VBox.margin>
                         <Insets left="170.0" />

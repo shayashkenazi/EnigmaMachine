@@ -44,6 +44,7 @@ public class Main extends Application {
         fxmlLoader.setLocation(url);
         ScrollPane root = fxmlLoader.load(url.openStream());
         AppController appController = fxmlLoader.getController();
+        appController.setPrimaryStage(primaryStage);
 
         // Size Bindings
 

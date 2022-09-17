@@ -9,14 +9,11 @@ import Tools.Reflector;
 import Tools.Rotor;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 
-import javax.jws.Oneway;
+import javax.swing.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class DecryptionManager implements Runnable{
 
@@ -32,12 +29,15 @@ public class DecryptionManager implements Runnable{
     private int numberOfAgents;
     private int taskSize;
     private Consumer<DTO_ConsumerPrinter> MsgConsumer;
+    private Consumer<Integer> showNumberOfTasksConsumer;
     private IntegerProperty numberOfDoneTasks;
     private BooleanProperty isDMWorking;
+    private AtomicInteger numberOfDoneTasksAtomic = new AtomicInteger(0);
+    private int numOfAllTasks;
 
     public DecryptionManager(EnigmaEngine engine, String sentence, int numOfAgents, Difficulty difficulty,
-                             int taskSize, Consumer<DTO_ConsumerPrinter> msgConsumer,
-                             IntegerProperty numberOfDoneTasks, BooleanProperty isDMWorking){
+                             int taskSize, Consumer<DTO_ConsumerPrinter> msgConsumer,Consumer<Integer> showNumberOfTasks,
+                             IntegerProperty numberOfDoneTasks, BooleanProperty isDMWorking,int numOfAllTasks){
         copyEngine = engine;
         sentenceToCheck = sentence;
         this.difficulty = difficulty;
@@ -49,7 +49,8 @@ public class DecryptionManager implements Runnable{
         MsgConsumer = msgConsumer;
         this.numberOfDoneTasks = numberOfDoneTasks;
         this.isDMWorking = isDMWorking;
-
+        this.showNumberOfTasksConsumer = showNumberOfTasks;
+        this.numOfAllTasks = numOfAllTasks;
         // TODO: what is keepAlive?
 
         poolMission.beforeExecute(Thread.currentThread(), new Runnable() {
@@ -63,6 +64,8 @@ public class DecryptionManager implements Runnable{
             @Override
             public void run() {
                 isDMWorking.set(false);
+                JOptionPane.showMessageDialog(null, "FINISH!", "???", JOptionPane.ERROR_MESSAGE);
+                return;
             }
         }, null);
     }
@@ -81,36 +84,39 @@ public class DecryptionManager implements Runnable{
     //
     public void createEasyTasks(EngineCapabilities engineCopy) {
 
-        // Initialize all Rotors to start index position 0,0,0...
-        for (int i = 0; i < engineCopy.getMachine().getRotorsInUseCount(); i++) {
-            Rotor currRotor = (Rotor) engineCopy.getMachine().getRotorsStack().get(i);
-            currRotor.setCurrentPairIndex(0);
-        }
 
-        // Current State - All rotors are positioned to the first char in the ABC
-        double sizeOfAllTasks = Math.pow(engineCopy.getMachine().getABCsize(), engineCopy.getMachine().getRotorsInUseCount());
-        int sizeOfFullTasks = (int) (sizeOfAllTasks / taskSize);
-        int lastTaskSize = (int) (sizeOfAllTasks % taskSize);
-        poolMission.prestartAllCoreThreads();
-        poolResult.prestartAllCoreThreads();
-        try {
-            // Full Tasks
-            for (int i = 0; i < sizeOfFullTasks; i++) {
-
-                DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), taskSize, MsgConsumer,
-                                                                   sentenceToCheck, results, numberOfDoneTasks);
-                tasks.put(decryptionTask);
-                engineCopy.moveRotorsToPosition(taskSize);
+            // Initialize all Rotors to start index position 0,0,0...
+            for (int i = 0; i < engineCopy.getMachine().getRotorsInUseCount(); i++) {
+                Rotor currRotor = (Rotor) engineCopy.getMachine().getRotorsStack().get(i);
+                currRotor.setCurrentPairIndex(0);
             }
 
-            // Last little task
-            DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), lastTaskSize, MsgConsumer,
-                                                               sentenceToCheck, results, numberOfDoneTasks);
-            tasks.put(decryptionTask);
-        }
-        catch (Exception ee){
-        System.out.println(ee.getMessage());
-        }
+            // Current State - All rotors are positioned to the first char in the ABC
+            double sizeOfAllTasks = Math.pow(engineCopy.getMachine().getABCsize(), engineCopy.getMachine().getRotorsInUseCount());
+            int sizeOfFullTasks = (int) (sizeOfAllTasks / taskSize);
+            int lastTaskSize = (int) (sizeOfAllTasks % taskSize);
+            poolMission.prestartAllCoreThreads();
+            poolResult.prestartAllCoreThreads();
+            try {
+                // Full Tasks
+                for (int i = 0; i < sizeOfFullTasks; i++) {
+
+                    DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), taskSize, MsgConsumer, showNumberOfTasksConsumer,
+                            sentenceToCheck, results, numberOfDoneTasks, numberOfDoneTasksAtomic);
+                    tasks.put(decryptionTask);
+                    //showNumberOfTasksConsumer.accept(numberOfDoneTasks.getValue());
+                    engineCopy.moveRotorsToPosition(taskSize);
+                }
+
+                // Last little task
+                DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(), lastTaskSize,
+                        MsgConsumer, showNumberOfTasksConsumer,
+                        sentenceToCheck, results, numberOfDoneTasks, numberOfDoneTasksAtomic);
+                tasks.put(decryptionTask);
+
+            } catch (Exception ee) {
+                System.out.println(ee.getMessage());
+            }
 
     }
 
@@ -174,7 +180,6 @@ public class DecryptionManager implements Runnable{
 
     @Override
     public void run() {
-
         switch (difficulty){
             case EASY:
                 createEasyTasks(copyEngine);
@@ -189,8 +194,6 @@ public class DecryptionManager implements Runnable{
                 createImpossibleTasks(copyEngine);
                 break;
         }
-
-
     }
 }
 

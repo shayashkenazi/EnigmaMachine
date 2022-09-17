@@ -22,6 +22,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Pair;
 
 
@@ -48,7 +49,9 @@ public class AppController implements Initializable {
     private DTO_CodeDescription dto_codeDescription;
     private IntegerProperty allTaskSize = new SimpleIntegerProperty(0);
     //private AtomicInteger numberOfTasksDone = new AtomicInteger(0);
-    private IntegerProperty numberOfTasksDone = new SimpleIntegerProperty(0);
+    private IntegerProperty numberOfTasksDone = new SimpleIntegerProperty(0);;
+    private Stage primaryStage;
+    private Thread bruteForceThread;
 
     @FXML private ScrollPane sp_mainPage;
     @FXML private VBox vb_MainApp;
@@ -65,7 +68,7 @@ public class AppController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("xml files", "*.xml"));
 
-        File fileSelected = fileChooser.showOpenDialog(null);
+        File fileSelected = fileChooser.showOpenDialog(primaryStage);
 
         if (fileSelected == null) {
             JOptionPane.showMessageDialog(null, "Could NOT choose a file!", "???", JOptionPane.ERROR_MESSAGE);
@@ -523,25 +526,47 @@ public class AppController implements Initializable {
         int maxAgents = engine.getMachine().getNumOfMaxAgents();
         bruteForceController.getS_agents().setMax(maxAgents);
     }
+    public void stopBruteForce(){
+        bruteForceThread.interrupt();
+        allTaskSize.set(0);
+        numberOfTasksDone.set(0);
+
+
+    }
 
     public void startBruteForce() {
-
         Consumer<DTO_ConsumerPrinter> MsgConsumer = getMsgConsumer();
+        Consumer<Integer> showNumberOfTasks = getNumberOfTaskConsumer();
         DecryptionManager DM = new DecryptionManager(engine.clone(), bruteForceController.getTf_output().getText(),
                 bruteForceController.getNumOfAgents(), bruteForceController.getDifficulty(),
-                bruteForceController.getTaskSize(), MsgConsumer, numberOfTasksDone,
-                bruteForceController.getIsDMWorking());
+                bruteForceController.getTaskSize(),
+                MsgConsumer,showNumberOfTasks, numberOfTasksDone,
+                bruteForceController.getIsDMWorking(),allTaskSize.get());
 
         setAllTaskSize(bruteForceController.getDifficulty());
 
-        Thread threadDM = new Thread(DM);
-        threadDM.start();
+        bruteForceThread = new Thread(DM);
+        bruteForceThread.start();
+
+    }
+
+    private Consumer<Integer> getNumberOfTaskConsumer() {
+        return cf -> {
+            double res = (double) cf / allTaskSize.getValue();
+            bruteForceController.getPb_progress().setProgress(res);
+        };
     }
 
     private Consumer<DTO_ConsumerPrinter> getMsgConsumer() {
         return cf -> {
             String configuration = createDescriptionFormat(cf.getDto_codeDescription());
-            bruteForceController.getTa_candidates().appendText(configuration + cf.getMsgResult() + cf.getThreadId());
+            StringBuilder sb = new StringBuilder();
+            sb.append(configuration).append(" candidate sentence :")
+                    .append(cf.getMsgResult())
+                    .append(" found by thread -")
+                    .append(cf.getThreadId())
+                    .append("\n");
+            bruteForceController.getTa_candidates().appendText(sb.toString());
         };
     }
 
@@ -550,7 +575,7 @@ public class AppController implements Initializable {
         int easy = (int) Math.pow(machine.getABCsize(), machine.getRotorsInUseCount());
         int medium = easy * machine.getReflectorsMapSize();
         int hard = medium * factorial(machine.getRotorsInUseCount());
-        int impossible = Integer.MAX_VALUE; // TODO: FIX !!!!!!!!!!1
+        int impossible = hard * factorial(machine.getRotorsMapSize() / (factorial(machine.getRotorsInUseCount()) * factorial(machine.getRotorsMapSize() - factorial(machine.getRotorsInUseCount())))); // TODO: FIX !!!!!!!!!!1
 
         switch (difficulty){
             case EASY:
@@ -572,7 +597,9 @@ public class AppController implements Initializable {
 
     public void resetBtnClick() {
         engine.getMachine().initializePositionsForRotorsInStack();
-        encryptDecryptController.getTa_codeConfiguration().setText(createDescriptionFormat(engine.createCodeDescriptionDTO()));
+        DTO_CodeDescription tmpDTO = engine.createCodeDescriptionDTO();
+        tmpDTO.resetPlugBoard();
+        bruteForceController.getTa_codeConfiguration().setText(createDescriptionFormat(tmpDTO));
     }
 
     public int factorial (int x) {
@@ -585,4 +612,7 @@ public class AppController implements Initializable {
 
     public IntegerProperty getNumberOfTasksDone() { return numberOfTasksDone; }
     public IntegerProperty getAllTaskSize() { return allTaskSize; }
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+    }
 }

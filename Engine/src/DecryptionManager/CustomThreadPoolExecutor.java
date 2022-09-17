@@ -15,12 +15,11 @@ public class CustomThreadPoolExecutor extends ThreadPoolExecutor {
     @Override
     protected void beforeExecute(Thread t, Runnable r) {
         super.beforeExecute(t, r);
-        r.run();
     }
 
     @Override
     protected void afterExecute(Runnable r, Throwable t) {
+
         super.afterExecute(r, t);
-        r.run();
     }
 }
