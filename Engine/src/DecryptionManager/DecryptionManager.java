@@ -9,6 +9,7 @@ import Tools.Reflector;
 import Tools.Rotor;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 
 import javax.swing.*;
 import java.util.concurrent.*;
@@ -18,6 +19,7 @@ import java.util.function.Consumer;
 public class DecryptionManager implements Runnable{
 
     private final int capacity = 1000;
+
     private BlockingQueue<Runnable> tasks = new LinkedBlockingQueue<>(capacity);
     private BlockingQueue<Runnable> results = new LinkedBlockingQueue<>(capacity);
     private EnigmaEngine copyEngine;
@@ -28,6 +30,8 @@ public class DecryptionManager implements Runnable{
     private Difficulty difficulty;
     private int numberOfAgents;
     private int taskSize;
+    private final Object pausingLock = new Object();
+    private BooleanProperty isPause = new SimpleBooleanProperty(false);
     private Consumer<DTO_ConsumerPrinter> MsgConsumer;
     private Consumer<Integer> showNumberOfTasksConsumer;
     private Consumer<Integer> checkFinish;
@@ -53,7 +57,7 @@ public class DecryptionManager implements Runnable{
         this.showNumberOfTasksConsumer = showNumberOfTasks;
         this.numOfAllTasks = numOfAllTasks;
         this.checkFinish = checkFinish;
-
+        //this.numberOfDoneTasks.set(0);
         // TODO: what is keepAlive?
 
         poolMission.beforeExecute(Thread.currentThread(), new Runnable() {
@@ -67,7 +71,7 @@ public class DecryptionManager implements Runnable{
             @Override
             public void run() {
                 isDMWorking.set(false);
-                JOptionPane.showMessageDialog(null, "FINISH!", "???", JOptionPane.ERROR_MESSAGE);
+                //JOptionPane.showMessageDialog(null, "FINISH from pool!", "???", JOptionPane.ERROR_MESSAGE);
             }
         }, null);
     }
@@ -104,18 +108,20 @@ public class DecryptionManager implements Runnable{
                 for (int i = 0; i < sizeOfFullTasks; i++) {
 
                     DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(),checkFinish, taskSize,isDMWorking, MsgConsumer, showNumberOfTasksConsumer,
-                            sentenceToCheck, results, numberOfDoneTasks, numberOfDoneTasksAtomic);
+                            sentenceToCheck, results, numberOfDoneTasks, numberOfDoneTasksAtomic,pausingLock,isPause);
                     tasks.put(decryptionTask);
-                    //showNumberOfTasksConsumer.accept(numberOfDoneTasks.getValue());
+                    showNumberOfTasksConsumer.accept(numberOfDoneTasks.getValue());
                     engineCopy.moveRotorsToPosition(taskSize);
                 }
 
                 // Last little task
                 DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(),checkFinish, lastTaskSize,isDMWorking,
                         MsgConsumer, showNumberOfTasksConsumer,
-                        sentenceToCheck, results, numberOfDoneTasks, numberOfDoneTasksAtomic);
+                        sentenceToCheck, results, numberOfDoneTasks, numberOfDoneTasksAtomic,pausingLock,isPause);
                 tasks.put(decryptionTask);
+
                 poolMission.shutdown();
+
                 /*System.out.println(numberOfDoneTasksAtomic.get());
                 System.out.println(Thread.currentThread().getId());*/
                /* if(!poolMission.awaitTermination(1,TimeUnit.MINUTES))
@@ -204,8 +210,25 @@ public class DecryptionManager implements Runnable{
                 createImpossibleTasks(copyEngine);
                 break;
         }
-        if(numOfAllTasks == numberOfDoneTasks.get())
-            System.out.println("aaaa");
     }
+    public CustomThreadPoolExecutor getPoolMission() {
+        return poolMission;
+    }
+    public void resumeBruteForce() {
+        synchronized (pausingLock) {
+            isPause.set(false);
+            pausingLock.notifyAll();
+            //curDM.getPoolMission().notify();
+        }
+    }
+    public BooleanProperty getIsPause(){
+        return isPause;
+    }
+    public void setIsPause(boolean isPause){
+        this.isPause.set(isPause);
+    }
+   /* public BlockingQueue<Runnable> getResults() {
+        return results;
+    }*/
 }
 

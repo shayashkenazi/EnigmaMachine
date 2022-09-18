@@ -34,6 +34,7 @@ import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -49,11 +50,12 @@ public class AppController implements Initializable {
     private Node rootNode;
     private DTO_MachineInfo dto_machineInfo;
     private DTO_CodeDescription dto_codeDescription;
-    private final Object pausingLock = new Object();
-    private boolean isPause = false;
+    //private final Object pausingLock = new Object();
+    //private BooleanProperty isPause = new SimpleBooleanProperty(false);
+    private DecryptionManager curDM;
     private IntegerProperty allTaskSize = new SimpleIntegerProperty(0);
     //private AtomicInteger numberOfTasksDone = new AtomicInteger(0);
-    private IntegerProperty numberOfTasksDone = new SimpleIntegerProperty(0);;
+    private IntegerProperty numberOfTasksDone = new SimpleIntegerProperty(0);
     private Stage primaryStage;
     private Thread bruteForceThread;
 
@@ -146,6 +148,7 @@ public class AppController implements Initializable {
                 initializeDictionaryListView();
             }
         });
+
 
     }
 
@@ -532,26 +535,24 @@ public class AppController implements Initializable {
         bruteForceController.getS_agents().setMax(maxAgents);
     }
     public void stopBruteForce(){
+        curDM.getPoolMission().shutdownNow();
+        allTaskSize = new SimpleIntegerProperty(0);
+        numberOfTasksDone = new SimpleIntegerProperty(0);
         bruteForceThread.interrupt();
-        allTaskSize.set(0);
-        numberOfTasksDone.set(0);
-
-
     }
 
     public void startBruteForce() {
         Consumer<DTO_ConsumerPrinter> MsgConsumer = getMsgConsumer();
         Consumer<Integer> showNumberOfTasks = getNumberOfTaskConsumer();
         setAllTaskSize(bruteForceController.getDifficulty());
+        bruteForceController.getTf_missionCounter().setText(String.valueOf(allTaskSize.get()));
         Consumer<Integer> checkFinishConsumer =  getCheckFinishConsumer(allTaskSize.get());
         DecryptionManager DM = new DecryptionManager(engine.clone(),checkFinishConsumer, bruteForceController.getTf_output().getText(),
                 bruteForceController.getNumOfAgents(), bruteForceController.getDifficulty(),
                 bruteForceController.getTaskSize(),
                 MsgConsumer,showNumberOfTasks, numberOfTasksDone,
                 bruteForceController.getIsDMWorking(),allTaskSize.get());
-
-
-
+        curDM = DM;
         bruteForceThread = new Thread(DM);
         bruteForceThread.start();
 
@@ -568,6 +569,7 @@ public class AppController implements Initializable {
         return cf -> {
             if(cf >= numOfAllTasks){
                 JOptionPane.showMessageDialog(null, "FINISH!", "DM finished", JOptionPane.ERROR_MESSAGE);
+                bruteForceController.getIsDMWorking().set(false);
             }
         };
     }
@@ -590,7 +592,7 @@ public class AppController implements Initializable {
         int easy = (int) Math.pow(machine.getABCsize(), machine.getRotorsInUseCount());
         int medium = easy * machine.getReflectorsMapSize();
         int hard = medium * factorial(machine.getRotorsInUseCount());
-        int impossible = hard * factorial(machine.getRotorsMapSize() / (factorial(machine.getRotorsInUseCount()) * factorial(machine.getRotorsMapSize() - factorial(machine.getRotorsInUseCount())))); // TODO: FIX !!!!!!!!!!1
+        int impossible = hard * factorial(machine.getRotorsMapSize()) / (factorial(machine.getRotorsInUseCount()) * factorial(machine.getRotorsMapSize() - machine.getRotorsInUseCount())); // TODO: FIX !!!!!!!!!!1
 
         switch (difficulty){
             case EASY:
@@ -632,26 +634,13 @@ public class AppController implements Initializable {
     }
 
     public void pauseBruteForce() {
-        isPause = true;
-        synchronized (pausingLock) {
-            if(isPause) {
-                while (isPause) {
-                    try {
-                        //startTimeInPause = Instant.now();
-                        pausingLock.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                //sumTimeInPause += Duration.between(startTimeInPause, Instant.now()).toMillis();
-            }
-        }
+        curDM.setIsPause(true);
+    }
+    public void saveSettings(){
+
     }
 
     public void resumeBruteForce() {
-        synchronized (pausingLock) {
-            isPause = false;
-            pausingLock.notifyAll();
-        }
+        curDM.resumeBruteForce();
     }
 }

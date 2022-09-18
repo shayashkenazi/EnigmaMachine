@@ -1,6 +1,7 @@
 package BruteForce;
 
 import DataStructures.Trie;
+import DecryptionManager.DecryptionManager;
 import DecryptionManager.Difficulty;
 import Interfaces.SubController;
 import MainApp.AppController;
@@ -34,13 +35,14 @@ public class BruteForceController implements SubController, Initializable {
     BooleanProperty isTaskSizeSelected, isDifficultySelected, isDMWorking;
 
     @FXML private Button btn_clear, btn_proccess, btn_reset, btn_start, btn_pause, btn_stop;
-    @FXML private TextField tf_codeConfiguration, tf_input, tf_output, tf_searchBar, tf_taskSize;
+    @FXML private TextField tf_codeConfiguration, tf_input, tf_output, tf_searchBar, tf_taskSize,tf_missionCounter;
     @FXML private ListView<String> lv_dictionary;
     @FXML private ComboBox<Difficulty> cb_level;
     @FXML private Slider s_agents;
     @FXML private TextArea ta_candidates;
     @FXML private ProgressBar pb_progress;
-
+    @FXML
+    private Label lb_counterMission;
 
     @FXML void clearBtnClick(ActionEvent event) {
         tf_input.setText("");
@@ -98,6 +100,7 @@ public class BruteForceController implements SubController, Initializable {
     private void resetSetting(){
         pb_progress.setProgress(0);
         ta_candidates.clear();
+        isDMWorking.set(false);
     }
 
     @Override
@@ -163,13 +166,13 @@ public class BruteForceController implements SubController, Initializable {
             else
                 isTaskSizeSelected.set(true);
         });
-        /*isDMWorking.addListener((observable, oldValue, newValue) -> {
+        isDMWorking.addListener((observable, oldValue, newValue) -> {
 
-            if (newValue) {
+            if (!newValue) {
                appController.stopBruteForce();
             }
 
-        });*/
+        });
         /*numberOfTasksDone.addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -192,6 +195,9 @@ public class BruteForceController implements SubController, Initializable {
     public TextField getTf_output() {
         return tf_output;
     }
+    public TextField getTf_missionCounter(){
+        return tf_missionCounter;
+    }
 
     public TextField getTa_codeConfiguration() {
         return tf_codeConfiguration;
@@ -213,4 +219,5 @@ public class BruteForceController implements SubController, Initializable {
     public ProgressBar getPb_progress() { return pb_progress; }
 
     public BooleanProperty getIsDMWorking() { return isDMWorking; }
+    public Label getLb_counterMission(){ return lb_counterMission;}
 }
