@@ -44,11 +44,11 @@ public class EncryptDecryptController implements SubController {
     }
 
     @FXML void doneBtnClick(ActionEvent event) {
-
+        appController.encryptDecryptController_doneBtnClick();
     }
 
     @FXML void resetBtnClick(ActionEvent event) {
-        appController.resetBtnClick();
+        appController.resetBtnClickEncryptDecrypt();
     }
     //------------------------------------------------------------------------------------------------
 

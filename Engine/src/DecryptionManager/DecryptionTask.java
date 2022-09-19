@@ -8,6 +8,7 @@ import javafx.beans.property.BooleanProperty;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
 public class DecryptionTask implements Runnable {
@@ -23,14 +24,15 @@ public class DecryptionTask implements Runnable {
     private BooleanProperty isPause ;
 
     private AtomicInteger numberOfDoneTasksAtomic;
+    private AtomicLong timeOfDMOperation;
     private Consumer<Integer> showNumberOfTasksConsumer;
     BooleanProperty isDMWorking;
 
-    public DecryptionTask(EngineCapabilities engine,Consumer<Integer> checkFinish, int taskSize,BooleanProperty isDMWorking,
-                          Consumer<DTO_ConsumerPrinter> msgConsumer,Consumer<Integer> showNumberOfTasks,
+    public DecryptionTask(EngineCapabilities engine, Consumer<Integer> checkFinish, int taskSize, BooleanProperty isDMWorking,
+                          Consumer<DTO_ConsumerPrinter> msgConsumer, Consumer<Integer> showNumberOfTasks,
                           String sentenceToCheck, BlockingQueue<Runnable> results,
                           AtomicInteger numberOfTasksDone,
-                          Object pausingLock ,BooleanProperty isPause) {
+                          Object pausingLock , BooleanProperty isPause, AtomicLong timeOfDMOperation) {
         this.engine = engine;
         this.taskSize = taskSize;
         this.results = results;
@@ -42,10 +44,12 @@ public class DecryptionTask implements Runnable {
         this.checkFinish = checkFinish;
         this.isPause = isPause;
         this.pausingLock = pausingLock;
+        this.timeOfDMOperation = timeOfDMOperation;
     }
 
     @Override
     public void run() {
+        long start = System.nanoTime();
         for (int i = 0; i < taskSize; i++) {
             isPause();
             EngineCapabilities e = engine.clone();
@@ -56,6 +60,8 @@ public class DecryptionTask implements Runnable {
             engine.rotateRotorByABC();
             checkFinish.accept(numberOfDoneTasksAtomic.get());
         }
+        long end = System.nanoTime();
+        timeOfDMOperation.addAndGet(end-start);
 
     }
 

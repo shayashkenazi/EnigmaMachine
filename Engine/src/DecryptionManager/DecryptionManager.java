@@ -15,6 +15,7 @@ import javax.swing.*;
 import java.util.Arrays;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
 public class DecryptionManager implements Runnable{
@@ -39,6 +40,8 @@ public class DecryptionManager implements Runnable{
     private BooleanProperty isDMWorking;
     private AtomicInteger numberOfDoneTasksAtomic = new AtomicInteger(0);
     private int numOfAllTasks;
+
+    private AtomicLong timeOfDMOperation = new AtomicLong(0);
 
     public DecryptionManager(EnigmaEngine engine,Consumer<Integer> checkFinish, String sentence, int numOfAgents, Difficulty difficulty,
                              int taskSize, Consumer<DTO_ConsumerPrinter> msgConsumer,Consumer<Integer> showNumberOfTasks,
@@ -75,13 +78,7 @@ public class DecryptionManager implements Runnable{
                 break;
         }
         poolMission.shutdown();
-        try {
-            poolMission.awaitTermination(1,TimeUnit.MINUTES);
-        }
-        catch (InterruptedException e){
 
-        }
-        poolResult.shutdown();
     }
 
     private void runTasks(){
@@ -97,8 +94,6 @@ public class DecryptionManager implements Runnable{
 
     //
     public void createEasyTasks(EngineCapabilities engineCopy) {
-
-
             // Initialize all Rotors to start index position 0,0,0...
             for (int i = 0; i < engineCopy.getMachine().getRotorsInUseCount(); i++) {
                 Rotor currRotor = (Rotor) engineCopy.getMachine().getRotorsStack().get(i);
@@ -115,8 +110,9 @@ public class DecryptionManager implements Runnable{
                 // Full Tasks
                 for (int i = 0; i < sizeOfFullTasks; i++) {
 
-                    DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(),checkFinish, taskSize,isDMWorking, MsgConsumer, showNumberOfTasksConsumer,
-                            sentenceToCheck, results, numberOfDoneTasksAtomic,pausingLock,isPause);
+                    DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(),checkFinish, taskSize
+                            ,isDMWorking, MsgConsumer, showNumberOfTasksConsumer,
+                            sentenceToCheck, results, numberOfDoneTasksAtomic,pausingLock,isPause,timeOfDMOperation);
                     tasks.put(decryptionTask);
                     showNumberOfTasksConsumer.accept(numberOfDoneTasksAtomic.get());
                     engineCopy.moveRotorsToPosition(taskSize);
@@ -125,7 +121,7 @@ public class DecryptionManager implements Runnable{
                 // Last little task
                 DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(),checkFinish, lastTaskSize,isDMWorking,
                         MsgConsumer, showNumberOfTasksConsumer,
-                        sentenceToCheck, results, numberOfDoneTasksAtomic,pausingLock,isPause);
+                        sentenceToCheck, results, numberOfDoneTasksAtomic,pausingLock,isPause,timeOfDMOperation);
                 tasks.put(decryptionTask);
 
 
@@ -204,7 +200,6 @@ public class DecryptionManager implements Runnable{
         synchronized (pausingLock) {
             isPause.set(false);
             pausingLock.notifyAll();
-            //curDM.getPoolMission().notify();
         }
     }
     public void initCounter (){ numberOfDoneTasksAtomic.set(0);}
@@ -213,6 +208,9 @@ public class DecryptionManager implements Runnable{
     }
     public void setIsPause(boolean isPause){
         this.isPause.set(isPause);
+    }
+    public AtomicLong getTimeOfDMOperation() {
+        return timeOfDMOperation;
     }
    /* public BlockingQueue<Runnable> getResults() {
         return results;

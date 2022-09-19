@@ -51,7 +51,7 @@ public class BruteForceController implements SubController, Initializable {
     }
 
     @FXML void resetBtnClick(ActionEvent event) {
-        appController.resetBtnClick();
+        appController.resetBtnClickBruteForce();
     }
 
     @FXML void startBtnClick(ActionEvent event) {

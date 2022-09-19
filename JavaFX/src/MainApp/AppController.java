@@ -74,10 +74,7 @@ public class AppController implements Initializable {
         File fileSelected = fileChooser.showOpenDialog(primaryStage);
 
         if (fileSelected == null) {
-            JOptionPane.showMessageDialog(null, "Could NOT choose a file!", "???", JOptionPane.ERROR_MESSAGE);
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            Alert alert2 = new Alert()
-            alert.setContentText("Your message is Empty!");
+            Alert alert = new Alert(Alert.AlertType.ERROR,"Could NOT choose a file!");
             alert.show();
             return;
         }
@@ -86,7 +83,8 @@ public class AppController implements Initializable {
             engine.createEnigmaMachineFromXML(fileSelected.getAbsolutePath(), true);
             isXmlLoaded.set(true);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Could NOT choose a file!" + e.getMessage(), "???", JOptionPane.ERROR_MESSAGE);
+            Alert alert = new Alert(Alert.AlertType.ERROR,"Could NOT choose a file! " + e.getMessage());
+            alert.show();
             isXmlLoaded.set(false);
         }
 
@@ -94,7 +92,8 @@ public class AppController implements Initializable {
     @FXML
     void randomCodeBtnClick(ActionEvent event) {
         if (!isXmlLoaded.getValue()) {
-            JOptionPane.showMessageDialog(null, "you should load xml file first!", "???", JOptionPane.ERROR_MESSAGE);
+            Alert alert = new Alert(Alert.AlertType.ERROR,"you should load xml file first!");
+            alert.show();
             return;
         }
         createRandomMachineSetting();
@@ -108,11 +107,11 @@ public class AppController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        vb_MainApp.getStylesheets().add(getClass().getResource("/CSS/MainCss.css").toExternalForm());
+        /*vb_MainApp.getStylesheets().add(getClass().getResource("/CSS/MainCss.css").toExternalForm());
         cb_styles.getItems().add("Default");
         cb_styles.getItems().add("Default");
         cb_styles.getItems().add("Default");
-        cb_styles.getItems().add("Default");
+        cb_styles.getItems().add("Default");*/
         tab_EncryptDecrypt.setDisable(true);
         tab_bruteForce.setDisable(true);
         btn_RandomCode.setDisable(true);
@@ -167,7 +166,7 @@ public class AppController implements Initializable {
         }
         else if (!isMsgAllFromAbc(msg)) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Your message should contain only letters from the abc and dictionary!");
+            alert.setContentText("Your message should contain only letters from the abc");
             alert.show();
         }
         else {
@@ -186,9 +185,9 @@ public class AppController implements Initializable {
             alert.setContentText("Your message is Empty!");
             alert.show();
         }
-        else if (!isMsgAllFromAbc(msg)) {
+        else if (!isMsgAllFromAbcAndDictionary(msg)) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Your message should contain only letters from the abc!");
+            alert.setContentText("Your message should contain only letters from the abc and dictionary!");
             alert.show();
         }
         else {
@@ -202,7 +201,6 @@ public class AppController implements Initializable {
     }
 
     public Character encryptDecryptController_keyboardBtnClick(Character btnChar) {
-
         return engine.encodeDecodeCharacter(btnChar);
     }
 
@@ -277,6 +275,14 @@ public class AppController implements Initializable {
     }
 
     private boolean isMsgAllFromAbc(String msg) {
+
+        for (int i = 0; i < msg.length(); i++){
+            if (!engine.getMachine().isCharInACB(msg.charAt(i)))
+                return false;
+        }
+        return true;
+    }
+    private boolean isMsgAllFromAbcAndDictionary(String msg) {
         for (int i = 0; i < msg.length(); i++){
             if (!engine.getMachine().isCharInACB(msg.charAt(i)))
                 return false;
@@ -380,7 +386,8 @@ public class AppController implements Initializable {
     @FXML
     void setCodeBtnClick(ActionEvent event) throws IOException {
         if (!isXmlLoaded.getValue()) {
-            JOptionPane.showMessageDialog(null, "you should load xml file first!", "???", JOptionPane.ERROR_MESSAGE);
+            Alert alert = new Alert(Alert.AlertType.ERROR,"you should load xml file first!");
+            alert.show();
             return;
         }
         codeSetController.createSetCodeController(engine.createMachineInfoDTO());
@@ -393,7 +400,8 @@ public class AppController implements Initializable {
 
         List<Character> startPositionList = new ArrayList<>();
         if(!checkAllChoose()) {
-            JOptionPane.showMessageDialog(null, "you not enter all details", "???", JOptionPane.ERROR_MESSAGE);
+            Alert alert = new Alert(Alert.AlertType.ERROR,"you not enter all details");
+            alert.show();
             return;
         }
         List<Pair<String ,Pair<Integer,Integer>>> rotorsIDList = createIDListForRotors(startPositionList);
@@ -417,7 +425,8 @@ public class AppController implements Initializable {
         if(!checkRotorsIDList(rotorsIDList))
             return true;
         if(reflectorID == null) {
-            JOptionPane.showMessageDialog(null, "you not enter reflector ID", "???", JOptionPane.ERROR_MESSAGE);
+            Alert alert = new Alert(Alert.AlertType.ERROR,"you not enter reflector ID");
+            alert.show();
             return true;
         }
 
@@ -428,13 +437,15 @@ public class AppController implements Initializable {
         Set<String> set = new HashSet<>();
         if(rotorsIDList.size() < engine.getMachine().getRotorsInUseCount())
         {
-            JOptionPane.showMessageDialog(null,  "Error - You should select exactly " + dto_machineInfo.getNumOfUsedRotors()
-                    + " Rotors!", "???", JOptionPane.ERROR_MESSAGE);
+            Alert alert = new Alert(Alert.AlertType.ERROR,"Error - You should select exactly " + dto_machineInfo.getNumOfUsedRotors()
+                    + " Rotors!");
+            alert.show();
             return false;
         }
         for (Pair<String, Pair<Integer, Integer>> id : rotorsIDList) {
             if (set.contains(id.getKey())) {
-                JOptionPane.showMessageDialog(null, "you enter duplicate rotor", "???", JOptionPane.ERROR_MESSAGE);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "you enter duplicate rotor");
+                alert.show();
                 return false;
             }
             else
@@ -576,8 +587,17 @@ public class AppController implements Initializable {
 
         return cf -> {
             if(cf >= numOfAllTasks){
-                JOptionPane.showMessageDialog(null, "FINISH!", "DM finished", JOptionPane.INFORMATION_MESSAGE);
+                String s = new String();
+                long res =  allTaskSize.get() / bruteForceController.getTaskSize();
+                long average = curDM.getTimeOfDMOperation().get() / res;
+                DecimalFormat df = new DecimalFormat("#,###");
+                s +=  "The average time is - " + df.format(average) + " nano-seconds\n";
+                s += "The total time is - " + df.format(curDM.getTimeOfDMOperation().get()) + " nano-seconds";
+                //Alert alert = new Alert(Alert.AlertType.INFORMATION,s);
+                //alert.show();
+                JOptionPane.showMessageDialog(null, "FINISH! \n" + s, "DM finished", JOptionPane.INFORMATION_MESSAGE);
                 bruteForceController.getIsDMWorking().set(false);
+                curDM.getPoolResult().shutdown();
             }
         };
     }
@@ -620,11 +640,15 @@ public class AppController implements Initializable {
 
     //-------------------------------------- General --------------------------------------
 
-    public void resetBtnClick() {
+    public void resetBtnClickBruteForce() {
         engine.getMachine().initializePositionsForRotorsInStack();
         DTO_CodeDescription tmpDTO = engine.createCodeDescriptionDTO();
         tmpDTO.resetPlugBoard();
         bruteForceController.getTa_codeConfiguration().setText(createDescriptionFormat(tmpDTO));
+    }
+    public void resetBtnClickEncryptDecrypt() {
+        engine.getMachine().initializePositionsForRotorsInStack();
+        encryptDecryptController.getTa_codeConfiguration().setText(createDescriptionFormat(engine.createCodeDescriptionDTO()));
     }
 
     public int factorial (int x) {
@@ -649,5 +673,16 @@ public class AppController implements Initializable {
 
     public void resumeBruteForce() {
         curDM.resumeBruteForce();
+    }
+
+    public void encryptDecryptController_doneBtnClick() {
+        engine.getUsageHistory().addMsgAndTimeToCurrentCodeSegment(
+                encryptDecryptController.getTf_input().getText(),
+                encryptDecryptController.getTf_output().getText(),
+                100);
+        encryptDecryptController.getTa_statistics().setText(showHistoryAndStatistics());
+        encryptDecryptController.getTf_input().setText("");
+        encryptDecryptController.getTf_output().setText("");
+
     }
 }
