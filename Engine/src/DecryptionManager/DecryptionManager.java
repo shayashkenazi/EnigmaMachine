@@ -102,7 +102,7 @@ public class DecryptionManager implements Runnable{
             int sizeOfFullTasks = (int) (sizeOfAllTasks / taskSize);
             int lastTaskSize = (int) (sizeOfAllTasks % taskSize);
             poolMission.prestartAllCoreThreads();
-            //poolResult.prestartAllCoreThreads();
+            poolResult.prestartAllCoreThreads();
             try {
                 // Full Tasks
                 for (int i = 0; i < sizeOfFullTasks; i++) {

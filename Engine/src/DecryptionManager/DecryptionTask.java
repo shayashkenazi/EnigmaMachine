@@ -61,7 +61,9 @@ public class DecryptionTask implements Runnable {
             checkInDictionary(e);
             engine.rotateRotorByABC();
             numberOfDoneTasksAtomic.incrementAndGet();
-            numberOfDoneTasks.set(numberOfDoneTasksAtomic.get());
+            synchronized (numberOfDoneTasks){
+                numberOfDoneTasks.set(numberOfDoneTasksAtomic.get());
+            }
             checkFinish.accept(numberOfDoneTasksAtomic.get());
             /*synchronized (numberOfDoneTasks){
                 numberOfDoneTasks.setValue(numberOfDoneTasks.getValue() + 1);
@@ -79,9 +81,9 @@ public class DecryptionTask implements Runnable {
             if (engineClone.checkAtDictionary(res)) {
 
                 DTO_ConsumerPrinter dto_consumerPrinter = new DTO_ConsumerPrinter(tmpDTO, res, Thread.currentThread().getId());
-                //SmallClass smallClass = new SmallClass(dto_consumerPrinter, msgConsumer);
-                //results.put(smallClass);
-                msgConsumer.accept(dto_consumerPrinter);
+                SmallClass smallClass = new SmallClass(dto_consumerPrinter, msgConsumer);
+                results.add(smallClass);
+                //msgConsumer.accept(dto_consumerPrinter);
                 return true;
             }
             return false;

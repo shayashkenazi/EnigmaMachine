@@ -186,7 +186,12 @@ public class Factory {
     private String createAbc() {
         return cteEnigma.getCTEMachine().getABC().trim();
     }
-    private int createNumOfMaxAgents() { return cteEnigma.getCTEDecipher().getAgents(); }
+    private int createNumOfMaxAgents() throws Exception {
+        int res = cteEnigma.getCTEDecipher().getAgents();
+        if(res< 2 || res > 50)
+            throw new Exception("The number of agents is out of range!");
+        return res;
+    }
 
     private Set<String> createDictionary(){
 

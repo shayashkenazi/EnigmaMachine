@@ -34,7 +34,7 @@ public class BruteForceController implements SubController, Initializable {
     private Map<String, Button> dictionaryMap = new LinkedHashMap<>();
     BooleanProperty isTaskSizeSelected, isDifficultySelected, isDMWorking;
 
-    @FXML private Button btn_clear, btn_proccess, btn_reset, btn_start, btn_pause, btn_stop;
+    @FXML private Button btn_clear, btn_proccess, btn_reset, btn_start, btn_pause, btn_stop,btn_resume;
     @FXML private TextField tf_codeConfiguration, tf_input, tf_output, tf_searchBar, tf_taskSize,tf_missionCounter;
     @FXML private ListView<String> lv_dictionary;
     @FXML private ComboBox<Difficulty> cb_level;
@@ -173,6 +173,11 @@ public class BruteForceController implements SubController, Initializable {
             }
 
         });
+        btn_start.disableProperty().bind(isDifficultySelected.not().and(isTaskSizeSelected.not()));
+        btn_pause.disableProperty().bind(isDMWorking.not());
+        btn_stop.disableProperty().bind(isDMWorking.not());
+        btn_resume.disableProperty().bind(isDMWorking.not());
+
         /*numberOfTasksDone.addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {

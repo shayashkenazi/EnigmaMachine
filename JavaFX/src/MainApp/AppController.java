@@ -66,7 +66,8 @@ public class AppController implements Initializable {
     @FXML private HBox hb_setCode;
     @FXML private Button btn_RandomCode, btn_SetCode, btn_loadFile,btn_resume;
     @FXML private Tab tab_EncryptDecrypt, tab_bruteForce, tab_machine;
-
+    @FXML
+    private ComboBox<String> cb_styles;
 
     @FXML
     void loadFileBtnClick(ActionEvent event) {
@@ -85,7 +86,7 @@ public class AppController implements Initializable {
             engine.createEnigmaMachineFromXML(fileSelected.getAbsolutePath(), true);
             isXmlLoaded.set(true);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Could NOT choose a file!", "???", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Could NOT choose a file!" + e.getMessage(), "???", JOptionPane.ERROR_MESSAGE);
             isXmlLoaded.set(false);
         }
 
@@ -108,7 +109,10 @@ public class AppController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         vb_MainApp.getStylesheets().add(getClass().getResource("/CSS/MainCss.css").toExternalForm());
-
+        cb_styles.getItems().add("Default");
+        cb_styles.getItems().add("Default");
+        cb_styles.getItems().add("Default");
+        cb_styles.getItems().add("Default");
         tab_EncryptDecrypt.setDisable(true);
         tab_bruteForce.setDisable(true);
         btn_RandomCode.setDisable(true);
@@ -148,6 +152,11 @@ public class AppController implements Initializable {
                 initializeDictionaryListView();
             }
         });
+        /*bruteForceController.getIsDMWorking().addListener((obs, old, newValue) -> {
+            if(newValue)
+                bruteForceController.getPb_progress().setProgress((double)numberOfTasksDone.getValue()/allTaskSize.getValue());
+        });*/
+
 
 
     }
@@ -166,7 +175,7 @@ public class AppController implements Initializable {
         }
         else if (!isMsgAllFromAbc(msg)) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Your message should contain only letters from the abc!");
+            alert.setContentText("Your message should contain only letters from the abc and dictionary!");
             alert.show();
         }
         else {
@@ -276,9 +285,14 @@ public class AppController implements Initializable {
     }
 
     private boolean isMsgAllFromAbc(String msg) {
-
         for (int i = 0; i < msg.length(); i++){
             if (!engine.getMachine().isCharInACB(msg.charAt(i)))
+                return false;
+        }
+        Set<String> dictionary = engine.getMachine().getMyDictionary();
+        String[] wordsAll = msg.split(" ");
+        for (String str : wordsAll){
+            if (!dictionary.contains(str))
                 return false;
         }
         return true;
@@ -583,7 +597,9 @@ public class AppController implements Initializable {
                     .append(" found by thread -")
                     .append(cf.getThreadId())
                     .append("\n");
-            bruteForceController.getTa_candidates().appendText(sb.toString());
+            synchronized (bruteForceController.getTa_candidates()){
+                bruteForceController.getTa_candidates().appendText(sb.toString());
+            }
         };
     }
 
