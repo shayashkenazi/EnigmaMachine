@@ -107,11 +107,11 @@ public class AppController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        /*vb_MainApp.getStylesheets().add(getClass().getResource("/CSS/MainCss.css").toExternalForm());
+        vb_MainApp.getStylesheets().add(getClass().getResource("/CSS/Dark.css").toExternalForm());
         cb_styles.getItems().add("Default");
         cb_styles.getItems().add("Default");
         cb_styles.getItems().add("Default");
-        cb_styles.getItems().add("Default");*/
+        cb_styles.getItems().add("Default");
         tab_EncryptDecrypt.setDisable(true);
         tab_bruteForce.setDisable(true);
         btn_RandomCode.setDisable(true);

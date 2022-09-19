@@ -1,0 +1,75 @@
+.button, .combo-box {
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Arial Narrow";
+    -fx-font-weight: bold;
+    -fx-background-color: #000000;
+    /*-fx-background-color: linear-gradient(#61a2b1, #2A5058);*/
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+.label {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Fira Code Light";
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+}
+.check-box {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Fira Code Light";
+    -fx-text-fill: #EAEAEA;
+    -fx-background-color: #000000;
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+}
+
+.root {
+    -fx-background-color: #ff0000;
+}
+
+.-center-pane {
+    -fx-background-color: #394867;
+}
+.scroll-pane {
+    -fx-background-color: #394867;
+}
+
+#test123 {
+    -fx-background-color: #FF0000;
+}
+
+.success-label {
+    -fx-text-fill: #008000;
+}
+
+.failure-label {
+    -fx-text-fill: #FF0000;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: black;
+}
+
+GridPane .label {
+    -fx-text-fill: black;
+}
+
+.-update-Freq {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Fira Code Light";
+    -fx-text-fill: #EAEAEA;
+}
+
+.labelTitle {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Fira Code Light";
+    -fx-text-fill: #EAEAEA;
+}
+
+#FitnessAxis {
+    -fx-tick-label-fill: #EAEAEA;
+}
+
+#GenerationAxis {
+    -fx-tick-label-fill: #EAEAEA;
+}
