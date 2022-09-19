@@ -37,11 +37,19 @@ public class CodeSetController implements Initializable, SubController {
     @FXML void setBtnClick(ActionEvent event) {
 
         appController.codeSetController_setBtnClick();
-
-    }
-    @FXML void addToPlugBoardBtnClick(ActionEvent event) {
         vb_plugBoard.getChildren().clear();
         plugBoardList = new ArrayList<>();
+
+    }
+
+    @FXML
+    void cancelBtnClick(ActionEvent event) {
+        appController.codeSetController_cancelBtnClick();
+        vb_plugBoard.getChildren().clear();
+    }
+    @FXML void addToPlugBoardBtnClick(ActionEvent event) {
+        //vb_plugBoard.getChildren().clear();
+        //plugBoardList = new ArrayList<>();
         HBox curHBox = new HBox(40);
         curHBox.setAlignment(Pos.CENTER);
         DTO_MachineInfo dto_machineInfo = appController.getDtoMachineInfo();
@@ -65,7 +73,7 @@ public class CodeSetController implements Initializable, SubController {
         hb_rotors.getChildren().clear();
         cb_reflector.setValue("");
         for(int i = 0; i < dto_machineInfo.getNumOfUsedRotors(); i++){
-            HBox curHBox = new HBox(40);
+            HBox curHBox = new HBox(20);
             curHBox.setAlignment(Pos.CENTER);
             int rotorNum = i + 1;
             Label label = new Label("Rotor number " + rotorNum);
@@ -130,6 +138,7 @@ public class CodeSetController implements Initializable, SubController {
         this.appController = mainController;
     }
     public VBox getCodeSetVbox(){return vb_mainSetCode;}
+    public void resetPlugBoard(){ this.plugBoardList = new ArrayList<>();}
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

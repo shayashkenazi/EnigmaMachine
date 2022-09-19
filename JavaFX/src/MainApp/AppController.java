@@ -400,16 +400,20 @@ public class AppController implements Initializable {
 
         List<Character> startPositionList = new ArrayList<>();
         if(!checkAllChoose()) {
+            codeSetController.resetPlugBoard();
             Alert alert = new Alert(Alert.AlertType.ERROR,"you not enter all details");
             alert.show();
             return;
         }
+
         List<Pair<String ,Pair<Integer,Integer>>> rotorsIDList = createIDListForRotors(startPositionList);
         String reflectorID = codeSetController.getReflector().getValue();
         List<Pair<Character, Character>> plugBoard = createPlugBoard();
         DTO_CodeDescription res = new DTO_CodeDescription(engine.createMachineInfoDTO().getABC(),rotorsIDList,startPositionList,reflectorID,plugBoard);
-        if (searchErrorInitInput(rotorsIDList,reflectorID,plugBoard))
+        if (searchErrorInitInput(rotorsIDList,reflectorID,plugBoard)) {
+            codeSetController.resetPlugBoard();
             return;
+        }
         engine.buildRotorsStack(res, true);
         isCodeChosen.set(true);
         sp_mainPage.setContent(rootNode);
@@ -421,7 +425,8 @@ public class AppController implements Initializable {
         tf_machineConfiguration.setText(codeConfigurationText);
     }
 
-    private boolean searchErrorInitInput(List<Pair<String, Pair<Integer, Integer>>> rotorsIDList, String reflectorID, List<Pair<Character, Character>> plugBoard) {
+    private boolean searchErrorInitInput(List<Pair<String, Pair<Integer, Integer>>> rotorsIDList,
+                                         String reflectorID, List<Pair<Character, Character>> plugBoard) {
         if(!checkRotorsIDList(rotorsIDList))
             return true;
         if(reflectorID == null) {
@@ -429,9 +434,30 @@ public class AppController implements Initializable {
             alert.show();
             return true;
         }
+        if(!checkPlugBoardList(plugBoard))
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR,"Please dont repeat chars!");
+            alert.show();
+            return true;
+        }
 
         return false;
 
+    }
+    private boolean checkPlugBoardList(List<Pair<Character, Character>> plugBoard)
+    {
+        Set <Character> set = new HashSet<>();
+        for(Pair<Character,Character> pair : plugBoard){
+            if(pair.getKey().equals(pair.getValue()))
+                return false;
+            if(set.contains(pair.getKey()))
+                return false;
+            set.add(pair.getKey());
+            if( set.contains(pair.getValue()))
+                return false;
+            set.add(pair.getValue());
+        }
+        return true;
     }
     private boolean checkRotorsIDList(List<Pair<String, Pair<Integer, Integer>>> rotorsIDList) {
         Set<String> set = new HashSet<>();
@@ -455,6 +481,10 @@ public class AppController implements Initializable {
     }
     private boolean checkAllChoose(){
         for(Pair<ChoiceBox<String>, ChoiceBox<Character>> pair :codeSetController.getRotorsChoiceBoxes()) {
+            if(pair.getValue().getValue() == null || pair.getKey().getValue() == null)
+                return false;
+        }
+        for(Pair<ChoiceBox<Character>, ChoiceBox<Character>> pair :codeSetController.getPlugBoardList()) {
             if(pair.getValue().getValue() == null || pair.getKey().getValue() == null)
                 return false;
         }
@@ -684,5 +714,9 @@ public class AppController implements Initializable {
         encryptDecryptController.getTf_input().setText("");
         encryptDecryptController.getTf_output().setText("");
 
+    }
+
+    public void codeSetController_cancelBtnClick() {
+        sp_mainPage.setContent(rootNode);
     }
 }
