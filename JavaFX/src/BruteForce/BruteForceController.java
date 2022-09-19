@@ -32,7 +32,7 @@ public class BruteForceController implements SubController, Initializable {
     private Trie trie = new Trie();
     private AppController appController;
     private Map<String, Button> dictionaryMap = new LinkedHashMap<>();
-    BooleanProperty isTaskSizeSelected, isDifficultySelected, isDMWorking;
+    BooleanProperty isTaskSizeSelected, isDifficultySelected, isDMWorking,isInputSelected;
 
     @FXML private Button btn_clear, btn_proccess, btn_reset, btn_start, btn_pause, btn_stop,btn_resume;
     @FXML private TextField tf_codeConfiguration, tf_input, tf_output, tf_searchBar, tf_taskSize,tf_missionCounter;
@@ -98,8 +98,7 @@ public class BruteForceController implements SubController, Initializable {
         isDifficultySelected = new SimpleBooleanProperty(false);
         isTaskSizeSelected = new SimpleBooleanProperty(false);
         isDMWorking = new SimpleBooleanProperty(false);
-
-        btn_start.disableProperty().bind(isTaskSizeSelected.not().or(isDifficultySelected.not()));
+        isInputSelected = new SimpleBooleanProperty(false);
 
         tf_searchBar.textProperty().addListener((observable, oldValue, newValue) -> {
             tf_searchBar.setText(newValue.toUpperCase());
@@ -163,7 +162,13 @@ public class BruteForceController implements SubController, Initializable {
             }
 
         });
-        btn_start.disableProperty().bind(isDifficultySelected.not().and(isTaskSizeSelected.not()));
+
+        btn_start.disableProperty().bind(isTaskSizeSelected.not().or(isDifficultySelected.not()));
+
+
+        //btn_start.disableProperty().bind(isDifficultySelected.not().and(isTaskSizeSelected.not()));
+
+
         btn_pause.disableProperty().bind(isDMWorking.not());
         btn_stop.disableProperty().bind(isDMWorking.not());
         btn_resume.disableProperty().bind(isDMWorking.not());

@@ -119,7 +119,7 @@ public class DecryptionManager implements Runnable{
                         sentenceToCheck, results, numberOfDoneTasksAtomic,pausingLock,isPause);
                 tasks.put(decryptionTask);
 
-                poolMission.shutdown();
+
 
 
                 /*System.out.println(numberOfDoneTasksAtomic.get());
@@ -211,6 +211,14 @@ public class DecryptionManager implements Runnable{
                 createImpossibleTasks(copyEngine);
                 break;
         }
+        poolMission.shutdown();
+        try {
+            poolMission.awaitTermination(1,TimeUnit.MINUTES);
+        }
+        catch (InterruptedException e){
+
+        }
+        poolResult.shutdown();
     }
     public CustomThreadPoolExecutor getPoolMission() {
         return poolMission;

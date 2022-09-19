@@ -583,7 +583,7 @@ public class AppController implements Initializable {
             if(cf >= numOfAllTasks){
                 JOptionPane.showMessageDialog(null, "FINISH!", "DM finished", JOptionPane.ERROR_MESSAGE);
                 bruteForceController.getIsDMWorking().set(false);
-                curDM.getPoolResult().shutdown();
+                //curDM.getPoolResult().shutdown();
             }
         };
     }
