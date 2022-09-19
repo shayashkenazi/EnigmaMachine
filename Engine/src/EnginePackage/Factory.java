@@ -62,7 +62,7 @@ public class Factory {
         MapNumbers.put("I", 0);
         MapNumbers.put("II", 0);
         MapNumbers.put("III", 0);
-        MapNumbers.put("VI", 0);
+        MapNumbers.put("IV", 0);
         MapNumbers.put("V", 0);
         for (CTEReflector cteRef : reflectorArrayList) {
             if (MapNumbers.containsKey(cteRef.getId().toUpperCase())) {

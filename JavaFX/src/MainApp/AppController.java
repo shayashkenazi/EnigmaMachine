@@ -346,7 +346,7 @@ public class AppController implements Initializable {
         MapNumbers.put(1,"I");
         MapNumbers.put(2,"II");
         MapNumbers.put(3,"III");
-        MapNumbers.put(4,"VI");
+        MapNumbers.put(4,"IV");
         MapNumbers.put(5,"V");
         return MapNumbers.get(rand.nextInt(numOfReflectors) + 1);
 

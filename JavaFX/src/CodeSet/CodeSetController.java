@@ -123,7 +123,7 @@ public class CodeSetController implements Initializable, SubController {
         MapNumbers.put(1,"I");
         MapNumbers.put(2,"II");
         MapNumbers.put(3,"III");
-        MapNumbers.put(4,"VI");
+        MapNumbers.put(4,"IV");
         MapNumbers.put(5,"V");
         List<String> res1 = new ArrayList<>();
         for(int i = 0; i < numOfReflectors; i++) {
