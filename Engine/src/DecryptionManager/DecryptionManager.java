@@ -56,23 +56,32 @@ public class DecryptionManager implements Runnable{
         this.showNumberOfTasksConsumer = showNumberOfTasks;
         this.numOfAllTasks = numOfAllTasks;
         this.checkFinish = checkFinish;
-        //this.numberOfDoneTasks.set(0);
-        // TODO: what is keepAlive?
+    }
 
-        poolMission.beforeExecute(Thread.currentThread(), new Runnable() {
-            @Override
-            public void run() {
+    @Override
+    public void run() {
+        switch (difficulty){
+            case EASY:
+                createEasyTasks(copyEngine);
+                break;
+            case MEDIUM:
+                createMediumTasks(copyEngine);
+                break;
+            case HARD:
+                createHardTasks(copyEngine);
+                break;
+            case IMPOSSIBLE:
+                createImpossibleTasks(copyEngine);
+                break;
+        }
+        poolMission.shutdown();
+        try {
+            poolMission.awaitTermination(1,TimeUnit.MINUTES);
+        }
+        catch (InterruptedException e){
 
-            }
-        });
-
-        poolMission.afterExecute(new Runnable() {
-            @Override
-            public void run() {
-                isDMWorking.set(false);
-                //JOptionPane.showMessageDialog(null, "FINISH from pool!", "???", JOptionPane.ERROR_MESSAGE);
-            }
-        }, null);
+        }
+        poolResult.shutdown();
     }
 
     private void runTasks(){
@@ -118,16 +127,6 @@ public class DecryptionManager implements Runnable{
                         MsgConsumer, showNumberOfTasksConsumer,
                         sentenceToCheck, results, numberOfDoneTasksAtomic,pausingLock,isPause);
                 tasks.put(decryptionTask);
-
-
-
-
-                /*System.out.println(numberOfDoneTasksAtomic.get());
-                System.out.println(Thread.currentThread().getId());*/
-               /* if(!poolMission.awaitTermination(1,TimeUnit.MINUTES))
-                {
-                    poolMission.shutdownNow();
-                }*/
 
 
             } catch (Exception ee) {
@@ -195,31 +194,6 @@ public class DecryptionManager implements Runnable{
         }
     }
 
-    @Override
-    public void run() {
-        switch (difficulty){
-            case EASY:
-                createEasyTasks(copyEngine);
-                break;
-            case MEDIUM:
-                createMediumTasks(copyEngine);
-                break;
-            case HARD:
-                createHardTasks(copyEngine);
-                break;
-            case IMPOSSIBLE:
-                createImpossibleTasks(copyEngine);
-                break;
-        }
-        poolMission.shutdown();
-        try {
-            poolMission.awaitTermination(1,TimeUnit.MINUTES);
-        }
-        catch (InterruptedException e){
-
-        }
-        poolResult.shutdown();
-    }
     public CustomThreadPoolExecutor getPoolMission() {
         return poolMission;
     }

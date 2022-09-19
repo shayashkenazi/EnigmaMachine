@@ -50,11 +50,8 @@ public class AppController implements Initializable {
     private Node rootNode;
     private DTO_MachineInfo dto_machineInfo;
     private DTO_CodeDescription dto_codeDescription;
-    //private final Object pausingLock = new Object();
-    //private BooleanProperty isPause = new SimpleBooleanProperty(false);
     private DecryptionManager curDM;
     private IntegerProperty allTaskSize = new SimpleIntegerProperty(0);
-    //private AtomicInteger numberOfTasksDone = new AtomicInteger(0);
     private Stage primaryStage;
     private Thread bruteForceThread;
 
@@ -78,6 +75,10 @@ public class AppController implements Initializable {
 
         if (fileSelected == null) {
             JOptionPane.showMessageDialog(null, "Could NOT choose a file!", "???", JOptionPane.ERROR_MESSAGE);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            Alert alert2 = new Alert()
+            alert.setContentText("Your message is Empty!");
+            alert.show();
             return;
         }
 
@@ -151,19 +152,11 @@ public class AppController implements Initializable {
                 initializeDictionaryListView();
             }
         });
-        /*bruteForceController.getIsDMWorking().addListener((obs, old, newValue) -> {
-            if(newValue)
-                bruteForceController.getPb_progress().setProgress((double)numberOfTasksDone.getValue()/allTaskSize.getValue());
-        });*/
 
 
 
     }
-
     //----------------------------------------- EncryptDecrypt Component -----------------------------------------
-/*    @FXML void EncryptDecryptTabClick(ActionEvent event) {
-        encryptDecryptController.initializeTab();
-    }*/
     public void encryptDecryptController_proccessBtnClick() {
 
         String msg = encryptDecryptController.getTf_input().getText();
@@ -549,7 +542,9 @@ public class AppController implements Initializable {
     }
     public void stopBruteForce(){
         curDM.getPoolMission().shutdownNow();
+        curDM.getPoolResult().shutdownNow();
         allTaskSize = new SimpleIntegerProperty(0);
+
         bruteForceThread.interrupt();
     }
 
@@ -557,7 +552,7 @@ public class AppController implements Initializable {
         Consumer<DTO_ConsumerPrinter> MsgConsumer = getMsgConsumer();
         Consumer<Integer> showNumberOfTasks = getNumberOfTaskConsumer();
         setAllTaskSize(bruteForceController.getDifficulty());
-        bruteForceController.getTf_missionCounter().setText(String.valueOf(allTaskSize.get()));
+        bruteForceController.getLb_missionCounter().setText(String.valueOf(allTaskSize.get()));
         Consumer<Integer> checkFinishConsumer =  getCheckFinishConsumer(allTaskSize.get());
         DecryptionManager DM = new DecryptionManager(engine.clone(),checkFinishConsumer, bruteForceController.getTf_output().getText(),
                 bruteForceController.getNumOfAgents(), bruteForceController.getDifficulty(),
@@ -577,13 +572,12 @@ public class AppController implements Initializable {
                 //System.out.println(res + "\n");
         };
     }
-    private Consumer<Integer> getCheckFinishConsumer(Integer numOfAllTasks)
-    {
+    private Consumer<Integer> getCheckFinishConsumer(Integer numOfAllTasks) {
+
         return cf -> {
             if(cf >= numOfAllTasks){
-                JOptionPane.showMessageDialog(null, "FINISH!", "DM finished", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "FINISH!", "DM finished", JOptionPane.INFORMATION_MESSAGE);
                 bruteForceController.getIsDMWorking().set(false);
-                //curDM.getPoolResult().shutdown();
             }
         };
     }

@@ -113,13 +113,12 @@
                            </font>
                         </Label>
                         <ProgressBar fx:id="pb_progress" prefHeight="18.0" prefWidth="187.0" progress="0.0" />
-                        <TextField fx:id="tf_missionCounter" prefHeight="25.0" prefWidth="64.0" />
+                        <Label fx:id="lb_counterMission" />
                      </children>
                      <VBox.margin>
                         <Insets left="170.0" />
                      </VBox.margin>
                   </HBox>
-                  <Label fx:id="lb_counterMission" />
                   <TextArea fx:id="ta_candidates" prefHeight="75.0" prefWidth="600.0" />
                </children>
             </VBox>

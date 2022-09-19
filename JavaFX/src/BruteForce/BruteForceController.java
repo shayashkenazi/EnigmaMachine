@@ -22,20 +22,17 @@ import javafx.scene.input.MouseEvent;
 
 import javax.naming.Binding;
 import java.net.URL;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class BruteForceController implements SubController, Initializable {
 
     private Trie trie = new Trie();
     private AppController appController;
     private Map<String, Button> dictionaryMap = new LinkedHashMap<>();
-    BooleanProperty isTaskSizeSelected, isDifficultySelected, isDMWorking,isInputSelected;
+    BooleanProperty isTaskSizeSelected, isDifficultySelected, isDMWorking, isInputSelected, isPaused;
 
     @FXML private Button btn_clear, btn_proccess, btn_reset, btn_start, btn_pause, btn_stop,btn_resume;
-    @FXML private TextField tf_codeConfiguration, tf_input, tf_output, tf_searchBar, tf_taskSize,tf_missionCounter;
+    @FXML private TextField tf_codeConfiguration, tf_input, tf_output, tf_searchBar, tf_taskSize;
     @FXML private ListView<String> lv_dictionary;
     @FXML private ComboBox<Difficulty> cb_level;
     @FXML private Slider s_agents;
@@ -65,14 +62,20 @@ public class BruteForceController implements SubController, Initializable {
     @FXML
     void stopBtnClick(ActionEvent event) {
         resetSetting();
+        isPaused.set(false);
+        isDMWorking.set(false);
         appController.stopBruteForce();
     }
     @FXML
     void pauseBtnClick(ActionEvent event) {
+        isPaused.set(true);
+        isDMWorking.set(false);
         appController.pauseBruteForce();
     }
     @FXML
     void resumeBtnClick(ActionEvent event) {
+        isDMWorking.set(true);
+        isPaused.set(false);
         appController.resumeBruteForce();
     }
 
@@ -87,18 +90,23 @@ public class BruteForceController implements SubController, Initializable {
 
     }
     private void resetSetting(){
-        pb_progress.setProgress(0);
+        pb_progress.setProgress(0); // TODO: fix
         ta_candidates.clear();
-        isDMWorking.set(false);
+        lb_counterMission.setText("");
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) { // TODO: use Scene Builder
+    public void initialize(URL location, ResourceBundle resources) {
 
         isDifficultySelected = new SimpleBooleanProperty(false);
         isTaskSizeSelected = new SimpleBooleanProperty(false);
         isDMWorking = new SimpleBooleanProperty(false);
         isInputSelected = new SimpleBooleanProperty(false);
+        isPaused = new SimpleBooleanProperty(false);
+
+        tf_output.textProperty().addListener((observable, oldValue, newValue) -> {
+            isInputSelected.setValue(!Objects.equals(newValue, ""));
+        });
 
         tf_searchBar.textProperty().addListener((observable, oldValue, newValue) -> {
             tf_searchBar.setText(newValue.toUpperCase());
@@ -157,30 +165,24 @@ public class BruteForceController implements SubController, Initializable {
         });
         isDMWorking.addListener((observable, oldValue, newValue) -> {
 
-            if (!newValue) {
+            if (!newValue && !isPaused.getValue()) {
                appController.stopBruteForce();
             }
-
         });
 
-        btn_start.disableProperty().bind(isTaskSizeSelected.not().or(isDifficultySelected.not()));
+        initializeDMButtons();
+    }
 
+    private void initializeDMButtons(){
 
-        //btn_start.disableProperty().bind(isDifficultySelected.not().and(isTaskSizeSelected.not()));
+        btn_start.disableProperty().bind(isTaskSizeSelected.not()
+                .or(isDifficultySelected.not()
+                        .or(isInputSelected.not()
+                                .or(isDMWorking.not().and(isPaused)).or(isDMWorking))));
 
-
+        btn_resume.disableProperty().bind(isPaused.not());
         btn_pause.disableProperty().bind(isDMWorking.not());
-        btn_stop.disableProperty().bind(isDMWorking.not());
-        btn_resume.disableProperty().bind(isDMWorking.not());
-
-        /*numberOfTasksDone.addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                pb_progress.progressProperty().bind(Bindings.divide(appController.getNumberOfTasksDone(),
-                        appController.getAllTaskSize()));
-            }
-        });*/
-
+        btn_stop.disableProperty().bind(isDMWorking.not()); // TODO: add stop when paused
     }
 
     public Trie getTrie() { return trie; }
@@ -195,8 +197,8 @@ public class BruteForceController implements SubController, Initializable {
     public TextField getTf_output() {
         return tf_output;
     }
-    public TextField getTf_missionCounter(){
-        return tf_missionCounter;
+    public Label getLb_missionCounter(){
+        return lb_counterMission;
     }
 
     public TextField getTa_codeConfiguration() {
