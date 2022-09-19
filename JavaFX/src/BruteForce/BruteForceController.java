@@ -57,17 +57,6 @@ public class BruteForceController implements SubController, Initializable {
         appController.resetBtnClick();
     }
 
-    @FXML void searchBarTextChanged(InputMethodEvent event) { // TODO: Delete - doesn't work
-
-        lv_dictionary.getItems().clear();
-        List<String> allChildren = trie.returnAllChildren(tf_searchBar.getText());
-
-        for (String childWord : allChildren) {
-            lv_dictionary.getItems().add(childWord);
-        }
-    }
-
-
     @FXML void startBtnClick(ActionEvent event) {
         ta_candidates.clear();
         appController.startBruteForce();
@@ -113,9 +102,10 @@ public class BruteForceController implements SubController, Initializable {
         btn_start.disableProperty().bind(isTaskSizeSelected.not().or(isDifficultySelected.not()));
 
         tf_searchBar.textProperty().addListener((observable, oldValue, newValue) -> {
+            tf_searchBar.setText(newValue.toUpperCase());
             lv_dictionary.getItems().clear();
 
-            List<String> allChildren = trie.returnAllChildren(newValue);
+            List<String> allChildren = trie.returnAllChildren(tf_searchBar.getText());
 
             for (String childWord : allChildren) {
                 lv_dictionary.getItems().add(childWord);
