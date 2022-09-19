@@ -140,11 +140,7 @@ public class BruteForceController implements SubController, Initializable {
             s_agents.setValue(newValue.intValue());
         });
 
-        // Initialize difficulty ComboBox
-        cb_level.getItems().add(Difficulty.EASY);
-        cb_level.getItems().add(Difficulty.MEDIUM);
-        cb_level.getItems().add(Difficulty.HARD);
-        cb_level.getItems().add(Difficulty.IMPOSSIBLE);
+        initializeDifficultyComboBox();
 
         cb_level.valueProperty().addListener(observable -> {
             isDifficultySelected.set(cb_level.getValue() != null);
@@ -171,6 +167,13 @@ public class BruteForceController implements SubController, Initializable {
         });
 
         initializeDMButtons();
+    }
+
+    private void initializeDifficultyComboBox() {
+        cb_level.getItems().add(Difficulty.EASY);
+        cb_level.getItems().add(Difficulty.MEDIUM);
+        cb_level.getItems().add(Difficulty.HARD);
+        cb_level.getItems().add(Difficulty.IMPOSSIBLE);
     }
 
     private void initializeDMButtons(){
