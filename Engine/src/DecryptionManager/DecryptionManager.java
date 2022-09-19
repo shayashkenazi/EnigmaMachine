@@ -12,6 +12,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
 import javax.swing.*;
+import java.util.Arrays;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -35,14 +36,13 @@ public class DecryptionManager implements Runnable{
     private Consumer<DTO_ConsumerPrinter> MsgConsumer;
     private Consumer<Integer> showNumberOfTasksConsumer;
     private Consumer<Integer> checkFinish;
-    private IntegerProperty numberOfDoneTasks;
     private BooleanProperty isDMWorking;
     private AtomicInteger numberOfDoneTasksAtomic = new AtomicInteger(0);
     private int numOfAllTasks;
 
     public DecryptionManager(EnigmaEngine engine,Consumer<Integer> checkFinish, String sentence, int numOfAgents, Difficulty difficulty,
                              int taskSize, Consumer<DTO_ConsumerPrinter> msgConsumer,Consumer<Integer> showNumberOfTasks,
-                             IntegerProperty numberOfDoneTasks, BooleanProperty isDMWorking,int numOfAllTasks){
+                              BooleanProperty isDMWorking,int numOfAllTasks){
         copyEngine = engine;
         sentenceToCheck = sentence;
         this.difficulty = difficulty;
@@ -52,7 +52,6 @@ public class DecryptionManager implements Runnable{
         poolMission = new CustomThreadPoolExecutor(numOfAgents, numOfAgents, 5, TimeUnit.MILLISECONDS, tasks);
         poolResult = new ThreadPoolExecutor(1, 1, 5, TimeUnit.MILLISECONDS, results);
         MsgConsumer = msgConsumer;
-        this.numberOfDoneTasks = numberOfDoneTasks;
         this.isDMWorking = isDMWorking;
         this.showNumberOfTasksConsumer = showNumberOfTasks;
         this.numOfAllTasks = numOfAllTasks;
@@ -108,19 +107,20 @@ public class DecryptionManager implements Runnable{
                 for (int i = 0; i < sizeOfFullTasks; i++) {
 
                     DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(),checkFinish, taskSize,isDMWorking, MsgConsumer, showNumberOfTasksConsumer,
-                            sentenceToCheck, results, numberOfDoneTasks, numberOfDoneTasksAtomic,pausingLock,isPause);
+                            sentenceToCheck, results, numberOfDoneTasksAtomic,pausingLock,isPause);
                     tasks.put(decryptionTask);
-                    showNumberOfTasksConsumer.accept(numberOfDoneTasks.getValue());
+                    showNumberOfTasksConsumer.accept(numberOfDoneTasksAtomic.get());
                     engineCopy.moveRotorsToPosition(taskSize);
                 }
 
                 // Last little task
                 DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(),checkFinish, lastTaskSize,isDMWorking,
                         MsgConsumer, showNumberOfTasksConsumer,
-                        sentenceToCheck, results, numberOfDoneTasks, numberOfDoneTasksAtomic,pausingLock,isPause);
+                        sentenceToCheck, results, numberOfDoneTasksAtomic,pausingLock,isPause);
                 tasks.put(decryptionTask);
 
                 poolMission.shutdown();
+
 
                 /*System.out.println(numberOfDoneTasksAtomic.get());
                 System.out.println(Thread.currentThread().getId());*/
@@ -149,6 +149,7 @@ public class DecryptionManager implements Runnable{
         for (int i = 0; i < engineCopy.getMachine().getRotorsInUseCount(); i++) {
             arrRotors[i] = engineCopy.getMachine().getRotorsStack().get(i).getID();
         }
+        //Arrays.sort(arrRotors);
         permuteAndMedTask(arrRotors,0);
     }
     public void permuteAndMedTask(String[] RotorIdArray, int start) {
@@ -214,6 +215,9 @@ public class DecryptionManager implements Runnable{
     public CustomThreadPoolExecutor getPoolMission() {
         return poolMission;
     }
+    public ThreadPoolExecutor getPoolResult(){
+        return poolResult;
+    }
     public void resumeBruteForce() {
         synchronized (pausingLock) {
             isPause.set(false);
@@ -221,6 +225,7 @@ public class DecryptionManager implements Runnable{
             //curDM.getPoolMission().notify();
         }
     }
+    public void initCounter (){ numberOfDoneTasksAtomic.set(0);}
     public BooleanProperty getIsPause(){
         return isPause;
     }

@@ -55,7 +55,6 @@ public class AppController implements Initializable {
     private DecryptionManager curDM;
     private IntegerProperty allTaskSize = new SimpleIntegerProperty(0);
     //private AtomicInteger numberOfTasksDone = new AtomicInteger(0);
-    private IntegerProperty numberOfTasksDone = new SimpleIntegerProperty(0);
     private Stage primaryStage;
     private Thread bruteForceThread;
 
@@ -551,7 +550,6 @@ public class AppController implements Initializable {
     public void stopBruteForce(){
         curDM.getPoolMission().shutdownNow();
         allTaskSize = new SimpleIntegerProperty(0);
-        numberOfTasksDone = new SimpleIntegerProperty(0);
         bruteForceThread.interrupt();
     }
 
@@ -564,7 +562,7 @@ public class AppController implements Initializable {
         DecryptionManager DM = new DecryptionManager(engine.clone(),checkFinishConsumer, bruteForceController.getTf_output().getText(),
                 bruteForceController.getNumOfAgents(), bruteForceController.getDifficulty(),
                 bruteForceController.getTaskSize(),
-                MsgConsumer,showNumberOfTasks, numberOfTasksDone,
+                MsgConsumer,showNumberOfTasks,
                 bruteForceController.getIsDMWorking(),allTaskSize.get());
         curDM = DM;
         bruteForceThread = new Thread(DM);
@@ -575,7 +573,8 @@ public class AppController implements Initializable {
     private Consumer<Integer> getNumberOfTaskConsumer() {
         return cf -> {
             double res = (double) cf / allTaskSize.getValue();
-            bruteForceController.getPb_progress().setProgress(res);
+                bruteForceController.getPb_progress().setProgress(res);
+                //System.out.println(res + "\n");
         };
     }
     private Consumer<Integer> getCheckFinishConsumer(Integer numOfAllTasks)
@@ -584,6 +583,7 @@ public class AppController implements Initializable {
             if(cf >= numOfAllTasks){
                 JOptionPane.showMessageDialog(null, "FINISH!", "DM finished", JOptionPane.ERROR_MESSAGE);
                 bruteForceController.getIsDMWorking().set(false);
+                curDM.getPoolResult().shutdown();
             }
         };
     }
@@ -597,9 +597,7 @@ public class AppController implements Initializable {
                     .append(" found by thread -")
                     .append(cf.getThreadId())
                     .append("\n");
-            synchronized (bruteForceController.getTa_candidates()){
-                bruteForceController.getTa_candidates().appendText(sb.toString());
-            }
+            bruteForceController.getTa_candidates().appendText(sb.toString());
         };
     }
 
@@ -643,7 +641,6 @@ public class AppController implements Initializable {
         return res;
     }
 
-    public IntegerProperty getNumberOfTasksDone() { return numberOfTasksDone; }
     public IntegerProperty getAllTaskSize() { return allTaskSize; }
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
