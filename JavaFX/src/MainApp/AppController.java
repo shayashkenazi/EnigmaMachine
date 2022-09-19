@@ -81,6 +81,7 @@ public class AppController implements Initializable {
 
         try {
             engine.createEnigmaMachineFromXML(fileSelected.getAbsolutePath(), true);
+            isXmlLoaded.set(false);
             isXmlLoaded.set(true);
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR,"Could NOT choose a file! " + e.getMessage());
@@ -107,11 +108,12 @@ public class AppController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        /*sp_mainPage.getStylesheets().add(getClass().getResource("/CSS/Dark.css").toExternalForm());
         vb_MainApp.getStylesheets().add(getClass().getResource("/CSS/Dark.css").toExternalForm());
         cb_styles.getItems().add("Default");
         cb_styles.getItems().add("Default");
         cb_styles.getItems().add("Default");
-        cb_styles.getItems().add("Default");
+        cb_styles.getItems().add("Default");*/
         tab_EncryptDecrypt.setDisable(true);
         tab_bruteForce.setDisable(true);
         btn_RandomCode.setDisable(true);
@@ -122,6 +124,7 @@ public class AppController implements Initializable {
 
             if (newValue) {
                 dto_machineInfo = engine.createMachineInfoDTO();
+                tf_machineConfiguration.setText("");
                 initializeSliderMaxValue();
             }
         });

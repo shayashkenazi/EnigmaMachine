@@ -126,7 +126,6 @@ public class DecryptionManager implements Runnable{
 
 
             } catch (Exception ee) {
-                System.out.println(ee.getMessage());
             }
 
     }
