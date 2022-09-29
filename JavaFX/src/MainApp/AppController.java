@@ -147,8 +147,11 @@ public class AppController implements Initializable {
                 //update Code Configuration in all sub-components
                 String codeConfigurationText = createDescriptionFormat(dto_codeDescription);
                 encryptDecryptController.getTa_codeConfiguration().setText(codeConfigurationText);
+                DTO_CodeDescription TMP = engine.createCodeDescriptionDTO();
+                TMP.resetPlugBoard();
+                bruteForceController.getTa_codeConfiguration().setText(createDescriptionFormat(TMP));
                 tf_machineConfiguration.setText(codeConfigurationText);
-
+                bruteForceController.getTa_candidates().clear();
                 bruteForceController.initializeTabAfterCodeConfiguration();
 
                 initializeDictionaryListView();
@@ -308,7 +311,9 @@ public class AppController implements Initializable {
         List<Pair<Character, Character>> plugBoard = randomCreatePlugBoard(dto_machineInfo.getABC());
         DTO_CodeDescription res = new DTO_CodeDescription(dto_machineInfo.getABC(),rotorsIDList,startPositionList,reflectorID,plugBoard);
         engine.buildRotorsStack(res, true);
+        isCodeChosen.set(false);
         isCodeChosen.set(true);
+
     }
     private List<Pair<String ,Pair<Integer,Integer>>>  randomCreateIDListForRotors(int numOfRotors,int numOfUsedRotors) {
         List<Pair<String ,Pair<Integer,Integer>>>  rotorsIDList = new ArrayList<>();
@@ -418,6 +423,7 @@ public class AppController implements Initializable {
             return;
         }
         engine.buildRotorsStack(res, true);
+        isCodeChosen.set(false);
         isCodeChosen.set(true);
         sp_mainPage.setContent(rootNode);
 

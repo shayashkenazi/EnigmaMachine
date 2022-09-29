@@ -85,7 +85,6 @@ public class BruteForceController implements SubController, Initializable {
     }
 
     public void initializeTabAfterCodeConfiguration() {
-
         appController.initializeTrieWithDictionary();
 
     }

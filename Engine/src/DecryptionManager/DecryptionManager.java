@@ -143,7 +143,7 @@ public class DecryptionManager implements Runnable{
         for (int i = 0; i < engineCopy.getMachine().getRotorsInUseCount(); i++) {
             arrRotors[i] = engineCopy.getMachine().getRotorsStack().get(i).getID();
         }
-        //Arrays.sort(arrRotors);
+        Arrays.sort(arrRotors);
         permuteAndMedTask(arrRotors,0);
     }
     public void permuteAndMedTask(String[] RotorIdArray, int start) {
