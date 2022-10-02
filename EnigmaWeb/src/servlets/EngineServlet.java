@@ -19,7 +19,7 @@ public class EngineServlet  extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        loadFileRequest(request, response);
+        //loadFileRequest(request, response);
     }
 
     protected void loadFileRequest(HttpServletRequest request, HttpServletResponse response)

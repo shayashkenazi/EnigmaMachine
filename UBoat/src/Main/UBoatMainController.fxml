@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UBoatMainController">
+<ScrollPane xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Main.UBoatMainController">
    <content>
       <VBox alignment="CENTER" prefHeight="398.0" prefWidth="592.0" spacing="20.0">
          <children>
@@ -27,7 +27,11 @@
             </HBox>
             <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
-                <Tab text="Machine" />
+                <Tab text="Machine">
+                     <content>
+                        <fx:include fx:id="codeCalibrationComponent" source="../codeCalibration/CodeCalibrationController.fxml" />
+                     </content>
+                  </Tab>
                 <Tab text="Contest" />
               </tabs>
             </TabPane>

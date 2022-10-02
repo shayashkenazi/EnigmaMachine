@@ -15,10 +15,10 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
                          throws ServletException, IOException {
 
-        processRequest(request, response);
+        //processRequest(request, response);
     }
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+/*    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         //response.setContentType("text/html;charset=UTF-8"); TODO: what is this ?
@@ -37,7 +37,7 @@ public class LoginServlet extends HttpServlet {
 
                 usernameFromParameter = usernameFromParameter.trim(); //normalize the username value
 
-                /*
+                *//*
                 One can ask why not enclose all the synchronizations inside the userManager object ?
                 Well, the atomic action we need to perform here includes both the question (isUserExists) and (potentially) the insertion
                 of a new user (addUser). These two actions needs to be considered atomic, and synchronizing only each one of them, solely, is not enough.
@@ -48,7 +48,7 @@ public class LoginServlet extends HttpServlet {
 
                 A better code would be to perform only as little and as necessary things we need here inside the synchronized block and avoid
                 do here other not related actions (such as request dispatcher\redirection etc. this is shown here in that manner just to stress this issue
-                 */
+                 *//*
                 synchronized (this) {
                     if (userManager.isUserExists(usernameFromParameter)) {
                         String errorMessage = "Username " + usernameFromParameter + " already exists. Please enter a different username.";
@@ -79,5 +79,5 @@ public class LoginServlet extends HttpServlet {
             //user is already logged in
             response.sendRedirect(CHAT_ROOM_URL);
         }
-    }
+    }*/
 }
