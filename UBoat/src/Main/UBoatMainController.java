@@ -68,8 +68,15 @@ public class UBoatMainController {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if( response.code() == HttpServletResponse.SC_OK)
-                    System.out.println("on response" + response.code());
-                System.out.println("on response" + response.code());
+                    tf_filePath.setText(fileSelected.getAbsolutePath());
+                else{
+                    String errorMsg =  response.body().string();
+                    Platform.runLater(() ->
+                            System.out.println("Something went wrong: " +errorMsg)
+                    );
+                    return;
+                }
+
             }
         });
 

@@ -38,7 +38,7 @@ public class LoadXmlServlet extends HttpServlet {
         }
         catch (EnigmaException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            //response.getOutputStream().
+            response.getOutputStream().print("egano l e " + e.getMessage());
         }
         catch (JAXBException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
