@@ -3,6 +3,7 @@ package Main;
 import EnginePackage.EnigmaEngine;
 import codeCalibration.CodeCalibrationController;
 import http.HttpClientUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -61,12 +62,14 @@ public class UBoatMainController {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
+                System.out.println("on fail" + e.getMessage());
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-
+                if( response.code() == HttpServletResponse.SC_OK)
+                    System.out.println("on response" + response.code());
+                System.out.println("on response" + response.code());
             }
         });
 

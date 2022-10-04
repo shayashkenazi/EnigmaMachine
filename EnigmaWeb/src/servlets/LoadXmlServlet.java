@@ -19,37 +19,30 @@ import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Scanner;
 
-@WebServlet(name = "EngineServlet", urlPatterns = {"/LoadXmlServlet"}) // TODO: Correct
+@WebServlet(name = "LoadXmlServlet", urlPatterns = {"/LoadXmlServlet"}) // TODO: Correct
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
 public class LoadXmlServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws  ServletException, IOException, FileNotFoundException{
         response.setContentType("text/plain");
-
         Collection<Part> parts = request.getParts();
-        Part part;
-
         StringBuilder fileContent = new StringBuilder();
         try {
             for (Part curPart : parts) {
-                part = curPart;
                 EngineCapabilities engine = ServletUtils.getEngine(getServletContext());
-                engine.createEnigmaMachineFromXMLInputStream(part.getInputStream(), true);
+                engine.createEnigmaMachineFromXMLInputStream(curPart.getInputStream(), true);
+                response.setStatus(HttpServletResponse.SC_OK);
                 break;
             }
         }
-        catch (EnigmaException e)
-        {
+        catch (EnigmaException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+            //response.getOutputStream().
         }
-        catch (JAXBException e)
-        {
+        catch (JAXBException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }
-
     }
 
     private void printPart(Part part, PrintWriter out) {
