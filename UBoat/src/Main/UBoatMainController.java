@@ -71,13 +71,13 @@ public class UBoatMainController {
         });
 
 
-            if(response.isSuccessful())
+           /* if(response.isSuccessful())
                 tf_filePath.setText(fileSelected.getAbsolutePath());
             else {
                 Alert alert = new Alert(Alert.AlertType.ERROR,response.body().string());
                 alert.show();
                 return;
-            }
+            }*/
         }
 
 
@@ -95,7 +95,7 @@ public class UBoatMainController {
             alert.show();
             isXmlLoaded.set(false);
         }*/
-    }
+
 
     public void codeCalibrationController_randomCodeBtnClick() {
 

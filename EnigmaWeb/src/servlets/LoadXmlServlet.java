@@ -24,7 +24,7 @@ import java.util.Scanner;
 public class LoadXmlServlet extends HttpServlet {
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws  ServletException, IOException, JAXBException, FileNotFoundException{
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws  ServletException, IOException, FileNotFoundException{
         response.setContentType("text/plain");
 
         Collection<Part> parts = request.getParts();
@@ -36,12 +36,18 @@ public class LoadXmlServlet extends HttpServlet {
                 part = curPart;
                 EngineCapabilities engine = ServletUtils.getEngine(getServletContext());
                 engine.createEnigmaMachineFromXMLInputStream(part.getInputStream(), true);
-
+                break;
             }
         }
-        catch (EnigmaException ex)
+        catch (EnigmaException e)
         {
-
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+        }
+        catch (JAXBException e)
+        {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }
 
     }
@@ -70,7 +76,7 @@ public class LoadXmlServlet extends HttpServlet {
         out.println(content);
     }*/
 
-        @Override
+    /*    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, FileNotFoundException {
         try{
@@ -89,7 +95,7 @@ public class LoadXmlServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }
         //loadFileRequest(request, response);
-    }
+    }*/
 
     protected void loadFileRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, EnigmaException, JAXBException, FileNotFoundException {
