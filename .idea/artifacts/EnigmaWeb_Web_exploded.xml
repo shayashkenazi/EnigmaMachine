@@ -6,6 +6,14 @@
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="EnigmaWeb" />
+          <element id="module-output" name="Engine" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="file-copy" path="$USER_HOME$/Desktop/Okhttp/okio-2.2.2.jar" />
+          <element id="file-copy" path="$USER_HOME$/Desktop/Okhttp/okhttp-4.2.1.jar" />
+          <element id="file-copy" path="$USER_HOME$/Desktop/Okhttp/annotations-13.0.jar" />
+          <element id="file-copy" path="$USER_HOME$/Desktop/Okhttp/kotlin-stdlib-1.3.50.jar" />
+          <element id="file-copy" path="$USER_HOME$/Desktop/Okhttp/kotlin-stdlib-common-1.3.50.jar" />
         </element>
       </element>
     </root>

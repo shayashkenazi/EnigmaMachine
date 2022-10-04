@@ -2,6 +2,8 @@ package Main;
 
 import EnginePackage.EnigmaEngine;
 import codeCalibration.CodeCalibrationController;
+import http.HttpClientUtil;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -9,9 +11,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
+import utils.Constants;
 import utils.ServletUtils;
 
 import java.io.File;
+import java.io.IOException;
 
 public class UBoatMainController {
 
@@ -40,8 +46,40 @@ public class UBoatMainController {
             alert.show();
             return;
         }
+        RequestBody body =
+                new MultipartBody.Builder()
+                        .addFormDataPart("file1", fileSelected.getName(), RequestBody.create(fileSelected, MediaType.parse("text/plain")))
+                        .build();
 
-        // create request for loading xml file
+        Request request = new Request.Builder()
+                .url(Constants.LOAD_XML)
+                .post(body)
+                .build();
+
+        Call call = HttpClientUtil.HTTP_CLIENT.newCall(request);
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
+            }
+        });
+
+
+            if(response.isSuccessful())
+                tf_filePath.setText(fileSelected.getAbsolutePath());
+            else {
+                Alert alert = new Alert(Alert.AlertType.ERROR,response.body().string());
+                alert.show();
+                return;
+            }
+        }
+
 
 
 

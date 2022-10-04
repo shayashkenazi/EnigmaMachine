@@ -3,10 +3,12 @@ package EnginePackage;
 //import Generated.*;
 import DecryptionManager.Generated.*;
 import Tools.*;
+import enigmaException.EnigmaException;
 
 import javax.xml.bind.*;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,9 +22,12 @@ public class Factory {
         return cteEnigma;
     }
 
-    public Factory(String xmlFilePath) throws Exception {
+    public Factory(String xmlFilePath) throws FileNotFoundException,JAXBException {
 
         InputStream inputStream = new FileInputStream(new File(xmlFilePath));
+        cteEnigma = deserializeFrom(inputStream);
+    }
+    public Factory( InputStream inputStream) throws FileNotFoundException,JAXBException {
         cteEnigma = deserializeFrom(inputStream);
     }
 
@@ -32,7 +37,7 @@ public class Factory {
         return (CTEEnigma) u.unmarshal(in);
     }
 
-    private Map<String,Reflector> createReflectors() throws Exception{
+    private Map<String,Reflector> createReflectors() throws EnigmaException{
 
         Map<String,Reflector> reflectors = new HashMap<>();
 
@@ -44,7 +49,7 @@ public class Factory {
 
         return reflectors;
     }
-    private Reflector createReflector(CTEReflector cteReflector) throws Exception {
+    private Reflector createReflector(CTEReflector cteReflector) throws EnigmaException {
 
         Map<Character,Integer> tempABC = createABC();
         Reflector reflector = new Reflector(cteReflector.getId(),tempABC.size());
@@ -55,7 +60,7 @@ public class Factory {
         }
         return reflector;
     }
-    private void checkRomaNumerals(List<CTEReflector> reflectorArrayList) throws Exception {
+    private void checkRomaNumerals(List<CTEReflector> reflectorArrayList) throws EnigmaException {
 
         //List<String> list = Arrays.asList("I","II","III","IV","V");
         Map<String, Integer> MapNumbers = new LinkedHashMap<>();
@@ -69,15 +74,15 @@ public class Factory {
                 int count = MapNumbers.get(cteRef.getId().toUpperCase());
                 MapNumbers.put(cteRef.getId(), count + 1);
                 if (MapNumbers.get(cteRef.getId().toUpperCase()) != 1)
-                    throw new Exception("Same reflector ID insert");
+                    throw new EnigmaException("Same reflector ID insert");
             } else
-                throw new Exception("reflector ID incorrect");
+                throw new EnigmaException("reflector ID incorrect");
         }
         int size = reflectorArrayList.size();
         for (Map.Entry<String, Integer> entry : MapNumbers.entrySet()) {
             if (size != 0) {
                 if(entry.getValue() != 1)
-                    throw new Exception("reflector ID incorrect");
+                    throw new EnigmaException("reflector ID incorrect");
             }
             else
                 break;
@@ -85,45 +90,45 @@ public class Factory {
         }
     }
 
-    private void checkDuplicatesAtReflect(List<CTEReflect> curReflect) throws Exception {
+    private void checkDuplicatesAtReflect(List<CTEReflect> curReflect) throws EnigmaException {
         Map<Integer, Integer> mapCheck = new HashMap<>();
         Set<Integer> set = new HashSet<>();
         for(CTEReflect ref: curReflect )
         {
             if(ref.getInput() == ref.getOutput())
-                throw new Exception("There is the same input output at reflector!");
+                throw new EnigmaException("There is the same input output at reflector!");
             if(ref.getInput() < 1 || ref.getOutput() < 1 || ref.getInput() > curReflect.size()*2 || ref.getOutput() > curReflect.size()*2)
-                throw new Exception("There is the input output out of range!");
+                throw new EnigmaException("There is the input output out of range!");
             if(!mapCheck.containsKey(ref.getInput()))
                 mapCheck.put(ref.getInput(),ref.getOutput());
             else
-                throw new Exception("There is duplicate input!");
+                throw new EnigmaException("There is duplicate input!");
             if(set.contains(ref.getInput()) || set.contains(ref.getOutput()))
-                throw new Exception("There is duplicate input output!");
+                throw new EnigmaException("There is duplicate input output!");
             set.add(ref.getInput());
             set.add(ref.getOutput());
         }
         if(!isOneToOne(mapCheck))
-            throw new Exception("There is duplicate output!");
+            throw new EnigmaException("There is duplicate output!");
         if(mapCheck.size() * 2 != createABC().size())
-            throw new Exception("Not all the abc assert!");
+            throw new EnigmaException("Not all the abc assert!");
     }
 
-    private void checkDuplicatesAtRotor(List<CTEPositioning> curRotorPosition) throws Exception {
+    private void checkDuplicatesAtRotor(List<CTEPositioning> curRotorPosition) throws EnigmaException {
         Map<Character,Character> mapCheck = new HashMap<>();
         for(CTEPositioning pos: curRotorPosition )
         {
             if(pos.getLeft().length() != 1 || pos.getRight().length() != 1)
-                throw new Exception("There is incorrect input");
+                throw new EnigmaException("There is incorrect input");
             if(!mapCheck.containsKey(pos.getRight().toUpperCase().charAt(0)))
                 mapCheck.put(pos.getRight().toUpperCase().charAt(0),pos.getLeft().toUpperCase().charAt(0));
             else
-                throw new Exception("There is duplicate Right!");
+                throw new EnigmaException("There is duplicate Right!");
         }
         if(!isOneToOne(mapCheck))
-            throw new Exception("There is duplicate Left!");
+            throw new EnigmaException("There is duplicate Left!");
         if(mapCheck.size() != createABC().size())
-            throw new Exception("Not all the specific abc assert!");
+            throw new EnigmaException("Not all the specific abc assert!");
 
     }
     private boolean isOneToOne(Map<?, ?> map) {
@@ -131,12 +136,12 @@ public class Factory {
         return set.size() == map.keySet().size();
     }
 
-    private Map<String,Rotor> createRotors() throws Exception {
+    private Map<String,Rotor> createRotors() throws EnigmaException {
         Map<String,Rotor> rotors = new HashMap<>();
         CTEMachine cteMachine = cteEnigma.getCTEMachine();
 
         if (cteMachine.getRotorsCount() > cteMachine.getCTERotors().getCTERotor().size() || cteMachine.getRotorsCount() < 2)
-            throw new Exception("Number of provided rotors is NOT valid !");
+            throw new EnigmaException("Number of provided rotors is NOT valid !");
 
         cteMachine.getCTERotors().getCTERotor().sort(new Comparator<CTERotor>() {
             @Override
@@ -147,7 +152,7 @@ public class Factory {
         int idCounter = 1;
         for (CTERotor cteRotor : cteMachine.getCTERotors().getCTERotor()) {
             if (cteRotor.getId() != idCounter)
-                throw new Exception("ID for the Rotor are invalid !");
+                throw new EnigmaException("ID for the Rotor are invalid !");
 
             rotors.put(Integer.toString(cteRotor.getId()), createRotor(cteRotor));
             idCounter++;
@@ -156,22 +161,22 @@ public class Factory {
         return rotors;
     }
 
-    private Map<Character,Integer> createABC() throws Exception {
+    private Map<Character,Integer> createABC() throws EnigmaException {
 
         String abc = cteEnigma.getCTEMachine().getABC().trim().toUpperCase();
         if (abc.length() % 2 != 0)
-            throw new Exception(" ABC is NOT Even!");
+            throw new EnigmaException(" ABC is NOT Even!");
         Map<Character,Integer> map = new HashMap<>();
         for(Integer i = 0; i < abc.length(); i++)
             map.put(abc.charAt(i),i);
         return map;
     }
 
-    private Rotor createRotor(CTERotor cteRotor) throws Exception {
+    private Rotor createRotor(CTERotor cteRotor) throws EnigmaException {
 
         Map<Character,Integer> tempABC = createABC();
         if(cteRotor.getNotch() < 1 || cteRotor.getNotch() > tempABC.size())
-            throw new Exception("The notch is out of range!");
+            throw new EnigmaException("The notch is out of range!");
         Rotor rotor = new Rotor(Integer.toString(cteRotor.getId()), cteRotor.getNotch() - 1,tempABC.size());
         checkDuplicatesAtRotor(cteRotor.getCTEPositioning());
         int i = 0;
@@ -186,10 +191,10 @@ public class Factory {
     private String createAbc() {
         return cteEnigma.getCTEMachine().getABC().trim();
     }
-    private int createNumOfMaxAgents() throws Exception {
+    private int createNumOfMaxAgents() throws EnigmaException {
         int res = cteEnigma.getCTEDecipher().getAgents();
         if(res< 2 || res > 50)
-            throw new Exception("The number of agents is out of range!");
+            throw new EnigmaException("The number of agents is out of range!");
         return res;
     }
 
@@ -220,7 +225,7 @@ public class Factory {
         return set;
     }
 
-    public Machine createMachine() throws Exception {
+    public Machine createMachine() throws EnigmaException {
 
         Machine machine = new Machine();
         machine.setABC(createAbc());

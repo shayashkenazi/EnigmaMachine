@@ -10,5 +10,18 @@
     <orderEntry type="library" name="Tomcat 10.0.26" level="application_server_libraries" />
     <orderEntry type="module" module-name="Engine" />
     <orderEntry type="module" module-name="EnigmaWeb" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Desktop/Okhttp/okio-2.2.2.jar!/" />
+          <root url="jar://$USER_HOME$/Desktop/Okhttp/okhttp-4.2.1.jar!/" />
+          <root url="jar://$USER_HOME$/Desktop/Okhttp/annotations-13.0.jar!/" />
+          <root url="jar://$USER_HOME$/Desktop/Okhttp/kotlin-stdlib-1.3.50.jar!/" />
+          <root url="jar://$USER_HOME$/Desktop/Okhttp/kotlin-stdlib-common-1.3.50.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

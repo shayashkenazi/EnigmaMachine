@@ -3,8 +3,10 @@ package EnginePackage;
 import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
 import Tools.*;
+import enigmaException.EnigmaException;
 import javafx.util.Pair;
 
+import javax.xml.bind.JAXBException;
 import java.io.*;
 
 import java.util.*;
@@ -103,13 +105,21 @@ public class EnigmaEngine implements EngineCapabilities,Serializable{
     }
 
     @Override
-    public void createEnigmaMachineFromXML(String xmlPath, boolean newMachine) throws Exception {
+    public void createEnigmaMachineFromXML(String xmlPath, boolean newMachine) throws EnigmaException, JAXBException,FileNotFoundException {
         Factory factory = new Factory(xmlPath);
         machine = factory.createMachine();
 
         if (newMachine) // The machine is NOT built from the Load option, therefor need New
             usageHistory = new UsageHistory();
         usageHistory.setXmlPath(xmlPath);
+    }
+    @Override
+    public void createEnigmaMachineFromXMLInputStream(InputStream inputStream, boolean newMachine) throws EnigmaException, JAXBException,FileNotFoundException {
+        Factory factory = new Factory(inputStream);
+        machine = factory.createMachine();
+
+        if (newMachine) // The machine is NOT built from the Load option, therefor need New
+            usageHistory = new UsageHistory();
     }
 
     @Override
