@@ -2,13 +2,17 @@ package Main;
 
 import EnginePackage.EnigmaEngine;
 import codeCalibration.CodeCalibrationController;
+import encryptMessage.EncryptMessageController;
 import http.HttpClientUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -22,17 +26,30 @@ import java.io.IOException;
 
 public class UBoatMainController {
 
+    private final BooleanProperty isXmlLoaded = new SimpleBooleanProperty(false);
+
     @FXML private CodeCalibrationController codeCalibrationComponentController;
     @FXML private VBox codeCalibrationComponent;
-
-    @FXML private Button btn_loadFile;
-
+    @FXML private EncryptMessageController encryptMessageComponentController;
+    @FXML private VBox encryptMessageComponent;
+    @FXML private Button btn_loadFile, btn_logOut;
     @FXML private TextField tf_filePath;
+    @FXML private TextArea ta_machineDetails, ta_candidates, ta_teamsDetails;
 
     @FXML public void initialize() {
-        if (codeCalibrationComponentController != null) {
+
+        if (codeCalibrationComponentController != null &&
+            encryptMessageComponentController  != null) {
+
             codeCalibrationComponentController.setMainController(this);
+            encryptMessageComponentController.setMainController(this);
         }
+
+        isXmlLoaded.addListener((observable, oldValue, newValue) -> {
+
+            codeCalibrationComponentController.enableDisableCodeCalibrationButtons(newValue);
+            setMachineDetailsTextArea(newValue);
+        });
     }
 
     @FXML void loadFileBtnClick(ActionEvent event) {
@@ -43,7 +60,7 @@ public class UBoatMainController {
         File fileSelected = fileChooser.showOpenDialog(/*primaryStage*/null); // TODO: add stage
 
         if (fileSelected == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR,"Could NOT choose a file!");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could NOT choose a file!");
             alert.show();
             return;
         }
@@ -67,47 +84,51 @@ public class UBoatMainController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if( response.code() == HttpServletResponse.SC_OK)
-                    tf_filePath.setText(fileSelected.getAbsolutePath());
-                else{
-                    String errorMsg =  response.body().string();
+                if (response.code() == HttpServletResponse.SC_OK) {
+                    isXmlLoaded.set(true);
                     Platform.runLater(() ->
-                            System.out.println("Something went wrong: " +errorMsg)
+                            tf_filePath.setText(fileSelected.getAbsolutePath())
                     );
-                    return;
+                } else { // TODO: fix - don't work
+                    String errorMsg = response.body().string();
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR, errorMsg);
+                    errorAlert.show();
                 }
-
             }
         });
+    }
 
+    @FXML void logOutBtnClick(ActionEvent event) {
 
-           /* if(response.isSuccessful())
-                tf_filePath.setText(fileSelected.getAbsolutePath());
-            else {
-                Alert alert = new Alert(Alert.AlertType.ERROR,response.body().string());
-                alert.show();
-                return;
-            }*/
-        }
-
-
-
-
-
-
-/*        try {
-            EnigmaEngine engine = ServletUtils.getEngine(getServletContext());
-            engine.createEnigmaMachineFromXML(fileSelected.getAbsolutePath(), true);
-            isXmlLoaded.set(false);
-            isXmlLoaded.set(true);
-        } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR,"Could NOT choose a file! " + e.getMessage());
-            alert.show();
-            isXmlLoaded.set(false);
-        }*/
-
+    }
 
     public void codeCalibrationController_randomCodeBtnClick() {
 
+    }
+    private void setMachineDetailsTextArea(Boolean newValue) {
+
+        // request for dto
+        String finalUrl = HttpUrl
+                .parse(Constants.DTO)
+                .newBuilder()
+                .addQueryParameter("dtoType", "machineInfo") // TODO: constant
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String text = newValue ? response.body().string() : "";
+                Platform.runLater(() -> {
+                    ta_machineDetails.setText(text);
+
+                });
+            }
+        });
     }
 }

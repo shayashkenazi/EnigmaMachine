@@ -38,63 +38,14 @@ public class LoadXmlServlet extends HttpServlet {
         }
         catch (EnigmaException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getOutputStream().print("egano l e " + e.getMessage());
+            response.getOutputStream().print(e.getMessage());
         }
         catch (JAXBException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
-    private void printPart(Part part, PrintWriter out) {
-        StringBuilder sb = new StringBuilder();
-        sb
-                .append("Parameter Name: ").append(part.getName()).append("\n")
-                .append("Content Type (of the file): ").append(part.getContentType()).append("\n")
-                .append("Size (of the file): ").append(part.getSize()).append("\n")
-                .append("Part Headers:").append("\n");
-
-        for (String header : part.getHeaderNames()) {
-            sb.append(header).append(" : ").append(part.getHeader(header)).append("\n");
-        }
-
-        out.println(sb.toString());
-    }
-
     private String readFromInputStream(InputStream inputStream) {
         return new Scanner(inputStream).useDelimiter("\\Z").next();
-    }
-
-   /* private void printFileContent(String content, PrintWriter out) {
-        out.println("File content:");
-        out.println(content);
-    }*/
-
-    /*    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, FileNotFoundException {
-        try{
-            System.out.println("aahahahaha");
-            loadFileRequest(request, response);
-            response.setStatus(HttpServletResponse.SC_OK);
-        }
-        catch (EnigmaException e)
-        {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-        }
-        catch (JAXBException e)
-        {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-        }
-        //loadFileRequest(request, response);
-    }*/
-
-    protected void loadFileRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, EnigmaException, JAXBException, FileNotFoundException {
-
-        //String fileSelected = request.getParameter("filePath"); // TODO: constant
-        //engine.createEnigmaMachineFromXMLInputStream(fileSelected, true);
-
     }
 }
