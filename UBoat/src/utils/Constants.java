@@ -10,4 +10,5 @@ public class Constants {
     private final static String FULL_SERVER_PATH = BASE_URL + CONTEXT_PATH;
     public final static String LOAD_XML = FULL_SERVER_PATH + "/LoadXmlServlet";
     public final static String DTO = FULL_SERVER_PATH + "/dtoServlet";
+    public final static String ENCRYPT_CODE = FULL_SERVER_PATH + "/encryptCodeServlet";
 }

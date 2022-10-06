@@ -21,7 +21,7 @@ public class EncryptMessageController {
     }
 
     @FXML void processBtnClick(ActionEvent event) {
-
+        uBoatMainController.EncryptMessageController_processBtnClick(tf_input.getText());
     }
 
     @FXML void readyBtnClick(ActionEvent event) {
@@ -34,5 +34,14 @@ public class EncryptMessageController {
 
     public void setMainController(UBoatMainController uBoatMainController) {
         this.uBoatMainController = uBoatMainController;
+    }
+    public TextField getTf_codeConfiguration() {
+        return tf_codeConfiguration;
+    }
+    public TextField getTf_input(){
+        return tf_input;
+    }
+    public TextField getTf_output(){
+        return tf_output;
     }
 }

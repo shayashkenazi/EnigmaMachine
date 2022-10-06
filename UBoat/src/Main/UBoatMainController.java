@@ -27,6 +27,7 @@ import java.io.IOException;
 public class UBoatMainController {
 
     private final BooleanProperty isXmlLoaded = new SimpleBooleanProperty(false);
+    private final BooleanProperty isCodeChosen = new SimpleBooleanProperty(false);
 
     @FXML private CodeCalibrationController codeCalibrationComponentController;
     @FXML private VBox codeCalibrationComponent;
@@ -89,10 +90,17 @@ public class UBoatMainController {
                     Platform.runLater(() ->
                             tf_filePath.setText(fileSelected.getAbsolutePath())
                     );
-                } else { // TODO: fix - don't work
-                    String errorMsg = response.body().string();
-                    Alert errorAlert = new Alert(Alert.AlertType.ERROR, errorMsg);
-                    errorAlert.show();
+                } else { // TODO: fix - don't work? - WORK
+                    Platform.runLater(() -> {
+                        String errorMsg = null;
+                        try {
+                            errorMsg = response.body().string();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        Alert errorAlert = new Alert(Alert.AlertType.ERROR, errorMsg);
+                        errorAlert.show();
+                    });
                 }
             }
         });
@@ -103,9 +111,64 @@ public class UBoatMainController {
     }
 
     public void codeCalibrationController_randomCodeBtnClick() {
+        //TODO : CREATE RANDOM MACHINE
+        isCodeChosen.set(true);
+    }
+    public void codeCalibrationController_SETCodeBtnClick() {
+        //TODO : CREATE MACHINE
+        isCodeChosen.set(true);
+    }
+    public void EncryptMessageController_processBtnClick(String msgToDecode){
+
+        String finalUrl = HttpUrl
+                .parse(Constants.DTO)
+                .newBuilder()
+                .addQueryParameter("decodeMsg",msgToDecode ) // TODO: constant
+                .build()
+                .toString();
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String text = response.body().string();  // this is decode msg
+                Platform.runLater(() -> {
+                    encryptMessageComponentController.getTf_output().setText(text);
+                });
+            }
+        });
 
     }
     private void setMachineDetailsTextArea(Boolean newValue) {
+
+        // request for dto
+        String finalUrl = HttpUrl
+                .parse(Constants.DTO)
+                .newBuilder()
+                .addQueryParameter("dtoType", "machineConfiguration") // TODO: constant
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String text = newValue ? response.body().string() : "";
+                Platform.runLater(() -> {
+                    ta_machineDetails.setText(text);
+
+                });
+            }
+        });
+    }
+    private void setMachineConfigurationTextArea(Boolean newValue) {
 
         // request for dto
         String finalUrl = HttpUrl
@@ -125,8 +188,7 @@ public class UBoatMainController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String text = newValue ? response.body().string() : "";
                 Platform.runLater(() -> {
-                    ta_machineDetails.setText(text);
-
+                    encryptMessageComponentController.getTf_codeConfiguration().setText(text);
                 });
             }
         });

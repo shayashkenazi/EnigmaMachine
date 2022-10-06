@@ -13,11 +13,11 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../Okhttp/okio-2.2.2.jar!/" />
-          <root url="jar://$MODULE_DIR$/../../../../Okhttp/okhttp-4.2.1.jar!/" />
-          <root url="jar://$MODULE_DIR$/../../../../Okhttp/annotations-13.0.jar!/" />
-          <root url="jar://$MODULE_DIR$/../../../../Okhttp/kotlin-stdlib-1.3.50.jar!/" />
-          <root url="jar://$MODULE_DIR$/../../../../Okhttp/kotlin-stdlib-common-1.3.50.jar!/" />
+          <root url="jar://C:/Users/Okhttp/okio-2.2.2.jar!/" />
+          <root url="jar://C:/Users/Okhttp/okhttp-4.2.1.jar!/" />
+          <root url="jar://C:/Users/Okhttp/annotations-13.0.jar!/" />
+          <root url="jar://C:/Users/Okhttp/kotlin-stdlib-1.3.50.jar!/" />
+          <root url="jar://C:/Users/Okhttp/kotlin-stdlib-common-1.3.50.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -31,6 +31,19 @@
         <JAVADOC />
         <SOURCES />
         <jarDirectory url="file://$USER_HOME$/Downloads/okHttp" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Desktop/Okhttp/okio-2.2.2.jar!/" />
+          <root url="jar://$USER_HOME$/Desktop/Okhttp/okhttp-4.2.1.jar!/" />
+          <root url="jar://$USER_HOME$/Desktop/Okhttp/annotations-13.0.jar!/" />
+          <root url="jar://$USER_HOME$/Desktop/Okhttp/kotlin-stdlib-1.3.50.jar!/" />
+          <root url="jar://$USER_HOME$/Desktop/Okhttp/kotlin-stdlib-common-1.3.50.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
       </library>
     </orderEntry>
   </component>

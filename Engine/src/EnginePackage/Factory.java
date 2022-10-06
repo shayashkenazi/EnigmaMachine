@@ -1,7 +1,8 @@
 package EnginePackage;
 
 //import Generated.*;
-import DecryptionManager.Generated.*;
+import Generated.generated_3.*; //ex3
+//import DecryptionManager.Generated.*; //ex2
 import Tools.*;
 import enigmaException.EnigmaException;
 
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class Factory {
 
-    private final static String JAXB_XML_GAME_PACKAGE_NAME = "DecryptionManager.Generated";
+    private final static String JAXB_XML_GAME_PACKAGE_NAME = "Generated.generated_3";
     private final CTEEnigma cteEnigma;
 
     public CTEEnigma getCteEnigma() {
@@ -191,12 +192,12 @@ public class Factory {
     private String createAbc() {
         return cteEnigma.getCTEMachine().getABC().trim();
     }
-    private int createNumOfMaxAgents() throws EnigmaException {
+    /*private int createNumOfMaxAgents() throws EnigmaException {
         int res = cteEnigma.getCTEDecipher().getAgents();
         if(res< 2 || res > 50)
             throw new EnigmaException("The number of agents is out of range!");
         return res;
-    }
+    }*/
 
     private Set<String> createDictionary(){
 
@@ -224,6 +225,15 @@ public class Factory {
         Set<Character> set = new HashSet<>(myChars);
         return set;
     }
+    private String getBattlefieldSetting(){
+        return cteEnigma.getCTEBattlefield().getBattleName();
+    }
+    private int getNumOfAllies(){
+        return cteEnigma.getCTEBattlefield().getAllies();
+    }
+    private String getLevel(){
+        return cteEnigma.getCTEBattlefield().getLevel();
+    }
 
     public Machine createMachine() throws EnigmaException {
 
@@ -236,7 +246,7 @@ public class Factory {
         machine.setExcludeChars(createExcludeChars());
         machine.setMyDictionary(createDictionary());
 
-        machine.setNumOfMaxAgents(createNumOfMaxAgents());
+        //machine.setNumOfMaxAgents(createNumOfMaxAgents()); // EX2
         return machine;
     }
 }
