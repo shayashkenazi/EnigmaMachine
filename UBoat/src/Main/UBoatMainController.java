@@ -47,7 +47,6 @@ public class UBoatMainController {
         }
 
         isXmlLoaded.addListener((observable, oldValue, newValue) -> {
-
             codeCalibrationComponentController.enableDisableCodeCalibrationButtons(newValue);
             setMachineDetailsTextArea(newValue);
         });
@@ -121,7 +120,7 @@ public class UBoatMainController {
     public void EncryptMessageController_processBtnClick(String msgToDecode){
 
         String finalUrl = HttpUrl
-                .parse(Constants.DTO)
+                .parse(Constants.ENCRYPT_CODE)
                 .newBuilder()
                 .addQueryParameter("decodeMsg",msgToDecode ) // TODO: constant
                 .build()
@@ -148,7 +147,7 @@ public class UBoatMainController {
         String finalUrl = HttpUrl
                 .parse(Constants.DTO)
                 .newBuilder()
-                .addQueryParameter("dtoType", "machineConfiguration") // TODO: constant
+                .addQueryParameter("dtoType", "machineInfo") // TODO: constant
                 .build()
                 .toString();
 
@@ -163,7 +162,6 @@ public class UBoatMainController {
                 String text = newValue ? response.body().string() : "";
                 Platform.runLater(() -> {
                     ta_machineDetails.setText(text);
-
                 });
             }
         });
@@ -174,7 +172,7 @@ public class UBoatMainController {
         String finalUrl = HttpUrl
                 .parse(Constants.DTO)
                 .newBuilder()
-                .addQueryParameter("dtoType", "machineInfo") // TODO: constant
+                .addQueryParameter("dtoType", "machineConfiguration") // TODO: constant
                 .build()
                 .toString();
 

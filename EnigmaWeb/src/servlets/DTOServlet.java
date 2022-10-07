@@ -37,6 +37,7 @@ public class DTOServlet extends HttpServlet {
             case Constants.DTO_MACHINE_CODE_DESCRIPTION_PARAMETER:
                 DTO_CodeDescription dto_codeDescription = engine.createCodeDescriptionDTO();
                 response.getOutputStream().print(createMachineConfigurationString(dto_codeDescription));
+                break;
             default:
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 break;
