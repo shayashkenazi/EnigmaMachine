@@ -15,10 +15,7 @@ import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.util.Pair;
@@ -45,8 +42,10 @@ public class UBoatMainController {
     @FXML private Button btn_loadFile, btn_logOut;
     @FXML private TextField tf_filePath;
     @FXML private TextArea ta_machineDetails, ta_candidates, ta_teamsDetails;
+    @FXML private ScrollPane sp_mainPage;
     private final StringProperty currentUserName;
-    private Parent uBoatComponent;
+
+    //private Parent uBoatComponent;
 
     public UBoatMainController() {
         currentUserName = new SimpleStringProperty("Anonymous");
@@ -155,61 +154,7 @@ public class UBoatMainController {
 
         isCodeChosen.set(true);
     }
-    /*private void createRandomMachineSetting() {
 
-        List<Pair<String , Pair<Integer,Integer>>> rotorsIDList = randomCreateIDListForRotors(dto_machineInfo.getNumOfPossibleRotors(),dto_machineInfo.getNumOfUsedRotors());
-        List<Character>  startPositionList = randomCreateListForStartPosition(dto_machineInfo,rotorsIDList,dto_machineInfo.getABC(),rotorsIDList.size());
-        String reflectorID = randomCreateReflectorID(dto_machineInfo.getNumOfReflectors());
-        //List<Pair<Character, Character>> plugBoard = randomCreatePlugBoard(dto_machineInfo.getABC());
-        DTO_CodeDescription res = new DTO_CodeDescription(dto_machineInfo.getABC(),rotorsIDList,startPositionList,reflectorID,plugBoard);
-        engine.buildRotorsStack(res, true);
-        isCodeChosen.set(false);
-        isCodeChosen.set(true);
-    }
-    private List<Pair<String ,Pair<Integer,Integer>>>  randomCreateIDListForRotors(int numOfRotors,int numOfUsedRotors) {
-        List<Pair<String ,Pair<Integer,Integer>>>  rotorsIDList = new ArrayList<>();
-        Random rand = new Random();
-        Set<Integer > set = new HashSet<>();
-        int randomNum;
-        for(int i = 0; i < numOfUsedRotors; i++){
-            randomNum = rand.nextInt(numOfRotors) + 1;
-            while(set.contains(randomNum)) {
-                randomNum = rand.nextInt(numOfRotors) + 1;
-            }
-            rotorsIDList.add(new Pair<>(String.valueOf(randomNum),null));
-            set.add(randomNum);
-        }
-        return rotorsIDList;
-    }
-    private List<Character> randomCreateListForStartPosition(DTO_MachineInfo dto_machineInfo, List<Pair<String ,Pair<Integer,Integer>>> rotorsIDList, String abc, int numOfRotors) {
-        List<Character> rotorsStartPositionList = new ArrayList<>();
-        Set<Character> set = new HashSet<>();
-        Random rand = new Random();
-        int randomNum;
-        for(int i = 0; i < numOfRotors; i++) {
-            randomNum = rand.nextInt(abc.length());
-            while(set.contains(abc.charAt(randomNum))) {
-                randomNum = rand.nextInt(abc.length());
-            }
-            set.add(abc.charAt(randomNum));
-            rotorsStartPositionList.add(abc.charAt(randomNum));
-            Pair<String, Pair<Integer, Integer>> tmp = rotorsIDList.get(i);
-            int curNotch = dto_machineInfo.getNotchPositionList().get(Integer.parseInt(tmp.getKey()) -1);
-            rotorsIDList.set(i,new Pair<>(tmp.getKey(),new Pair<>(curNotch,dto_machineInfo.getABCOrderOfSpecificRotor(Integer.parseInt(tmp.getKey()) -1).indexOf(abc.charAt(randomNum)))));
-        }
-        return rotorsStartPositionList;
-    }
-    private String randomCreateReflectorID(int numOfReflectors) {
-        Random rand = new Random();
-        Map<Integer, String> MapNumbers = new LinkedHashMap<>();
-        MapNumbers.put(1,"I");
-        MapNumbers.put(2,"II");
-        MapNumbers.put(3,"III");
-        MapNumbers.put(4,"IV");
-        MapNumbers.put(5,"V");
-        return MapNumbers.get(rand.nextInt(numOfReflectors) + 1);
-
-    }*/
     public void codeCalibrationController_SETCodeBtnClick() {
         //TODO : CREATE MACHINE
         isCodeChosen.set(true);
@@ -293,6 +238,6 @@ public class UBoatMainController {
     }
 
     public void switchToMainPanel() {
-
+        sp_mainPage.setContent();
     }
 }

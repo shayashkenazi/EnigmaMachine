@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -20,7 +21,8 @@ public class LoginController {
 
     @FXML private Button btn_login;
     @FXML private TextField tf_userName;
-    UBoatMainController uBoatMainController;
+    @FXML private ScrollPane sp_currentPage;
+    private UBoatMainController uBoatMainController;
 
 
     @FXML void loginBtnClick(ActionEvent event) {
@@ -62,6 +64,5 @@ public class LoginController {
                 }
             }
         });
-
     }
 }
