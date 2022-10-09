@@ -18,7 +18,7 @@
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
          <children>
             <Label text="User Name:" />
-            <TextField prefHeight="25.0" prefWidth="197.0" />
+            <TextField fx:id="tf_userName" prefHeight="25.0" prefWidth="197.0" />
          </children>
       </HBox>
       <Button fx:id="btn_login" mnemonicParsing="false" onAction="#loginBtnClick" text="login" />
