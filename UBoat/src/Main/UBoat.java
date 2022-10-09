@@ -27,12 +27,12 @@ public class UBoat extends Application {
         fxmlLoader = new FXMLLoader();
         url = getClass().getResource("/Main/UBoatMainController.fxml");
         fxmlLoader.setLocation(url);
-        ScrollPane root = fxmlLoader.load(url.openStream());
+        Parent root = fxmlLoader.load(url.openStream());
         UBoatMainController uBoatMainController = fxmlLoader.getController();
 
         // Bindings
         uBoatMainController.setLoginController(loginController);
-
+        uBoatMainController.setContentScene();
         Scene scene = new Scene(root, 500, 500);
         primaryStage.setScene(scene);
         primaryStage.setTitle("UBoat Application");

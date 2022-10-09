@@ -14,6 +14,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -44,19 +45,22 @@ public class UBoatMainController {
     @FXML private TextArea ta_machineDetails, ta_candidates, ta_teamsDetails;
     @FXML private ScrollPane sp_mainPage;
     private final StringProperty currentUserName;
+    private Node rootNode;
 
     //private Parent uBoatComponent;
 
     public UBoatMainController() {
         currentUserName = new SimpleStringProperty("Anonymous");
-        sp_mainPage.setContent(loginComponentController.getLoginPage());
+        //sp_mainPage.setContent(loginComponentController.getLoginPage());
     }
 
     public void setLoginController(LoginController loginController) {
         this.loginComponentController = loginController;
         loginController.setMainController(this);
     }
-
+    public void setContentScene(){
+        sp_mainPage.setContent(loginComponentController.getLoginPage());
+    }
 
     @FXML public void initialize() {
 
@@ -75,6 +79,7 @@ public class UBoatMainController {
             //codeCalibrationComponentController.enableDisableCodeCalibrationButtons(newValue);
             setMachineConfigurationTextArea(newValue);
         });
+        rootNode = sp_mainPage.getContent();
     }
 
     @FXML void loadFileBtnClick(ActionEvent event) {
@@ -244,6 +249,6 @@ public class UBoatMainController {
     }
 
     public void switchToMainPanel() {
-        //sp_mainPage.setContent();
+        sp_mainPage.setContent(rootNode);
     }
 }
