@@ -21,7 +21,7 @@ public class LoginController {
 
     @FXML private Button btn_login;
     @FXML private TextField tf_userName;
-    @FXML private ScrollPane sp_currentPage;
+    @FXML private ScrollPane sp_loginPage;
     private UBoatMainController uBoatMainController;
 
 
@@ -65,4 +65,14 @@ public class LoginController {
             }
         });
     }
+
+    public ScrollPane getLoginPage() {
+        return sp_loginPage;
+    }
+
+    public void setMainController(UBoatMainController uBoatMainController) {
+        this.uBoatMainController = uBoatMainController;
+    }
+
+    //public void
 }

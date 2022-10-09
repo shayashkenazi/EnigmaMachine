@@ -35,8 +35,8 @@ public class UBoatMainController {
     private final BooleanProperty isCodeChosen = new SimpleBooleanProperty(false);
 
     @FXML private CodeCalibrationController codeCalibrationComponentController;
-    @FXML private LoginController loginController;
     @FXML private VBox codeCalibrationComponent;
+    private LoginController loginComponentController;
     @FXML private EncryptMessageController encryptMessageComponentController;
     @FXML private VBox encryptMessageComponent;
     @FXML private Button btn_loadFile, btn_logOut;
@@ -49,6 +49,12 @@ public class UBoatMainController {
 
     public UBoatMainController() {
         currentUserName = new SimpleStringProperty("Anonymous");
+        sp_mainPage.setContent(loginComponentController.getLoginPage());
+    }
+
+    public void setLoginController(LoginController loginController) {
+        this.loginComponentController = loginController;
+        loginController.setMainController(this);
     }
 
 
@@ -238,6 +244,6 @@ public class UBoatMainController {
     }
 
     public void switchToMainPanel() {
-        sp_mainPage.setContent();
+        //sp_mainPage.setContent();
     }
 }
