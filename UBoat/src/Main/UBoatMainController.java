@@ -10,8 +10,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
@@ -42,6 +45,13 @@ public class UBoatMainController {
     @FXML private Button btn_loadFile, btn_logOut;
     @FXML private TextField tf_filePath;
     @FXML private TextArea ta_machineDetails, ta_candidates, ta_teamsDetails;
+    private final StringProperty currentUserName;
+    private Parent uBoatComponent;
+
+    public UBoatMainController() {
+        currentUserName = new SimpleStringProperty("Anonymous");
+    }
+
 
     @FXML public void initialize() {
 
@@ -118,48 +128,7 @@ public class UBoatMainController {
     @FXML void logOutBtnClick(ActionEvent event) {
 
     }
-    public void loginController_loginBtnClick(String userName){
-        if (userName.isEmpty()) {
-            //errorMessageProperty.set("User name is empty. You can't login with empty user name");
-            return;
-        }
 
-        //noinspection ConstantConditions
-        String finalUrl = HttpUrl
-                .parse(Constants.LOGIN_PAGE)
-                .newBuilder()
-                .addQueryParameter("username", userName)
-                .build()
-                .toString();
-
-        updateHttpStatusLine("New request is launched for: " + finalUrl);
-
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() ->
-                        errorMessageProperty.set("Something went wrong: " + e.getMessage())
-                );
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.code() != 200) {
-                    String responseBody = response.body().string();
-                    Platform.runLater(() ->
-                            errorMessageProperty.set("Something went wrong: " + responseBody)
-                    );
-                } else {
-                    Platform.runLater(() -> {
-                        chatAppMainController.updateUserName(userName);
-                        chatAppMainController.switchToChatRoom();
-                    });
-                }
-            }
-        });
-
-    }
     public void codeCalibrationController_randomCodeBtnClick() {
         //TODO : CREATE RANDOM MACHINE
 
@@ -318,5 +287,12 @@ public class UBoatMainController {
                 });
             }
         });
+    }
+    public void setCurrentUserName(String userName){
+        currentUserName.set(userName);
+    }
+
+    public void switchToMainPanel() {
+
     }
 }
