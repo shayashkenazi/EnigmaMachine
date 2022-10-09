@@ -12,6 +12,7 @@ public class Constants {
     public final static String DTO = FULL_SERVER_PATH + "/dtoServlet";
     public final static String ENCRYPT_CODE = FULL_SERVER_PATH + "/encryptCodeServlet";
     public final static String SET_CODE = FULL_SERVER_PATH + "/SetCodeServlet";
+    public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/loginServlet";
 
 
 }

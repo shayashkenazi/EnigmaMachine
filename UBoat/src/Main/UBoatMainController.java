@@ -19,6 +19,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.util.Pair;
+import login.LoginController;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import utils.Constants;
@@ -34,6 +35,7 @@ public class UBoatMainController {
     private final BooleanProperty isCodeChosen = new SimpleBooleanProperty(false);
 
     @FXML private CodeCalibrationController codeCalibrationComponentController;
+    @FXML private LoginController loginController;
     @FXML private VBox codeCalibrationComponent;
     @FXML private EncryptMessageController encryptMessageComponentController;
     @FXML private VBox encryptMessageComponent;
@@ -116,7 +118,46 @@ public class UBoatMainController {
     @FXML void logOutBtnClick(ActionEvent event) {
 
     }
-    public void loginController_loginBtnClick(){
+    public void loginController_loginBtnClick(String userName){
+        if (userName.isEmpty()) {
+            //errorMessageProperty.set("User name is empty. You can't login with empty user name");
+            return;
+        }
+
+        //noinspection ConstantConditions
+        String finalUrl = HttpUrl
+                .parse(Constants.LOGIN_PAGE)
+                .newBuilder()
+                .addQueryParameter("username", userName)
+                .build()
+                .toString();
+
+        updateHttpStatusLine("New request is launched for: " + finalUrl);
+
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() ->
+                        errorMessageProperty.set("Something went wrong: " + e.getMessage())
+                );
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() != 200) {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() ->
+                            errorMessageProperty.set("Something went wrong: " + responseBody)
+                    );
+                } else {
+                    Platform.runLater(() -> {
+                        chatAppMainController.updateUserName(userName);
+                        chatAppMainController.switchToChatRoom();
+                    });
+                }
+            }
+        });
 
     }
     public void codeCalibrationController_randomCodeBtnClick() {

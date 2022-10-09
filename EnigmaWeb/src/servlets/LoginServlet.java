@@ -2,6 +2,7 @@ package servlets;
 
 import constants.Constants;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.*;
 import users.UserManager;
@@ -11,6 +12,7 @@ import utils.SessionUtils;
 
 import java.io.IOException;
 
+@WebServlet(name = "LoginServlet", urlPatterns = {"/loginServlet"})
 public class LoginServlet extends HttpServlet {
 
     @Override
