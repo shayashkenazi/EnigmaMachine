@@ -116,7 +116,9 @@ public class UBoatMainController {
     @FXML void logOutBtnClick(ActionEvent event) {
 
     }
+    public void loginController_loginBtnClick(){
 
+    }
     public void codeCalibrationController_randomCodeBtnClick() {
         //TODO : CREATE RANDOM MACHINE
 
