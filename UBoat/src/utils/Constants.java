@@ -1,5 +1,7 @@
 package utils;
 
+import com.google.gson.Gson;
+
 public class Constants {
 
     // Server resources locations
@@ -14,5 +16,5 @@ public class Constants {
     public final static String SET_CODE = FULL_SERVER_PATH + "/SetCodeServlet";
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/loginServlet";
 
-
+    public final static Gson GSON_INSTANCE = new Gson();
 }

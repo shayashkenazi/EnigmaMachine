@@ -3,6 +3,7 @@ package servlets;
 import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
 import EnginePackage.EngineCapabilities;
+import com.google.gson.Gson;
 import constants.Constants;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,6 +16,7 @@ import utils.ServletUtils;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Set;
 
 @WebServlet(name = "DTOServlet", urlPatterns = {"/dtoServlet"})
 public class DTOServlet extends HttpServlet {
@@ -34,10 +36,19 @@ public class DTOServlet extends HttpServlet {
                 DTO_MachineInfo dtoMachineInfo = engine.createMachineInfoDTO();
                 response.getOutputStream().print(createMachineInfoAsString(engine, dtoMachineInfo));
                 break;
+
             case Constants.DTO_MACHINE_CODE_DESCRIPTION_PARAMETER:
                 DTO_CodeDescription dto_codeDescription = engine.createCodeDescriptionDTO();
                 response.getOutputStream().print(createMachineConfigurationString(dto_codeDescription));
                 break;
+
+            case Constants.DICTIONARY:
+                Set<String> dictionary = engine.getMachine().getMyDictionary();
+                Gson gson = new Gson(); // TODO: why use gson and not constant (see class UserListServlet in Aviad's example)
+                String json_dictionary = gson.toJson(dictionary);
+                response.getWriter().println(json_dictionary);
+                break;
+
             default:
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 break;

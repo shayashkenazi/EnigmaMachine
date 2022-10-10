@@ -4,6 +4,8 @@ import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
 import EnginePackage.EnigmaEngine;
 import codeCalibration.CodeCalibrationController;
+import com.google.gson.reflect.TypeToken;
+import dataStructures.Trie;
 import encryptMessage.EncryptMessageController;
 import http.HttpClientUtil;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,7 +30,10 @@ import utils.ServletUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.*;
+
+import static utils.Constants.GSON_INSTANCE;
 
 public class UBoatMainController {
 
@@ -44,6 +49,7 @@ public class UBoatMainController {
     @FXML private TextField tf_filePath;
     @FXML private TextArea ta_machineDetails, ta_candidates, ta_teamsDetails;
     @FXML private ScrollPane sp_mainPage;
+    @FXML private Tab tab_machine, tab_contest;
     private final StringProperty currentUserName;
     private Node rootNode;
     private String battlefieldName;
@@ -72,9 +78,14 @@ public class UBoatMainController {
             encryptMessageComponentController.setMainController(this);
         }
 
+        tab_contest.setDisable(true);
+
         isXmlLoaded.addListener((observable, oldValue, newValue) -> {
             codeCalibrationComponentController.enableDisableCodeCalibrationButtons(newValue);
             setMachineDetailsTextArea(newValue);
+            initializeTrieWithDictionary();
+
+            tab_contest.setDisable(!newValue);
         });
         isCodeChosen.addListener((observable, oldValue, newValue) -> {
             //codeCalibrationComponentController.enableDisableCodeCalibrationButtons(newValue);
@@ -247,6 +258,35 @@ public class UBoatMainController {
             }
         });
     }
+
+    public void initializeTrieWithDictionary() {
+
+        String finalUrl = HttpUrl
+                .parse(Constants.DTO)
+                .newBuilder()
+                .addQueryParameter(constants.Constants.DTO_TYPE, constants.Constants.DICTIONARY)
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                System.out.println("Ohhhhh NOOOOOOOOOOOO !!!!!\n\n\n\n\n\n\nNOOOOOOO");
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String json_dictionary = response.body().string();
+                Type dictionaryType = new TypeToken<Set<String>>() { }.getType(); // TODO: Whats wrong ???
+                Set<String> dictionary = GSON_INSTANCE.fromJson(json_dictionary, dictionaryType);
+
+                for (String word : dictionary) {
+                    encryptMessageComponentController.getTrie().insert(word);
+                }
+            }
+        });
+    }
+
     public void setCurrentUserName(String userName){
         currentUserName.set(userName);
     }

@@ -47,5 +47,6 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="WebUtils" />
+    <orderEntry type="library" name="gson" level="project" />
   </component>
 </module>

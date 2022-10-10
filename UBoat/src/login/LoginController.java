@@ -24,6 +24,14 @@ public class LoginController {
     @FXML private ScrollPane sp_loginPage;
     private UBoatMainController uBoatMainController;
 
+    @FXML public void initialize() {
+
+        btn_login.setDisable(true);
+
+        tf_userName.textProperty().addListener((observable, oldValue, newValue) -> {
+            btn_login.setDisable(newValue.equals(""));
+        });
+    }
 
     @FXML void loginBtnClick(ActionEvent event) {
         String userName = tf_userName.getText();
