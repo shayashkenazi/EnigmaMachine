@@ -150,6 +150,7 @@ public class UBoatMainController {
                 .addQueryParameter(constants.Constants.CODE_TYPE, constants.Constants.RANDOM_SET_CODE_TYPE) // TODO: constant
                 .build()
                 .toString();
+
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {

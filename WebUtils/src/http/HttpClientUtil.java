@@ -36,7 +36,6 @@ public class HttpClientUtil {
                 .build();
 
         return HttpClientUtil.HTTP_CLIENT.newCall(request);
-
     }
 
     public static void shutdown() {

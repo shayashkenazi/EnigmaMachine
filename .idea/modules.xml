@@ -2,12 +2,14 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Allies/Allies.iml" filepath="$PROJECT_DIR$/Allies/Allies.iml" />
       <module fileurl="file://$PROJECT_DIR$/Engine/Engine.iml" filepath="$PROJECT_DIR$/Engine/Engine.iml" />
       <module fileurl="file://$PROJECT_DIR$/EnigmaMachineQ1.iml" filepath="$PROJECT_DIR$/EnigmaMachineQ1.iml" />
       <module fileurl="file://$PROJECT_DIR$/EnigmaWeb/EnigmaWeb.iml" filepath="$PROJECT_DIR$/EnigmaWeb/EnigmaWeb.iml" />
       <module fileurl="file://$PROJECT_DIR$/JavaFX/JavaFX.iml" filepath="$PROJECT_DIR$/JavaFX/JavaFX.iml" />
       <module fileurl="file://$PROJECT_DIR$/UBoat/UBoat.iml" filepath="$PROJECT_DIR$/UBoat/UBoat.iml" />
       <module fileurl="file://$PROJECT_DIR$/UI/UI.iml" filepath="$PROJECT_DIR$/UI/UI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WebUtils/WebUtils.iml" filepath="$PROJECT_DIR$/WebUtils/WebUtils.iml" />
     </modules>
   </component>
 </project>
