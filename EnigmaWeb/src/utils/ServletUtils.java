@@ -1,5 +1,6 @@
 package utils;
 
+import EnginePackage.Battlefield;
 import EnginePackage.EngineCapabilities;
 import EnginePackage.EnigmaEngine;
 import jakarta.servlet.ServletContext;
@@ -12,6 +13,7 @@ public class ServletUtils {
 
     private static final Object userManagerLock = new Object();
     private static final Object engineLock = new Object();
+    private static final Object battlefieldLock = new Object();
 
     public static UserManager getUserManager(ServletContext servletContext) {
 
@@ -31,5 +33,14 @@ public class ServletUtils {
         }
 
         return (EngineCapabilities) servletContext.getAttribute(ENGINE_ATTRIBUTE_NAME);
+    }
+    public static Battlefield getBattlefield(ServletContext servletContext,String battlefieldName) {
+
+        synchronized (battlefieldLock) {
+            if (servletContext.getAttribute(battlefieldName) == null)
+                servletContext.setAttribute(battlefieldName, new Battlefield());
+        }
+
+        return (Battlefield) servletContext.getAttribute(battlefieldName);
     }
 }

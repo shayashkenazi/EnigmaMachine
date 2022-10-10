@@ -46,6 +46,7 @@ public class UBoatMainController {
     @FXML private ScrollPane sp_mainPage;
     private final StringProperty currentUserName;
     private Node rootNode;
+    private String battlefieldName;
 
     //private Parent uBoatComponent;
 
@@ -116,6 +117,7 @@ public class UBoatMainController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() == HttpServletResponse.SC_OK) {
                     isXmlLoaded.set(true);
+                    battlefieldName = response.body().string();
                     Platform.runLater(() ->
                             tf_filePath.setText(fileSelected.getAbsolutePath())
                     );

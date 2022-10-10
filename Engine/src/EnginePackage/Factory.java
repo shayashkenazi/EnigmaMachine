@@ -1,6 +1,7 @@
 package EnginePackage;
 
 //import Generated.*;
+import DecryptionManager.Difficulty;
 import Generated.generated_3.*; //ex3
 //import DecryptionManager.Generated.*; //ex2
 import Tools.*;
@@ -245,8 +246,38 @@ public class Factory {
         machine.setReflectors(createReflectors());
         machine.setExcludeChars(createExcludeChars());
         machine.setMyDictionary(createDictionary());
-
+        machine.setBattlefieldName(createBattlefieldName());
+        machine.setBattlefieldAllies(createBattlefieldAllies());
+        machine.setBattlefieldLevel(createBattlefieldLevel());
         //machine.setNumOfMaxAgents(createNumOfMaxAgents()); // EX2
         return machine;
+    }
+
+    private Difficulty createBattlefieldLevel() throws EnigmaException {
+        String level = cteEnigma.getCTEBattlefield().getLevel();
+        level = level.toUpperCase();
+        switch (level){
+            case "EASY":
+                return Difficulty.EASY;
+            case "MEDIUM":
+                return Difficulty.MEDIUM;
+            case "HARD":
+                return Difficulty.HARD;
+            case "IMPOSSIBLE":
+                return Difficulty.IMPOSSIBLE;
+            default:
+                throw new EnigmaException("wrong level input");
+        }
+    }
+
+    private int createBattlefieldAllies() throws EnigmaException{
+        int allies =  cteEnigma.getCTEBattlefield().getAllies();
+        if(allies < 0 )
+            throw new EnigmaException("wrong allies input");
+        return allies;
+    }
+
+    private String createBattlefieldName() {
+        return cteEnigma.getCTEBattlefield().getBattleName();
     }
 }
