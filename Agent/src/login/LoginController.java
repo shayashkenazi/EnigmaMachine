@@ -4,9 +4,7 @@ import http.HttpClientUtil;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import main.AgentMainController;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -19,9 +17,17 @@ import java.io.IOException;
 
 public class LoginController {
 
-    @FXML private Button btn_login;
-    @FXML private TextField tf_userName;
     @FXML private ScrollPane sp_loginPage;
+
+    @FXML private TextField tf_userName;
+
+    @FXML private Slider s_threadsNumber;
+
+    @FXML private TextField tf_taskSize;
+
+    @FXML private ComboBox<String> cb_allies;
+
+    @FXML private Button btn_login;
     private AgentMainController agentMainController;
 
     @FXML public void initialize() {
@@ -46,6 +52,7 @@ public class LoginController {
                 .parse(Constants.LOGIN_PAGE)
                 .newBuilder()
                 .addQueryParameter("username", userName)
+                .addQueryParameter(Constants.CLASS_TYPE,"agent")
                 .build()
                 .toString();
 
@@ -81,5 +88,8 @@ public class LoginController {
 
     public void setMainController(AgentMainController agentMainController) {
         this.agentMainController = agentMainController;
+    }
+    public ComboBox<String> getCb_allies(){
+        return cb_allies;
     }
 }

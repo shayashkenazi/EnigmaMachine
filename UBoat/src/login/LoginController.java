@@ -1,5 +1,6 @@
 package login;
 
+import Main.UBoat;
 import Main.UBoatMainController;
 import http.HttpClientUtil;
 import javafx.application.Platform;
@@ -46,6 +47,7 @@ public class LoginController {
                 .parse(Constants.LOGIN_PAGE)
                 .newBuilder()
                 .addQueryParameter("username", userName)
+                .addQueryParameter(Constants.CLASS_TYPE, "uBoat")
                 .build()
                 .toString();
 

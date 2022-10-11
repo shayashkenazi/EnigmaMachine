@@ -4,16 +4,15 @@ import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
 import EnginePackage.EngineCapabilities;
 import com.google.gson.Gson;
-import constants.Constants;
-import jakarta.servlet.ServletException;
+import WebConstants.Constants;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import javafx.util.Pair;
+import users.UserManager;
 import utils.ServletUtils;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Set;
@@ -24,6 +23,7 @@ public class DTOServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+        Gson gson = new Gson();
 
         String userName = request.getParameter(Constants.USERNAME);
         String dtoType = request.getParameter(Constants.DTO_TYPE);
@@ -42,12 +42,17 @@ public class DTOServlet extends HttpServlet {
                 DTO_CodeDescription dto_codeDescription = engine.createCodeDescriptionDTO();
                 response.getOutputStream().print(createMachineConfigurationString(dto_codeDescription));
                 break;
-
             case Constants.DICTIONARY:
                 Set<String> dictionary = engine.getMachine().getMyDictionary();
-                Gson gson = new Gson(); // TODO: Why like this and not use the Gson instance (i did it like aviad)
+                gson = new Gson();
                 String json_dictionary = gson.toJson(dictionary);
                 response.getWriter().println(json_dictionary);
+                break;
+            case Constants.DTO_ALLIES:
+                Set<String> usersAllies = ServletUtils.getUserManager(getServletContext()).getUsersAllies();
+                gson = new Gson();
+                String usersAlliesJson = gson.toJson(usersAllies);
+                response.getWriter().println(usersAlliesJson);
                 break;
 
             default:

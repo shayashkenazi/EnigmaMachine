@@ -1,4 +1,4 @@
-package constants;
+package WebConstants;
 
 public class Constants {
 
@@ -7,11 +7,18 @@ public class Constants {
     public static final String MSG_TO_DECODE = "decodeMsg";
     public static final String CODE_TYPE = "setCodeType";
 
+    //parameters for LOGING switch case
+    public final static String CLASS_TYPE = "classType";
+    public final static String UBOAT_CLASS = "uBoat";
+    public final static String ALLIES_CLASS = "allies";
+    public final static String AGENT_CLASS = "agent";
+
 
     // parameters for DTO switch case
     public static final String DTO_MACHINE_INFO_PARAMETER = "machineInfo";
     public static final String DTO_MACHINE_CODE_DESCRIPTION_PARAMETER = "machineConfiguration";
     public static final String DICTIONARY = "dictionary";
+    public static final String DTO_ALLIES = "allies";
 
     // parameters for Create Set switch case
     public static final String RANDOM_SET_CODE_TYPE = "randomSetCode";

@@ -1,11 +1,7 @@
 package Main;
 
-import DTOs.DTO_CodeDescription;
-import DTOs.DTO_MachineInfo;
-import EnginePackage.EnigmaEngine;
 import codeCalibration.CodeCalibrationController;
 import com.google.gson.reflect.TypeToken;
-import dataStructures.Trie;
 import encryptMessage.EncryptMessageController;
 import http.HttpClientUtil;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,16 +13,13 @@ import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import javafx.util.Pair;
 import login.LoginController;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import utils.Constants;
-import utils.ServletUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -166,7 +159,7 @@ public class UBoatMainController {
         String finalUrl = HttpUrl
                 .parse(Constants.SET_CODE)
                 .newBuilder()
-                .addQueryParameter(constants.Constants.CODE_TYPE, constants.Constants.RANDOM_SET_CODE_TYPE) // TODO: constant
+                .addQueryParameter(WebConstants.Constants.CODE_TYPE, WebConstants.Constants.RANDOM_SET_CODE_TYPE) // TODO: constant
                 .build()
                 .toString();
 
@@ -274,7 +267,7 @@ public class UBoatMainController {
         String finalUrl = HttpUrl
                 .parse(Constants.DTO)
                 .newBuilder()
-                .addQueryParameter(constants.Constants.DTO_TYPE, constants.Constants.DICTIONARY)
+                .addQueryParameter(WebConstants.Constants.DTO_TYPE, WebConstants.Constants.DICTIONARY)
                 .addQueryParameter(Constants.USERNAME, userName.getValue())
                 .build()
                 .toString();

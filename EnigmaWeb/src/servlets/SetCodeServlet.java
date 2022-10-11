@@ -3,7 +3,7 @@ package servlets;
 import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
 import EnginePackage.EngineCapabilities;
-import constants.Constants;
+import WebConstants.Constants;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;

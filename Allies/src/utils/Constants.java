@@ -13,6 +13,7 @@ public class Constants {
 
 
     public final static String USERNAME = "username";
+    public final static String CLASS_TYPE = "classType";
 
     public final static Gson GSON_INSTANCE = new Gson();
 }

@@ -1,6 +1,6 @@
 package servlets;
 
-import constants.Constants;
+import WebConstants.Constants;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,11 +18,11 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
                          throws ServletException, IOException {
-
-        //processRequest(request, response);
+        String classType = request.getParameter(Constants.CLASS_TYPE);
+        processRequest(request, response,classType);
     }
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response,String classType)
             throws ServletException, IOException {
 
         response.setContentType("text/plain;charset=UTF-8");
@@ -48,6 +48,17 @@ public class LoginServlet extends HttpServlet {
                     else {
                         //add the new user to the users list
                         userManager.addUser(usernameFromParameter);
+                        switch (classType){
+                            case Constants.UBOAT_CLASS:
+                                userManager.addUBoatUser(usernameFromParameter);
+                                break;
+                            case Constants.ALLIES_CLASS:
+                                userManager.addAlliesUser(usernameFromParameter);
+                                break;
+                            case Constants.AGENT_CLASS:
+                                userManager.addAgentUser(usernameFromParameter);
+                                break;
+                        }
                         request.getSession(true).setAttribute(Constants.USERNAME, usernameFromParameter);
 
                         //redirect the request to the chat room - in order to actually change the URL

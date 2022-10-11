@@ -1,6 +1,6 @@
 package utils;
 
-import constants.Constants;
+import WebConstants.Constants;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 

@@ -1,7 +1,7 @@
 package servlets;
 
 import EnginePackage.EngineCapabilities;
-import constants.Constants;
+import WebConstants.Constants;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;

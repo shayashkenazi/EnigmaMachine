@@ -11,8 +11,9 @@ public class Constants {
     private final static String FULL_SERVER_PATH = BASE_URL + CONTEXT_PATH;
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/loginServlet";
 
-
+    public static final String DTO_ALLIES = "allies";
     public final static String USERNAME = "username";
-
+    public final static String CLASS_TYPE = "classType";
+    public final static String DTO = FULL_SERVER_PATH + "/dtoServlet";
     public final static Gson GSON_INSTANCE = new Gson();
 }

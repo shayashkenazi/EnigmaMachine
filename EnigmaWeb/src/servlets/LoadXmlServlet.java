@@ -1,7 +1,7 @@
 package servlets;
 
 import EnginePackage.EngineCapabilities;
-import constants.Constants;
+import WebConstants.Constants;
 import enigmaException.EnigmaException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -16,10 +16,8 @@ import javax.xml.bind.JAXBException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Scanner;
-import java.util.concurrent.ConcurrentHashMap;
 
 @WebServlet(name = "LoadXmlServlet", urlPatterns = {"/LoadXmlServlet"}) // TODO: Correct
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)

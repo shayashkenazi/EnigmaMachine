@@ -9,6 +9,7 @@
         <webroots>
           <root url="file://$MODULE_DIR$/web" relative="/" />
         </webroots>
+        <sourceRoots />
       </configuration>
     </facet>
   </component>
@@ -24,13 +25,23 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../../../../Okhttp" />
+          <root url="file://C:/Users/Okhttp" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/../../../../Okhttp" recursive="false" />
+        <jarDirectory url="file://C:/Users/Okhttp" recursive="false" />
       </library>
     </orderEntry>
     <orderEntry type="library" name="gson" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$USER_HOME$/Desktop/Okhttp" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$USER_HOME$/Desktop/Okhttp" recursive="false" />
+      </library>
+    </orderEntry>
   </component>
 </module>

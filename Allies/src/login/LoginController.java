@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import main.AlliesMainController;
@@ -46,6 +47,7 @@ public class LoginController {
                 .parse(Constants.LOGIN_PAGE)
                 .newBuilder()
                 .addQueryParameter("username", userName)
+                .addQueryParameter(Constants.CLASS_TYPE,"allies")
                 .build()
                 .toString();
 

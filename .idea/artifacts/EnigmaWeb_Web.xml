@@ -3,6 +3,11 @@
     <output-path>$PROJECT_DIR$/out/artifacts/EnigmaWeb_Web</output-path>
     <root id="archive" name="EnigmaWeb_Web.war">
       <element id="artifact" artifact-name="EnigmaWeb:Web exploded" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="gson" />
+        </element>
+      </element>
     </root>
   </artifact>
 </component>
