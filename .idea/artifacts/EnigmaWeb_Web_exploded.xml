@@ -9,12 +9,12 @@
           <element id="module-output" name="Engine" />
         </element>
         <element id="directory" name="lib">
-          <element id="file-copy" path="$USER_HOME$/Desktop/Okhttp/okio-2.2.2.jar" />
-          <element id="file-copy" path="$USER_HOME$/Desktop/Okhttp/okhttp-4.2.1.jar" />
-          <element id="file-copy" path="$USER_HOME$/Desktop/Okhttp/annotations-13.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/Desktop/Okhttp/kotlin-stdlib-1.3.50.jar" />
-          <element id="file-copy" path="$USER_HOME$/Desktop/Okhttp/kotlin-stdlib-common-1.3.50.jar" />
-          <element id="library" level="project" name="gson" />
+          <element id="file-copy" path="$PROJECT_DIR$/../../../Okhttp/okio-2.2.2.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/../../../Okhttp/okhttp-4.2.1.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/../../../Okhttp/annotations-13.0.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/../../../Okhttp/kotlin-stdlib-1.3.50.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/../../../Okhttp/kotlin-stdlib-common-1.3.50.jar" />
+          <element id="library" level="project" name="gson1" />
         </element>
       </element>
     </root>
