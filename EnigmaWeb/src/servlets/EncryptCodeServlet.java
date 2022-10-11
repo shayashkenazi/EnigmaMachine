@@ -16,7 +16,8 @@ public class EncryptCodeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        EngineCapabilities engine = ServletUtils.getEngine(getServletContext());
+        String userName = request.getParameter("userName");
+        EngineCapabilities engine = ServletUtils.getBattlefield(getServletContext(), userName).getEngine();
         String msgToEncode = request.getParameter(Constants.MSG_TO_DECODE);
         String resDecode = engine.encodeDecodeMsg(msgToEncode,false);
         response.getOutputStream().print(resDecode);

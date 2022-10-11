@@ -25,8 +25,9 @@ public class DTOServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        EngineCapabilities engine = ServletUtils.getEngine(getServletContext());
+        String userName = request.getParameter("username");
         String dtoType = request.getParameter(Constants.DTO_TYPE);
+        EngineCapabilities engine = ServletUtils.getBattlefield(getServletContext(), userName).getEngine();
 
         response.setStatus(HttpServletResponse.SC_OK); // is it ok to set to good and if bas set again to bad ?
 
@@ -44,7 +45,7 @@ public class DTOServlet extends HttpServlet {
 
             case Constants.DICTIONARY:
                 Set<String> dictionary = engine.getMachine().getMyDictionary();
-                Gson gson = new Gson(); // TODO: why use gson and not constant (see class UserListServlet in Aviad's example)
+                Gson gson = new Gson(); // TODO: Why like this and not use the Gson instance (i did it like aviad)
                 String json_dictionary = gson.toJson(dictionary);
                 response.getWriter().println(json_dictionary);
                 break;

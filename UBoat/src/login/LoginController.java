@@ -35,6 +35,7 @@ public class LoginController {
 
     @FXML void loginBtnClick(ActionEvent event) {
         String userName = tf_userName.getText();
+
         if (userName.isEmpty()) {
             //errorMessageProperty.set("User name is empty. You can't login with empty user name");
             return;
@@ -66,7 +67,7 @@ public class LoginController {
                     );
                 } else {
                     Platform.runLater(() -> {
-                        uBoatMainController.setCurrentUserName(userName);
+                        uBoatMainController.setUserName(userName);
                         uBoatMainController.switchToMainPanel();
                     });
                 }

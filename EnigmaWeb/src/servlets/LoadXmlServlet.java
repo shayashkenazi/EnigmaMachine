@@ -28,9 +28,10 @@ public class LoadXmlServlet extends HttpServlet {
         response.setContentType("text/plain");
         Collection<Part> parts = request.getParts();
         StringBuilder fileContent = new StringBuilder();
+        String userName = request.getParameter("userName");
         try {
             for (Part curPart : parts) {
-                EngineCapabilities engine = ServletUtils.getEngine(getServletContext());
+                EngineCapabilities engine = ServletUtils.getBattlefield(getServletContext(), userName).getEngine();
                 engine.createEnigmaMachineFromXMLInputStream(curPart.getInputStream(), true);
                 response.setStatus(HttpServletResponse.SC_OK);
                 break;

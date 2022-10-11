@@ -22,7 +22,8 @@ public class SetCodeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        EngineCapabilities engine = ServletUtils.getEngine(getServletContext());
+        String userName = request.getParameter("userName");
+        EngineCapabilities engine = ServletUtils.getBattlefield(getServletContext(), userName).getEngine();
         String setCodeType = request.getParameter(Constants.CODE_TYPE);
 
         switch (setCodeType) {

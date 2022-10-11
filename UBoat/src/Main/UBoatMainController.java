@@ -50,14 +50,14 @@ public class UBoatMainController {
     @FXML private TextArea ta_machineDetails, ta_candidates, ta_teamsDetails;
     @FXML private ScrollPane sp_mainPage;
     @FXML private Tab tab_machine, tab_contest;
-    private final StringProperty currentUserName;
+    private final StringProperty userName;
     private Node rootNode;
-    private String battlefieldName;
 
     //private Parent uBoatComponent;
 
+
     public UBoatMainController() {
-        currentUserName = new SimpleStringProperty("Anonymous");
+        userName = new SimpleStringProperty("Anonymous");
         //sp_mainPage.setContent(loginComponentController.getLoginPage());
     }
 
@@ -79,6 +79,7 @@ public class UBoatMainController {
         }
 
         tab_contest.setDisable(true);
+        isXmlLoaded.set(false);
 
         isXmlLoaded.addListener((observable, oldValue, newValue) -> {
             codeCalibrationComponentController.enableDisableCodeCalibrationButtons(newValue);
@@ -128,7 +129,7 @@ public class UBoatMainController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() == HttpServletResponse.SC_OK) {
                     isXmlLoaded.set(true);
-                    battlefieldName = response.body().string();
+                    //battlefieldName = response.body().string();
                     Platform.runLater(() ->
                             tf_filePath.setText(fileSelected.getAbsolutePath())
                     );
@@ -215,6 +216,7 @@ public class UBoatMainController {
                 .parse(Constants.DTO)
                 .newBuilder()
                 .addQueryParameter("dtoType", "machineInfo") // TODO: constant
+                .addQueryParameter("username", userName.toString())
                 .build()
                 .toString();
 
@@ -240,6 +242,7 @@ public class UBoatMainController {
                 .parse(Constants.DTO)
                 .newBuilder()
                 .addQueryParameter("dtoType", "machineConfiguration") // TODO: constant
+                .addQueryParameter("username", userName.toString())
                 .build()
                 .toString();
 
@@ -265,6 +268,7 @@ public class UBoatMainController {
                 .parse(Constants.DTO)
                 .newBuilder()
                 .addQueryParameter(constants.Constants.DTO_TYPE, constants.Constants.DICTIONARY)
+                .addQueryParameter("username", userName.toString())
                 .build()
                 .toString();
 
@@ -277,7 +281,7 @@ public class UBoatMainController {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String json_dictionary = response.body().string();
-                Type dictionaryType = new TypeToken<Set<String>>() { }.getType(); // TODO: Whats wrong ???
+                Type dictionaryType = new TypeToken<Set<String>>() { }.getType(); // TODO: FIX !!!
                 Set<String> dictionary = GSON_INSTANCE.fromJson(json_dictionary, dictionaryType);
 
                 for (String word : dictionary) {
@@ -287,8 +291,8 @@ public class UBoatMainController {
         });
     }
 
-    public void setCurrentUserName(String userName){
-        currentUserName.set(userName);
+    public void setUserName(String userName){
+        this.userName.set(userName);
     }
 
     public void switchToMainPanel() {
