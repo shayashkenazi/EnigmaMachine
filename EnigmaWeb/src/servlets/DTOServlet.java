@@ -25,7 +25,7 @@ public class DTOServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        String userName = request.getParameter("username");
+        String userName = request.getParameter(Constants.USERNAME);
         String dtoType = request.getParameter(Constants.DTO_TYPE);
         EngineCapabilities engine = ServletUtils.getBattlefield(getServletContext(), userName).getEngine();
 

@@ -112,8 +112,15 @@ public class UBoatMainController {
                         .addFormDataPart("file1", fileSelected.getName(), RequestBody.create(fileSelected, MediaType.parse("text/plain")))
                         .build();
 
+        String finalUrl = HttpUrl
+                .parse(Constants.LOAD_XML)
+                .newBuilder()
+                .addQueryParameter(Constants.USERNAME, userName.getValue())
+                .build()
+                .toString();
+
         Request request = new Request.Builder()
-                .url(Constants.LOAD_XML)
+                .url(finalUrl)
                 .post(body)
                 .build();
 
@@ -216,7 +223,7 @@ public class UBoatMainController {
                 .parse(Constants.DTO)
                 .newBuilder()
                 .addQueryParameter("dtoType", "machineInfo") // TODO: constant
-                .addQueryParameter("username", userName.toString())
+                .addQueryParameter(Constants.USERNAME, userName.getValue())
                 .build()
                 .toString();
 
@@ -242,7 +249,7 @@ public class UBoatMainController {
                 .parse(Constants.DTO)
                 .newBuilder()
                 .addQueryParameter("dtoType", "machineConfiguration") // TODO: constant
-                .addQueryParameter("username", userName.toString())
+                .addQueryParameter(Constants.USERNAME, userName.getValue())
                 .build()
                 .toString();
 
@@ -268,7 +275,7 @@ public class UBoatMainController {
                 .parse(Constants.DTO)
                 .newBuilder()
                 .addQueryParameter(constants.Constants.DTO_TYPE, constants.Constants.DICTIONARY)
-                .addQueryParameter("username", userName.toString())
+                .addQueryParameter(Constants.USERNAME, userName.getValue())
                 .build()
                 .toString();
 

@@ -1,6 +1,7 @@
 package servlets;
 
 import EnginePackage.EngineCapabilities;
+import constants.Constants;
 import enigmaException.EnigmaException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -18,6 +19,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 
 @WebServlet(name = "LoadXmlServlet", urlPatterns = {"/LoadXmlServlet"}) // TODO: Correct
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
@@ -28,7 +30,7 @@ public class LoadXmlServlet extends HttpServlet {
         response.setContentType("text/plain");
         Collection<Part> parts = request.getParts();
         StringBuilder fileContent = new StringBuilder();
-        String userName = request.getParameter("userName");
+        String userName = request.getParameter(Constants.USERNAME);
         try {
             for (Part curPart : parts) {
                 EngineCapabilities engine = ServletUtils.getBattlefield(getServletContext(), userName).getEngine();

@@ -10,8 +10,7 @@ import login.LoginController;
 
 import java.net.URL;
 
-public class Allies  extends Application {
-
+public class Agent extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -26,17 +25,17 @@ public class Allies  extends Application {
 
         // UBoat Main Controller
         fxmlLoader = new FXMLLoader();
-        url = getClass().getResource("/main/AlliesMainController.fxml");
+        url = getClass().getResource("/main/AgentMainController.fxml");
         fxmlLoader.setLocation(url);
         Parent root = fxmlLoader.load(url.openStream());
-        AlliesMainController alliesMainController = fxmlLoader.getController();
+        AgentMainController agentMainController = fxmlLoader.getController();
 
         // Bindings
-        alliesMainController.setLoginController(loginController);
-        alliesMainController.setContentScene();
+        agentMainController.setLoginController(loginController);
+        agentMainController.setContentScene();
         Scene scene = new Scene(root, 500, 500);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Allies Application");
+        primaryStage.setTitle("Agent Application");
         primaryStage.show();
     }
 

@@ -7,7 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import login.LoginController;
 
-public class AlliesMainController {
+public class AgentMainController {
 
     private LoginController loginComponentController;
     private Node rootNode;
@@ -18,7 +18,7 @@ public class AlliesMainController {
     @FXML void initialize() {
         rootNode = sp_mainPage.getContent();
     }
-    public AlliesMainController() {
+    public AgentMainController() {
         userName = new SimpleStringProperty("Anonymous");
     }
 
