@@ -19,6 +19,7 @@ public interface EngineCapabilities {
     void createEnigmaMachineFromXML(String xmlPath, boolean newMachine) throws EnigmaException, JAXBException,FileNotFoundException;
     public void createEnigmaMachineFromXMLInputStream(InputStream inputStream, boolean newMachine) throws EnigmaException, JAXBException,FileNotFoundException;
     Machine getMachine();
+    void setMachine(Machine machine);
     DTO_MachineInfo createMachineInfoDTO();
     void buildRotorsStack(DTO_CodeDescription codeDescription, boolean newMachine);
 

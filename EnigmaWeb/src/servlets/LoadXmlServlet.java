@@ -31,8 +31,8 @@ public class LoadXmlServlet extends HttpServlet {
         String userName = request.getParameter(Constants.USERNAME);
         try {
             for (Part curPart : parts) {
-                EngineCapabilities engine = ServletUtils.getBattlefield(getServletContext(), userName).getEngine();
-                engine.createEnigmaMachineFromXMLInputStream(curPart.getInputStream(), true);
+                ServletUtils.getBattlefield(getServletContext(), userName)
+                        .createBattlefieldFromXMLInputStream(curPart.getInputStream());
                 response.setStatus(HttpServletResponse.SC_OK);
                 break;
             }

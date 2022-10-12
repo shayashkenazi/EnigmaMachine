@@ -2,9 +2,12 @@ package login;
 
 import http.HttpClientUtil;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import main.Agent;
 import main.AgentMainController;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -18,24 +21,49 @@ import java.io.IOException;
 public class LoginController {
 
     @FXML private ScrollPane sp_loginPage;
-
     @FXML private TextField tf_userName;
-
     @FXML private Slider s_threadsNumber;
-
-    @FXML private TextField tf_taskSize;
-
+    @FXML private TextField tf_numberOfTasks;
     @FXML private ComboBox<String> cb_allies;
-
     @FXML private Button btn_login;
+
     private AgentMainController agentMainController;
+    BooleanProperty isTaskSizeSelected, isAlliesSelected, isUsernameSelected;
 
     @FXML public void initialize() {
 
         btn_login.setDisable(true);
+        isTaskSizeSelected = new SimpleBooleanProperty(false);
+        isAlliesSelected = new SimpleBooleanProperty(false);
+        isUsernameSelected = new SimpleBooleanProperty(false);
 
-        tf_userName.textProperty().addListener((observable, oldValue, newValue) -> {
-            btn_login.setDisable(newValue.equals(""));
+        btn_login.disableProperty().bind(isTaskSizeSelected.not().or(isAlliesSelected.not()).or(isUsernameSelected.not()));
+
+        // Makes the slider to show only INT values
+        s_threadsNumber.valueProperty().addListener((observable, oldValue, newValue) -> {
+            s_threadsNumber.setValue(newValue.intValue());
+        });
+
+        // Always keep Task Size Text-Field valid
+        tf_numberOfTasks.textProperty().addListener((observable, oldValue, newValue) -> {
+
+            if (newValue.equals("")) {
+                isTaskSizeSelected.set(false);
+                return;
+            }
+
+            if (!newValue.matches("^[0-9]*[1-9][0-9]*$")) // Invalid number
+                tf_numberOfTasks.setText(oldValue);
+            else
+                isTaskSizeSelected.set(true);
+        });
+
+        cb_allies.valueProperty().addListener(observable -> {
+            isAlliesSelected.set(cb_allies.getValue() != null);
+        });
+
+        tf_userName.textProperty().addListener(observable -> {
+            isUsernameSelected.set(! tf_userName.getText().equals(""));
         });
     }
 

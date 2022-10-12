@@ -77,7 +77,12 @@ public class UBoatMainController {
         isXmlLoaded.addListener((observable, oldValue, newValue) -> {
             codeCalibrationComponentController.enableDisableCodeCalibrationButtons(newValue);
             setMachineDetailsTextArea(newValue);
-            initializeTrieWithDictionary();
+
+            if (newValue) {
+
+                initializeTrieWithDictionary();
+            }
+
 
             tab_contest.setDisable(!newValue);
         });
@@ -90,6 +95,7 @@ public class UBoatMainController {
 
     @FXML void loadFileBtnClick(ActionEvent event) {
 
+        isXmlLoaded.set(false);
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("xml files", "*.xml"));
 
@@ -286,6 +292,7 @@ public class UBoatMainController {
 
                 for (String word : dictionary) {
                     encryptMessageComponentController.getTrie().insert(word);
+                    encryptMessageComponentController.getLv_dictionary().getItems().add(word);
                 }
             }
         });

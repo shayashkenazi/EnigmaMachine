@@ -27,6 +27,11 @@ public class EnigmaEngine implements EngineCapabilities,Serializable{
     }
 
     @Override
+    public void setMachine(Machine machine) {
+        this.machine = machine;
+    }
+
+    @Override
     public EnigmaEngine clone(){
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

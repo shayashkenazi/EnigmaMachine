@@ -163,6 +163,47 @@ public class Factory {
         return rotors;
     }
 
+    public String getBattleName() {
+        return cteEnigma.getCTEBattlefield().getBattleName();
+    }
+
+    public int getNumberOfAllies() throws EnigmaException {
+        int res = cteEnigma.getCTEBattlefield().getAllies();
+
+        if (res < 1)
+            throw new EnigmaException("Number of Allies should be a positive number!");
+
+        return res;
+    }
+
+    public Difficulty getDifficulty() throws EnigmaException {
+        String difficulty = cteEnigma.getCTEBattlefield().getLevel().toUpperCase();
+        Difficulty res;
+
+        switch (difficulty) {
+            case "EASY":
+                res = Difficulty.EASY;
+                break;
+
+            case "MEDIUM":
+                res = Difficulty.MEDIUM;
+                break;
+
+            case "HARD":
+                res = Difficulty.HARD;
+                break;
+
+            case "IMPOSSIBLE":
+                res = Difficulty.IMPOSSIBLE;
+                break;
+
+            default:
+                throw new EnigmaException("Difficulty is wrong!");
+        }
+
+        return res;
+    }
+
     private Map<Character,Integer> createABC() throws EnigmaException {
 
         String abc = cteEnigma.getCTEMachine().getABC().trim().toUpperCase();
@@ -246,38 +287,7 @@ public class Factory {
         machine.setReflectors(createReflectors());
         machine.setExcludeChars(createExcludeChars());
         machine.setMyDictionary(createDictionary());
-        machine.setBattlefieldName(createBattlefieldName());
-        machine.setBattlefieldAllies(createBattlefieldAllies());
-        machine.setBattlefieldLevel(createBattlefieldLevel());
         //machine.setNumOfMaxAgents(createNumOfMaxAgents()); // EX2
         return machine;
-    }
-
-    private Difficulty createBattlefieldLevel() throws EnigmaException {
-        String level = cteEnigma.getCTEBattlefield().getLevel();
-        level = level.toUpperCase();
-        switch (level){
-            case "EASY":
-                return Difficulty.EASY;
-            case "MEDIUM":
-                return Difficulty.MEDIUM;
-            case "HARD":
-                return Difficulty.HARD;
-            case "IMPOSSIBLE":
-                return Difficulty.IMPOSSIBLE;
-            default:
-                throw new EnigmaException("wrong level input");
-        }
-    }
-
-    private int createBattlefieldAllies() throws EnigmaException{
-        int allies =  cteEnigma.getCTEBattlefield().getAllies();
-        if(allies < 0 )
-            throw new EnigmaException("wrong allies input");
-        return allies;
-    }
-
-    private String createBattlefieldName() {
-        return cteEnigma.getCTEBattlefield().getBattleName();
     }
 }

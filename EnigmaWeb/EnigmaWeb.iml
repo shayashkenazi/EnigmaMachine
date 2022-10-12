@@ -32,7 +32,6 @@
         <jarDirectory url="file://C:/Users/Okhttp" recursive="false" />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="gson" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>

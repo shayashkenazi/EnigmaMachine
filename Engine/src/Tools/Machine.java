@@ -19,10 +19,6 @@ public class Machine implements Serializable {
     private Set<String> myDictionary;
     private Set<Character> excludeChars;
     private int numOfMaxAgents;
-    private String battlefieldName;
-    private int numOfAllies;
-    private Difficulty level;
-
 
     /*@Override
     public Machine clone(){
@@ -158,17 +154,5 @@ public class Machine implements Serializable {
         }
         return sb.toString();
 
-    }
-
-    public void setBattlefieldName(String battlefield) {
-        battlefieldName = battlefield;
-    }
-
-    public void setBattlefieldAllies(int battlefieldAllies) {
-        numOfAllies = battlefieldAllies;
-    }
-
-    public void setBattlefieldLevel(Difficulty battlefieldLevel) {
-        level = battlefieldLevel;
     }
 }

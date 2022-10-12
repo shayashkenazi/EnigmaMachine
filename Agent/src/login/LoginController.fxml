@@ -35,8 +35,8 @@
                   </VBox>
                   <VBox alignment="CENTER" prefHeight="43.0" prefWidth="118.0">
                      <children>
-                        <Label text="Task Size" />
-                        <TextField fx:id="tf_taskSize" prefHeight="25.0" prefWidth="75.0" />
+                        <Label text="Number of Tasks" />
+                        <TextField fx:id="tf_numberOfTasks" prefHeight="25.0" prefWidth="75.0" />
                      </children>
                   </VBox>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">

@@ -77,4 +77,5 @@ public class EncryptMessageController {
     }
 
     public Trie getTrie() { return trie; }
+    public ListView<String> getLv_dictionary() { return lv_dictionary; }
 }

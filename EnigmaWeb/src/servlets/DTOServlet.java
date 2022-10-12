@@ -23,7 +23,7 @@ public class DTOServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        Gson gson = new Gson();
+        Gson gson;
 
         String userName = request.getParameter(Constants.USERNAME);
         String dtoType = request.getParameter(Constants.DTO_TYPE);
@@ -33,7 +33,7 @@ public class DTOServlet extends HttpServlet {
 
         switch (dtoType) {
             //case Constants.DTO_MACHINE_INFO:
-            case Constants.DTO_MACHINE_INFO_PARAMETER: // TODO: Constants
+            case Constants.DTO_MACHINE_INFO_PARAMETER:
                 DTO_MachineInfo dtoMachineInfo = engine.createMachineInfoDTO();
                 response.getOutputStream().print(createMachineInfoAsString(engine, dtoMachineInfo));
                 break;
