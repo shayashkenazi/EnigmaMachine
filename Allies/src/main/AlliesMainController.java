@@ -15,14 +15,9 @@ public class AlliesMainController {
     private Node rootNode;
     private final StringProperty userName;
 
-    @FXML
-    private ScrollPane sp_mainPage;
+    @FXML private ScrollPane sp_mainPage;
+    @FXML private TextArea ta_teamsAgentsData, ta_contestsData, ta_contestData, ta_contestTeams, ta_teamAgents, ta_teamCandidates;
 
-    @FXML
-    private TextArea ta_TeamsAgentsData;
-
-    @FXML
-    private TextArea ta_ContestsData;
 
     @FXML void initialize() {
 
