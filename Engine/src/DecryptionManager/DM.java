@@ -1,6 +1,8 @@
 package DecryptionManager;
 import EnginePackage.EngineCapabilities;
 import EnginePackage.EnigmaEngine;
+import Tools.Machine;
+import Tools.Reflector;
 import Tools.Rotor;
 
 import java.util.Arrays;
@@ -10,17 +12,18 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class DM { // Relevant for Ex3 only (for Ex2 use DecryptionManager)
 
     private final int capacity = 1000;
-    private BlockingQueue<Runnable> tasks = new LinkedBlockingQueue<>(capacity);
-    private BlockingQueue<Runnable> results = new LinkedBlockingQueue<>(capacity);
+    private BlockingQueue<DmTask> tasks = new LinkedBlockingQueue<>(capacity);
+    //private BlockingQueue<Runnable> results = new LinkedBlockingQueue<>(capacity);
     private EnigmaEngine copyEngine;
     private Difficulty difficulty;
     private int taskSize;
+    private String sentenceToCheck;
 
-    public DM (EnigmaEngine copyEngine, Difficulty difficulty, int taskSize) {
-
+    public DM (EnigmaEngine copyEngine, Difficulty difficulty, int taskSize,String sentenceToCheck) {
         this.copyEngine = copyEngine;
         this.difficulty = difficulty;
         this.taskSize = taskSize;
+        this.sentenceToCheck = sentenceToCheck;
     }
 
     public void run() {
@@ -55,20 +58,14 @@ public class DM { // Relevant for Ex3 only (for Ex2 use DecryptionManager)
             // Full Tasks
             for (int i = 0; i < sizeOfFullTasks; i++) {
 
-                DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(),checkFinish, taskSize
-                        ,isDMWorking, MsgConsumer, showNumberOfTasksConsumer,
-                        sentenceToCheck, results, numberOfDoneTasksAtomic,pausingLock,isPause,timeOfDMOperation);
+                DmTask decryptionTask = new DmTask(engineCopy.clone(), taskSize,sentenceToCheck);
                 tasks.put(decryptionTask);
-                showNumberOfTasksConsumer.accept(numberOfDoneTasksAtomic.get());
                 engineCopy.moveRotorsToPosition(taskSize);
             }
 
             // Last little task
-            DecryptionTask decryptionTask = new DecryptionTask(engineCopy.clone(),checkFinish, lastTaskSize,isDMWorking,
-                    MsgConsumer, showNumberOfTasksConsumer,
-                    sentenceToCheck, results, numberOfDoneTasksAtomic,pausingLock,isPause,timeOfDMOperation);
+            DmTask decryptionTask = new DmTask(engineCopy.clone(), lastTaskSize,sentenceToCheck);
             tasks.put(decryptionTask);
-
 
         } catch (Exception ee) {
         }
@@ -113,5 +110,29 @@ public class DM { // Relevant for Ex3 only (for Ex2 use DecryptionManager)
         }
         String[] res = new String[copyEngine.getMachine().getRotorsInUseCount()];
         combinationsAndHardTask(arrRotorsID,copyEngine.getMachine().getRotorsInUseCount(),0,res);
+    }
+    private void setMachineReflector(String reflectorID, Machine machine){
+
+        int size = machine.getRotorsStack().size();
+        Reflector ref = (Reflector)machine.getRotorsStack().get(size - 1);
+        machine.getRotorsStack().set(size - 1,machine.getReflectorsMap().get(reflectorID));
+    }
+    private void combinationsAndHardTask(String[] arr, int len, int startPosition, String[] result){
+        if (len == 0){
+            EngineCapabilities e = updateSpecificRotorsOrder(result,copyEngine.clone());
+            createHardTasks(e);
+            return;
+        }
+        for (int i = startPosition; i <= arr.length-len; i++){
+            result[result.length - len] = arr[i];
+            combinationsAndHardTask(arr, len-1, i+1, result);
+        }
+    }
+    public EngineCapabilities updateSpecificRotorsOrder(String[] rotorsOrder,EngineCapabilities copyEngine) {
+        int index = 0;
+        for (String rotorId : rotorsOrder) {
+            copyEngine.getMachine().getRotorsStack().set(index++, copyEngine.getMachine().getRotorsMap().get(rotorId));
+        }
+        return copyEngine;
     }
 }

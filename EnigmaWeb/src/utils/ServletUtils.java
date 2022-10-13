@@ -4,6 +4,7 @@ import EnginePackage.Battlefield;
 import EnginePackage.EngineCapabilities;
 import EnginePackage.EnigmaEngine;
 import jakarta.servlet.ServletContext;
+import users.ResultsManager;
 import users.UserManager;
 
 public class ServletUtils {
@@ -14,6 +15,7 @@ public class ServletUtils {
 
     private static final Object userManagerLock = new Object();
     private static final Object battlefieldManagerLock = new Object();
+    private static final Object resultsManagerLock = new Object();
     private static final Object engineLock = new Object();
     private static final Object battlefieldLock = new Object();
 
@@ -25,6 +27,15 @@ public class ServletUtils {
             }
         }
         return (UserManager) servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME);
+    }
+    public static ResultsManager getResultsManager(ServletContext servletContext,String battlefieldName) {
+
+        synchronized (resultsManagerLock) {
+            if (servletContext.getAttribute(battlefieldName) == null) {
+                servletContext.setAttribute(battlefieldName, new ResultsManager());
+            }
+        }
+        return (ResultsManager) servletContext.getAttribute(battlefieldName);
     }
 
     public static Battlefield getBattlefield(ServletContext servletContext, String userName) {

@@ -35,13 +35,14 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../../../../Okhttp" />
+          <root url="file://C:/Users/Okhttp" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/../../../../Okhttp" recursive="false" />
+        <jarDirectory url="file://C:/Users/Okhttp" recursive="false" />
       </library>
     </orderEntry>
     <orderEntry type="library" name="gson1" level="project" />
+    <orderEntry type="library" name="gson" level="project" />
   </component>
 </module>

@@ -46,7 +46,7 @@ public class LoginController {
         String finalUrl = HttpUrl
                 .parse(Constants.LOGIN_PAGE)
                 .newBuilder()
-                .addQueryParameter("username", userName)
+                .addQueryParameter(Constants.USERNAME, userName)
                 .addQueryParameter(Constants.CLASS_TYPE, "uBoat")
                 .build()
                 .toString();

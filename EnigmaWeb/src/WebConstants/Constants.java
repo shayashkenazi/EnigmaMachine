@@ -24,4 +24,11 @@ public class Constants {
     public static final String RANDOM_SET_CODE_TYPE = "randomSetCode";
     public static final String SET_SPECIFIC_CODE_TYPE = "setSpecificCode";
 
+    //parameters for tasks
+    public static final String NUMBER_TASKS = "numberOfTasks";
+    public static final String ALLY_NAME = "allyName";
+    public static final String AGENT_NAME = "agentName";
+
+
+
 }
