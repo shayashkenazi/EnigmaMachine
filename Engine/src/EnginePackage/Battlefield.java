@@ -26,4 +26,7 @@ public class Battlefield {
         numOfAllies = factory.getNumberOfAllies();
         level = factory.getDifficulty();
     }
+    public String getName(){
+        return name;
+    }
 }

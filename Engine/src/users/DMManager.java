@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class DMManager {
 
+    //      map < allyName, dm for ally>
     private final Map<String, DM> DMmap = new HashMap<>();
 
     public synchronized void addDM(String username) {
@@ -14,5 +15,7 @@ public class DMManager {
         //map.put(username);
     }
 
-    public synchronized DM
+    public synchronized DM getDM(String allyName){
+        return DMmap.get(allyName);
+    }
 }

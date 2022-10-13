@@ -81,6 +81,7 @@ public class LoginController {
                 .newBuilder()
                 .addQueryParameter("username", userName)
                 .addQueryParameter(Constants.CLASS_TYPE,"agent")
+                .addQueryParameter("ally",cb_allies.getValue())
                 .build()
                 .toString();
 

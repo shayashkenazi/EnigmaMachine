@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.*;
+import users.HierarchyManager;
 import users.UserManager;
 import utils.ServletUtils;
 import utils.SessionUtils;
@@ -29,6 +30,7 @@ public class LoginServlet extends HttpServlet {
 
         String usernameFromSession = SessionUtils.getUsername(request);
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
+        HierarchyManager hierarchyManager =ServletUtils.getHierarchyManager(getServletContext());
 
         if (usernameFromSession == null) { //user is not logged in yet
 
@@ -48,6 +50,7 @@ public class LoginServlet extends HttpServlet {
                     else {
                         //add the new user to the users list
                         userManager.addUser(usernameFromParameter);
+                        hierarchyManager.addNode(usernameFromParameter);
                         switch (classType){
                             case Constants.UBOAT_CLASS:
                                 userManager.addUBoatUser(usernameFromParameter);
@@ -57,6 +60,8 @@ public class LoginServlet extends HttpServlet {
                                 break;
                             case Constants.AGENT_CLASS:
                                 userManager.addAgentUser(usernameFromParameter);
+                                String myAlly = request.getParameter("ally");
+                                hierarchyManager.connectAgentToParent(myAlly,usernameFromParameter);
                                 break;
                         }
                         request.getSession(true).setAttribute(Constants.USERNAME, usernameFromParameter);

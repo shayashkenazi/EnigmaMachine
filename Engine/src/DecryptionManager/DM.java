@@ -5,7 +5,9 @@ import Tools.Machine;
 import Tools.Reflector;
 import Tools.Rotor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -26,7 +28,7 @@ public class DM { // Relevant for Ex3 only (for Ex2 use DecryptionManager)
         this.sentenceToCheck = sentenceToCheck;
     }
 
-    public void run() {
+    public synchronized void run() {
         switch (difficulty){
             case EASY:
                 createEasyTasks(copyEngine);
@@ -42,7 +44,15 @@ public class DM { // Relevant for Ex3 only (for Ex2 use DecryptionManager)
                 break;
         }
     }
-
+    public synchronized List<DmTask> getTasksForAgent(int numberOfTasks){
+        List<DmTask> tasksForAgent = new ArrayList<>();
+        if (tasks.size() < numberOfTasks)
+            numberOfTasks = tasks.size();
+        for(int i = 0; i < numberOfTasks; i++){
+            tasksForAgent.add(tasks.poll());
+        }
+        return tasksForAgent;
+    }
     public void createEasyTasks(EngineCapabilities engineCopy) {
         // Initialize all Rotors to start index position 0,0,0...
         for (int i = 0; i < engineCopy.getMachine().getRotorsInUseCount(); i++) {
