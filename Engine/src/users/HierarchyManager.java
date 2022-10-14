@@ -9,7 +9,7 @@ public class HierarchyManager {
     private Map<String,Node> hierarchyNodesSet = new HashMap<>();
     public class Node {
         private String name;
-        private Map<String,Node> children;
+        private Map<String,Node> children = new HashMap<>();
         private Node parent;
 
         public Node(String name) {
@@ -39,8 +39,15 @@ public class HierarchyManager {
         Node nodeAlly = hierarchyNodesSet.get(parent);
 
         nodeAgent.setParent(nodeAlly);
-        //Node node = new Node(name);
         nodeAlly.addChild(nameAgent,nodeAgent);
+    }
+    public synchronized void connectAllyToUBoat(String parent,String nameAlly) {
+
+        Node nodeAlly = hierarchyNodesSet.get(nameAlly);
+        Node nodeUBoat = hierarchyNodesSet.get(parent);
+
+        nodeAlly.setParent(nodeUBoat);
+        nodeUBoat.addChild(nameAlly,nodeAlly);
     }
 
 

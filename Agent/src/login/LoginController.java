@@ -74,7 +74,6 @@ public class LoginController {
             //errorMessageProperty.set("User name is empty. You can't login with empty user name");
             return;
         }
-
         //noinspection ConstantConditions
         String finalUrl = HttpUrl
                 .parse(Constants.LOGIN_PAGE)
@@ -109,7 +108,10 @@ public class LoginController {
                 }
             }
         });
+        agentMainController.setDetailsForAgent(userName,cb_allies.getValue(),Integer.parseInt(tf_numberOfTasks.getText()), (int)s_threadsNumber.getValue());
+    
     }
+
 
     public ScrollPane getLoginPage() {
         return sp_loginPage;

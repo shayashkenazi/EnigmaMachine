@@ -2,6 +2,7 @@ package servlets;
 
 import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
+import EnginePackage.Battlefield;
 import EnginePackage.EngineCapabilities;
 import com.google.gson.Gson;
 import WebConstants.Constants;
@@ -15,6 +16,7 @@ import utils.ServletUtils;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 @WebServlet(name = "DTOServlet", urlPatterns = {"/dtoServlet"})
@@ -54,7 +56,17 @@ public class DTOServlet extends HttpServlet {
                 String usersAlliesJson = gson.toJson(usersAllies);
                 response.getWriter().println(usersAlliesJson);
                 break;
-
+            case Constants.DTO_UBOATS:
+                // set<pair<uboatName,battlefieldName>>
+                Set<Pair<String,String>> setUboatBattlefield = new HashSet<>();
+                Set<String> usersUboat = ServletUtils.getUserManager(getServletContext()).getUsersUBoat();
+                for(String uboat: usersUboat){
+                    setUboatBattlefield.add(new Pair<String,String>(uboat, ServletUtils.getBattlefield(getServletContext(),uboat).getName()));
+                }
+                gson = new Gson();
+                String usersUBoatBattlefieldJson = gson.toJson(setUboatBattlefield);
+                response.getWriter().println(usersUBoatBattlefieldJson);
+                break;
             default:
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 break;

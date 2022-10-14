@@ -46,6 +46,8 @@ public class UBoatMainController {
     private final StringProperty userName;
     private Node rootNode;
 
+    private BooleanProperty isReady;
+
     //private Parent uBoatComponent;
 
 

@@ -19,6 +19,7 @@ public class Constants {
     public static final String DTO_MACHINE_CODE_DESCRIPTION_PARAMETER = "machineConfiguration";
     public static final String DICTIONARY = "dictionary";
     public static final String DTO_ALLIES = "allies";
+    public static final String DTO_UBOATS = "uboats";
 
     // parameters for Create Set switch case
     public static final String RANDOM_SET_CODE_TYPE = "randomSetCode";
@@ -28,6 +29,7 @@ public class Constants {
     public static final String NUMBER_TASKS = "numberOfTasks";
     public static final String ALLY_NAME = "allyName";
     public static final String AGENT_NAME = "agentName";
+    public static final String UBOAT_NAME = "uboatName";
 
 
 

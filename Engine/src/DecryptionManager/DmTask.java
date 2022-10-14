@@ -5,6 +5,7 @@ import DTOs.DTO_CodeDescription;
 import EnginePackage.EngineCapabilities;
 import javafx.application.Platform;
 import javafx.util.Pair;
+import okhttp3.HttpUrl;
 import users.ResultsManager;
 
 import java.io.IOException;
@@ -20,6 +21,9 @@ public class DmTask implements Runnable {
     private String sentenceToCheck;
     private String agentExecuteName;
     private String allyName;
+
+
+    List<DTO_CandidateResult> listDtoCandidates;
 
     public DmTask(EngineCapabilities engine,int taskSize,String sentenceToCheck) {
         this.engine = engine;
@@ -38,45 +42,19 @@ public class DmTask implements Runnable {
     public void setAgentExecuteName(String agentName){
         agentExecuteName = agentName;
     }
-
+    public void setListDtoCandidates(List<DTO_CandidateResult> listDtoCandidates) {
+        this.listDtoCandidates = listDtoCandidates;
+    }
     @Override
     public void run() {
-        List<DTO_CandidateResult> listDtoCandidates = new ArrayList<>();
         for (int i = 0; i < taskSize; i++) {
             EngineCapabilities e = engine.clone();
-            foundDecodeCandidate(e,sentenceToCheck,listDtoCandidates);
+            foundDecodeCandidate(e,sentenceToCheck);
             engine.rotateRotorByABC();
         }
-
-        sendResultsCandidates(listDtoCandidates);
     }
 
-    private void sendResultsCandidates(List<DTO_CandidateResult> listDtoCandidates) {
-       /* String finalUrl = HttpUrl
-                .parse(Constants.DTO)
-                .newBuilder()
-                .addQueryParameter("dtoType", "machineConfiguration") // TODO: constant
-                .addQueryParameter(Constants.USERNAME, userName.getValue())
-                .build()
-                .toString();
-
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String text = newValue ? response.body().string() : "";
-                Platform.runLater(() -> {
-                    encryptMessageComponentController.getTf_codeConfiguration().setText(text);
-                });
-            }
-        });*/
-    }
-
-    private void foundDecodeCandidate(EngineCapabilities engineClone,String sentenceToCheck,List<DTO_CandidateResult> listDtoCandidates ) {
+    private void foundDecodeCandidate(EngineCapabilities engineClone,String sentenceToCheck ) {
         DTO_CodeDescription tmpDTO = engineClone.createCodeDescriptionDTO();
         tmpDTO.resetPlugBoard();
         String res = engineClone.encodeDecodeMsg(sentenceToCheck.toUpperCase(), false);
