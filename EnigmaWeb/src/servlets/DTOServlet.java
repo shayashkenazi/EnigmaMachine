@@ -37,7 +37,7 @@ public class DTOServlet extends HttpServlet {
             //case Constants.DTO_MACHINE_INFO:
             case Constants.DTO_MACHINE_INFO_PARAMETER:
                 DTO_MachineInfo dtoMachineInfo = engine.createMachineInfoDTO();
-                response.getOutputStream().print(createMachineInfoAsString(engine, dtoMachineInfo));
+                response.getOutputStream().print(createMachineInfoAsString(dtoMachineInfo));
                 break;
 
             case Constants.DTO_MACHINE_CODE_DESCRIPTION_PARAMETER:
@@ -73,13 +73,12 @@ public class DTOServlet extends HttpServlet {
         }
     }
 
-    public String createMachineInfoAsString(EngineCapabilities engine, DTO_MachineInfo machineInfo) {
+    public String createMachineInfoAsString(DTO_MachineInfo machineInfo) {
         StringBuilder sb = new StringBuilder();
         sb.append("Machine Status:\n");
         sb.append("1.    a) Number of Possible Rotors: " + machineInfo.getNumOfPossibleRotors());
         sb.append("\n      b) Number of Rotors in use: " + machineInfo.getNumOfUsedRotors());
         sb.append("\n2. Number of Reflectors: " + machineInfo.getNumOfReflectors());
-        sb.append("\n3. Machine number of messages processed: " + engine.getUsageHistory().getNumOfProcessMsg() + "\n");
         return sb.toString();
     }
 
