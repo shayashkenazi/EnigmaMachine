@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
 import login.LoginController;
+import setCode.SetCodeController;
 
 import java.net.URL;
 
@@ -22,6 +23,13 @@ public class UBoat extends Application {
         ScrollPane loginComponent = fxmlLoader.load(url.openStream());
         LoginController loginController = fxmlLoader.getController();
 
+        // SetCode Controller
+        fxmlLoader = new FXMLLoader();
+        url = getClass().getResource("/setCode/SetCodeController.fxml");
+        fxmlLoader.setLocation(url);
+        ScrollPane setCodeComponent = fxmlLoader.load(url.openStream());
+        SetCodeController setCodeController = fxmlLoader.getController();
+
 
         // UBoat Main Controller
         fxmlLoader = new FXMLLoader();
@@ -32,6 +40,7 @@ public class UBoat extends Application {
 
         // Bindings
         uBoatMainController.setLoginController(loginController);
+        uBoatMainController.setSetCodeController(setCodeController);
         uBoatMainController.setContentScene();
         Scene scene = new Scene(root, 500, 500);
         primaryStage.setScene(scene);

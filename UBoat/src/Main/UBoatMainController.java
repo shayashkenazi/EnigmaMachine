@@ -19,6 +19,7 @@ import javafx.stage.FileChooser;
 import login.LoginController;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
+import setCode.SetCodeController;
 import utils.Constants;
 
 import java.io.File;
@@ -30,12 +31,8 @@ import static utils.Constants.GSON_INSTANCE;
 
 public class UBoatMainController {
 
-    private final BooleanProperty isXmlLoaded = new SimpleBooleanProperty(false);
-    private final BooleanProperty isCodeChosen = new SimpleBooleanProperty(false);
-
     @FXML private CodeCalibrationController codeCalibrationComponentController;
     @FXML private VBox codeCalibrationComponent;
-    private LoginController loginComponentController;
     @FXML private EncryptMessageController encryptMessageComponentController;
     @FXML private VBox encryptMessageComponent;
     @FXML private Button btn_loadFile, btn_logOut;
@@ -43,9 +40,13 @@ public class UBoatMainController {
     @FXML private TextArea ta_machineDetails, ta_candidates, ta_teamsDetails;
     @FXML private ScrollPane sp_mainPage;
     @FXML private Tab tab_machine, tab_contest;
+
     private final StringProperty userName;
     private Node rootNode;
-
+    private LoginController loginComponentController;
+    private SetCodeController setCodeComponentController;
+    private final BooleanProperty isXmlLoaded = new SimpleBooleanProperty(false);
+    private final BooleanProperty isCodeChosen = new SimpleBooleanProperty(false);
     private BooleanProperty isReady;
 
     //private Parent uBoatComponent;
@@ -59,6 +60,11 @@ public class UBoatMainController {
     public void setLoginController(LoginController loginController) {
         this.loginComponentController = loginController;
         loginController.setMainController(this);
+    }
+
+    public void setSetCodeController(SetCodeController setCodeController) {
+        setCodeComponentController = setCodeController;
+        setCodeController.setMainController(this);
     }
     public void setContentScene(){
         sp_mainPage.setContent(loginComponentController.getLoginPage());
@@ -306,5 +312,9 @@ public class UBoatMainController {
 
     public void switchToMainPanel() {
         sp_mainPage.setContent(rootNode);
+    }
+
+    public void switchToSetCodePanel() {
+        sp_mainPage.setContent(setCodeComponentController.getMainPage());
     }
 }

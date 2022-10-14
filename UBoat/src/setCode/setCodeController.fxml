@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane fx:id="sp_mainPage" maxWidth="1.7976931348623157E308" prefHeight="360.0" prefWidth="812.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="setCode.SetCodeController">
+   <content>
+      <VBox fx:id="vb_mainSetCode" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="355.0" prefWidth="808.0" spacing="50.0">
+         <children>
+            <Label text="Code Configuration">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+            <ScrollPane fx:id="sp_rotors" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="181.0" prefWidth="759.0" VBox.vgrow="ALWAYS">
+               <content>
+                  <VBox alignment="CENTER">
+                     <children>
+                        <Label text="choose Rotors">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <HBox fx:id="hb_rotors" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="71.0" prefWidth="806.0" />
+                     </children>
+                  </VBox>
+               </content>
+            </ScrollPane>
+            <VBox alignment="CENTER">
+               <children>
+                  <Label text="Choose Reflector">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <ChoiceBox fx:id="cb_reflector" prefWidth="150.0" />
+               </children>
+            </VBox>
+            <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="33.0" prefWidth="808.0" spacing="40.0">
+               <children>
+                  <Button fx:id="btn_cancel" cancelButton="true" mnemonicParsing="false" onAction="#cancelBtnClick" prefWidth="52.0" text="Cancel" />
+                  <Button fx:id="btn_set" defaultButton="true" mnemonicParsing="false" onAction="#setBtnClick" text="Set" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </content>
+</ScrollPane>
