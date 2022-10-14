@@ -1,6 +1,8 @@
 package setCode;
 
 import Main.UBoatMainController;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -19,6 +21,19 @@ public class SetCodeController {
     @FXML private ScrollPane sp_mainPage;
 
     private UBoatMainController uBoatMainController;
+    private BooleanProperty isRotorsSelected = new SimpleBooleanProperty(false);
+    private BooleanProperty isReflectorSelected = new SimpleBooleanProperty(false);
+
+    @FXML public void initialize() {
+
+        btn_set.disableProperty().bind(isReflectorSelected.not().or(isRotorsSelected.not()));
+
+        cb_reflector.valueProperty().addListener(observable -> {
+            isReflectorSelected.set(cb_reflector.getValue() != null);
+        });
+
+        // TODO: use old logic that Shay did to know when all the Rotors were selected
+    }
 
     @FXML
     void cancelBtnClick(ActionEvent event) {
