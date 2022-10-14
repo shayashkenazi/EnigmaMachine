@@ -2,19 +2,42 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<ScrollPane fx:id="sp_mainPage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.AgentMainController">
+<ScrollPane fx:id="sp_mainPage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="522.0" prefWidth="819.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.AgentMainController">
    <content>
-      <VBox alignment="CENTER" prefHeight="396.0" prefWidth="594.0">
+      <VBox alignment="CENTER" prefHeight="520.0" prefWidth="816.0" spacing="10.0">
          <children>
             <Label text="Agent Application">
                <font>
                   <Font name="System Bold Italic" size="32.0" />
                </font>
             </Label>
+            <VBox alignment="CENTER">
+               <children>
+                  <Label text="Contest and team data" />
+                  <TextArea fx:id="ta_contestAndTeam" prefHeight="200.0" prefWidth="672.0" />
+               </children>
+            </VBox>
+            <HBox alignment="CENTER" prefHeight="265.0" prefWidth="816.0" spacing="20.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="250.0" prefWidth="380.0">
+                     <children>
+                        <Label text="Agent progress &amp; status" />
+                        <TextArea fx:id="ta_agentProgressAndStatus" prefHeight="200.0" prefWidth="200.0" />
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="250.0" prefWidth="380.0">
+                     <children>
+                        <Label text="Agent's Candidates" />
+                        <TextArea fx:id="ta_agentCandidates" prefHeight="200.0" prefWidth="200.0" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
          </children>
       </VBox>
    </content>

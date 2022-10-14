@@ -10,6 +10,7 @@ import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.util.Pair;
 import login.LoginController;
 import okhttp3.*;
@@ -41,7 +42,7 @@ public class AgentMainController {
     private List<DmTask> tasks;
     List<DTO_CandidateResult> listDtoCandidates = new ArrayList<>();
 
-
+    @FXML private TextArea ta_contestAndTeam, ta_agentProgressAndStatus, ta_agentCandidates;
     @FXML private ScrollPane sp_mainPage;
 
     @FXML void initialize() {
