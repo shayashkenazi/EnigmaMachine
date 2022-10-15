@@ -40,7 +40,7 @@ public class DTOServlet extends HttpServlet {
                 response.getOutputStream().print(createMachineInfoAsString(dtoMachineInfo));
                 break;
 
-            case Constants.DTO_MACHINE_CODE_DESCRIPTION_PARAMETER:
+            case Constants.DTO_MACHINE_CONFIGURATION:
                 DTO_CodeDescription dto_codeDescription = engine.createCodeDescriptionDTO();
                 response.getOutputStream().print(createMachineConfigurationString(dto_codeDescription));
                 break;

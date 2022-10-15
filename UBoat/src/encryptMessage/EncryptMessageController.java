@@ -48,7 +48,8 @@ public class EncryptMessageController {
     }
 
     @FXML void clearBtnClick(ActionEvent event) {
-
+        tf_input.setText("");
+        tf_output.setText("");
     }
 
     @FXML void processBtnClick(ActionEvent event) {

@@ -18,7 +18,7 @@ public class Constants {
 
     // parameters for DTO switch case
     public static final String DTO_MACHINE_INFO_PARAMETER = "machineInfo";
-    public static final String DTO_MACHINE_CODE_DESCRIPTION_PARAMETER = "machineConfiguration";
+    public static final String DTO_MACHINE_CONFIGURATION = "machineConfiguration";
     public static final String DICTIONARY = "dictionary";
     public static final String DTO_ALLIES = "allies";
     public static final String DTO_UBOATS = "uboats";

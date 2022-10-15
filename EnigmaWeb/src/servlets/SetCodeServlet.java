@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import javafx.util.Pair;
 import utils.ServletUtils;
+import utils.SessionUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,8 +23,8 @@ public class SetCodeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        String userName = request.getParameter(Constants.USERNAME);
-        EngineCapabilities engine = ServletUtils.getBattlefield(getServletContext(), userName).getEngine();
+        String uBoatNameFromSession = SessionUtils.getUsername(request);
+        EngineCapabilities engine = ServletUtils.getBattlefield(getServletContext(), uBoatNameFromSession).getEngine();
         String setCodeType = request.getParameter(Constants.CODE_TYPE);
 
         switch (setCodeType) {

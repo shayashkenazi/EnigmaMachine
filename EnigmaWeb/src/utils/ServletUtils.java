@@ -18,6 +18,7 @@ public class ServletUtils {
     private static final Object userHierarchyLock = new Object();
     private static final Object battlefieldManagerLock = new Object();
     private static final Object resultsManagerLock = new Object();
+    private static final Object dmManagerLock = new Object();
     private static final Object engineLock = new Object();
     private static final Object battlefieldLock = new Object();
 
@@ -50,7 +51,7 @@ public class ServletUtils {
     }
     public static DMManager getDMManager(ServletContext servletContext, String battlefieldName) {
 
-        synchronized (resultsManagerLock) {
+        synchronized (dmManagerLock) {
             if (servletContext.getAttribute(battlefieldName) == null) {
                 servletContext.setAttribute(battlefieldName, new DMManager());
             }

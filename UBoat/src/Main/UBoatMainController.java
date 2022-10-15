@@ -83,6 +83,8 @@ public class UBoatMainController {
         tab_contest.setDisable(true);
         isXmlLoaded.set(false);
 
+        tab_contest.disableProperty().bind(isXmlLoaded.not().or(isCodeChosen.not()));
+
         isXmlLoaded.addListener((observable, oldValue, newValue) -> {
             codeCalibrationComponentController.enableDisableCodeCalibrationButtons(newValue);
             setMachineDetailsTextArea(newValue);
@@ -91,13 +93,10 @@ public class UBoatMainController {
 
                 initializeTrieWithDictionary();
             }
-
-
-            tab_contest.setDisable(!newValue);
         });
         isCodeChosen.addListener((observable, oldValue, newValue) -> {
             //codeCalibrationComponentController.enableDisableCodeCalibrationButtons(newValue);
-            setMachineConfigurationTextArea(newValue);
+            setMachineConfigurationTextField(newValue);
         });
         rootNode = sp_mainPage.getContent();
     }
@@ -186,14 +185,18 @@ public class UBoatMainController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String text = response.body().string();  // this is decode msg
+                /*String text = response.body().string();  // this is decode msg
                 Platform.runLater(() -> {
                     encryptMessageComponentController.getTf_output().setText(text);
-                });
+                });*/
+
+                if (response.code() != 200) {
+                    isCodeChosen.set(true);
+                }
             }
         });
 
-        isCodeChosen.set(true);
+
     }
 
     public void codeCalibrationController_SETCodeBtnClick() {
@@ -250,14 +253,14 @@ public class UBoatMainController {
             }
         });
     }
-    private void setMachineConfigurationTextArea(Boolean newValue) {
+    private void setMachineConfigurationTextField(Boolean newValue) {
 
         // request for dto
         String finalUrl = HttpUrl
                 .parse(Constants.DTO)
                 .newBuilder()
                 .addQueryParameter("dtoType", "machineConfiguration") // TODO: constant
-                .addQueryParameter(Constants.USERNAME, userName.getValue())
+                .addQueryParameter(Constants.USERNAME, userName.getValue()) // TODO: Delete? no more need to send username
                 .build()
                 .toString();
 
