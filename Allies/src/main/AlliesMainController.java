@@ -31,18 +31,34 @@ public class AlliesMainController {
     @FXML private Button btn_ready;
     @FXML private ComboBox<String> cb_battlefieldNames;
     @FXML private ScrollPane sp_mainPage;
+    @FXML private TextField tf_taskSize;
     @FXML private TextArea ta_teamsAgentsData, ta_contestsData, ta_contestData, ta_contestTeams, ta_teamAgents, ta_teamCandidates;
-    BooleanProperty  isBattlefieldSelected;
+    BooleanProperty  isBattlefieldSelected, isTaskSizeSelected;
     Set<Pair<String,String>> uboatBattlefieldSet;
 
     @FXML void initialize() {
         isBattlefieldSelected = new SimpleBooleanProperty(false);
+        isTaskSizeSelected = new SimpleBooleanProperty(false);
         rootNode = sp_mainPage.getContent();
         cb_battlefieldNames.valueProperty().addListener(observable -> {
             isBattlefieldSelected.set(cb_battlefieldNames.getValue() != null);
         });
 
-        btn_ready.disableProperty().bind(isBattlefieldSelected.not());
+        btn_ready.disableProperty().bind(isBattlefieldSelected.not().or(isTaskSizeSelected.not()));
+
+        // Always keep Task Size Text-Field valid
+        tf_taskSize.textProperty().addListener((observable, oldValue, newValue) -> {
+
+            if (newValue.equals("")) {
+                isTaskSizeSelected.set(false);
+                return;
+            }
+
+            if (!newValue.matches("^[0-9]*[1-9][0-9]*$")) // Invalid number
+                tf_taskSize.setText(oldValue);
+            else
+                isTaskSizeSelected.set(true);
+        });
     }
     public AlliesMainController() {
         userName = new SimpleStringProperty("Anonymous");

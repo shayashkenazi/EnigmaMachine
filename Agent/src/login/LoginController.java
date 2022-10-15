@@ -7,7 +7,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import main.Agent;
 import main.AgentMainController;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -28,16 +27,16 @@ public class LoginController {
     @FXML private Button btn_login;
 
     private AgentMainController agentMainController;
-    BooleanProperty isTaskSizeSelected, isAlliesSelected, isUsernameSelected;
+    BooleanProperty isNumberOfTasksSelected, isAlliesSelected, isUsernameSelected;
 
     @FXML public void initialize() {
 
         btn_login.setDisable(true);
-        isTaskSizeSelected = new SimpleBooleanProperty(false);
+        isNumberOfTasksSelected = new SimpleBooleanProperty(false);
         isAlliesSelected = new SimpleBooleanProperty(false);
         isUsernameSelected = new SimpleBooleanProperty(false);
 
-        btn_login.disableProperty().bind(isTaskSizeSelected.not().or(isAlliesSelected.not()).or(isUsernameSelected.not()));
+        btn_login.disableProperty().bind(isNumberOfTasksSelected.not().or(isAlliesSelected.not()).or(isUsernameSelected.not()));
 
         // Makes the slider to show only INT values
         s_threadsNumber.valueProperty().addListener((observable, oldValue, newValue) -> {
@@ -48,14 +47,14 @@ public class LoginController {
         tf_numberOfTasks.textProperty().addListener((observable, oldValue, newValue) -> {
 
             if (newValue.equals("")) {
-                isTaskSizeSelected.set(false);
+                isNumberOfTasksSelected.set(false);
                 return;
             }
 
             if (!newValue.matches("^[0-9]*[1-9][0-9]*$")) // Invalid number
                 tf_numberOfTasks.setText(oldValue);
             else
-                isTaskSizeSelected.set(true);
+                isNumberOfTasksSelected.set(true);
         });
 
         cb_allies.valueProperty().addListener(observable -> {
