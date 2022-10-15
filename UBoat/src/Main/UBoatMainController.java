@@ -54,6 +54,7 @@ public class UBoatMainController {
 
     public UBoatMainController() {
         userName = new SimpleStringProperty("Anonymous");
+        isReady = new SimpleBooleanProperty(false);
         //sp_mainPage.setContent(loginComponentController.getLoginPage());
     }
 
@@ -316,5 +317,9 @@ public class UBoatMainController {
 
     public void switchToSetCodePanel() {
         sp_mainPage.setContent(setCodeComponentController.getMainPage());
+    }
+
+    public void setIsReady(boolean isReady) {
+        this.isReady.set(isReady);
     }
 }

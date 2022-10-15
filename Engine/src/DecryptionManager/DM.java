@@ -16,15 +16,19 @@ public class DM { // Relevant for Ex3 only (for Ex2 use DecryptionManager)
     private final int capacity = 1000;
     private BlockingQueue<DmTask> tasks = new LinkedBlockingQueue<>(capacity);
     //private BlockingQueue<Runnable> results = new LinkedBlockingQueue<>(capacity);
-    private EnigmaEngine copyEngine;
+    private EngineCapabilities copyEngine;
     private Difficulty difficulty;
     private int taskSize;
+
+
     private String sentenceToCheck;
 
-    public DM (EnigmaEngine copyEngine, Difficulty difficulty, int taskSize,String sentenceToCheck) {
+    public DM (EngineCapabilities copyEngine, Difficulty difficulty, int taskSize) {
         this.copyEngine = copyEngine;
         this.difficulty = difficulty;
         this.taskSize = taskSize;
+    }
+    public void setSentenceToCheck(String sentenceToCheck) {
         this.sentenceToCheck = sentenceToCheck;
     }
 

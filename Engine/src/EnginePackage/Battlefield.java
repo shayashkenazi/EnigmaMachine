@@ -29,4 +29,12 @@ public class Battlefield {
     public String getName(){
         return name;
     }
+
+    public int getNumOfAllies() {
+        return numOfAllies;
+    }
+
+    public Difficulty getLevel() {
+        return level;
+    }
 }

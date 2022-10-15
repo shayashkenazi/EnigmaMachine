@@ -33,7 +33,7 @@ public class AlliesMainController {
     @FXML private ScrollPane sp_mainPage;
     @FXML private TextField tf_taskSize;
     @FXML private TextArea ta_teamsAgentsData, ta_contestsData, ta_contestData, ta_contestTeams, ta_teamAgents, ta_teamCandidates;
-    BooleanProperty  isBattlefieldSelected, isTaskSizeSelected;
+    BooleanProperty  isBattlefieldSelected, isTaskSizeSelected,isReady;
     Set<Pair<String,String>> uboatBattlefieldSet;
 
     @FXML void initialize() {
@@ -62,6 +62,7 @@ public class AlliesMainController {
     }
     public AlliesMainController() {
         userName = new SimpleStringProperty("Anonymous");
+        isReady = new SimpleBooleanProperty(false);
     }
 
     public void setLoginController(LoginController loginController) {
@@ -83,7 +84,45 @@ public class AlliesMainController {
 
     @FXML
     void readyBtnClick(ActionEvent event) {
+        updateHierarchy();
+        createDM();
 
+    }
+    private void createDM() {
+        String uBoatName = getUboatNameByBattlefieldName(cb_battlefieldNames.getValue());
+        String finalUrl = HttpUrl
+                .parse(Constants.DM)
+                .newBuilder()
+                .addQueryParameter(Constants.TASK_SIZE, tf_taskSize.getText())
+                .addQueryParameter(Constants.UBOAT_NAME, uBoatName)
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String text = response.body().string();  // this is decode msg
+                Platform.runLater(() -> {
+
+                });
+            }
+        });
+
+
+    }
+    private String getUboatNameByBattlefieldName(String battlefieldName){
+        for(Pair<String, String> pair :uboatBattlefieldSet){
+            if(pair.getValue().equals(battlefieldName))
+                return pair.getKey();
+        }
+        return null;
+    }
+    private void updateHierarchy(){
         String BattlefieldSelected = cb_battlefieldNames.getValue();
         String uBoatNameSelected = "unknown Name";
         for(Pair<String, String> pair :uboatBattlefieldSet){
@@ -121,6 +160,7 @@ public class AlliesMainController {
                         Platform.runLater(() ->
                                 System.out.println("Something went GOOD:")
                         );
+                        isReady.set(true);
                     }
                 }
             }

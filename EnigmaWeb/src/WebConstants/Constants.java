@@ -3,6 +3,8 @@ package WebConstants;
 public class Constants {
 
     public static final String USERNAME = "username";
+    public static final String DM = "dm";
+    public static final String TASK_SIZE = "taskSize";
     public static final String DTO_TYPE = "dtoType";
     public static final String MSG_TO_DECODE = "decodeMsg";
     public static final String CODE_TYPE = "setCodeType";
@@ -30,6 +32,7 @@ public class Constants {
     public static final String ALLY_NAME = "allyName";
     public static final String AGENT_NAME = "agentName";
     public static final String UBOAT_NAME = "uboatName";
+    public static final String BATTLEFIELD_NAME = "battlefieldName";
 
 
 
