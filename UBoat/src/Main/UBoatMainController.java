@@ -1,7 +1,9 @@
 package Main;
 
+import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
 import codeCalibration.CodeCalibrationController;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import encryptMessage.EncryptMessageController;
 import http.HttpClientUtil;
@@ -17,6 +19,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.util.Pair;
 import login.LoginController;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
@@ -198,6 +201,41 @@ public class UBoatMainController {
 
     }
 
+    public void buildSpecificMachine(DTO_CodeDescription dto_codeDescription) {
+
+        Gson gson = new Gson();
+        String json_dtoCodeDescription = gson.toJson(dto_codeDescription);
+        RequestBody bodyDto = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("dto_codeConfiguration", json_dtoCodeDescription)
+                .build();
+
+        String finalUrl = HttpUrl
+                .parse(Constants.SET_CODE)
+                .newBuilder()
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .post(bodyDto)
+                .build();
+
+        Call call = HttpClientUtil.HTTP_CLIENT.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() != 200) {
+                    isCodeChosen.set(false);
+                    isCodeChosen.set(true);
+                }
+            }
+        });
+    }
+
     public void codeCalibrationController_randomCodeBtnClick() {
         //TODO : CREATE RANDOM MACHINE
 
@@ -230,10 +268,6 @@ public class UBoatMainController {
 
     }
 
-    public void codeCalibrationController_SETCodeBtnClick() {
-        //TODO : CREATE MACHINE
-        isCodeChosen.set(true);
-    }
     public void EncryptMessageController_processBtnClick(String msgToDecode){
 
         String finalUrl = HttpUrl
@@ -294,7 +328,6 @@ public class UBoatMainController {
                 .parse(Constants.DTO)
                 .newBuilder()
                 .addQueryParameter("dtoType", "machineConfiguration") // TODO: constant
-                .addQueryParameter(Constants.USERNAME, userName.getValue()) // TODO: Delete? no more need to send username
                 .build()
                 .toString();
 
@@ -326,7 +359,7 @@ public class UBoatMainController {
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                System.out.println("Ohhhhh NOOOOOOOOOOOO !!!!!\n\n\n\n\n\n\nNOOOOOOO");
+                System.out.println("Ohhhhh NOOOOOOOOOOOO !!!!! TIREEE");
             }
 
             @Override
@@ -359,5 +392,75 @@ public class UBoatMainController {
     }
     public void setIsReady(boolean isReady) {
         this.isReady.set(isReady);
+    }
+
+    public void codeSetController_setBtnClick() {
+
+        // if I didnt fix to disable set button, add here a check like ex2
+        List<Character> startPositionList = new ArrayList<>();
+        List<Pair<String , Pair<Integer,Integer>>> rotorsIDList = createIDListForRotors(startPositionList);
+        String reflectorID = setCodeComponentController.getReflector().getValue();
+        List<Pair<Character, Character>> plugBoard = new ArrayList<>(); // empty (Not supported)
+        DTO_CodeDescription res = new DTO_CodeDescription(dto_machineInfo.getABC(),rotorsIDList,startPositionList,reflectorID,plugBoard);
+        if (searchErrorInitInput(rotorsIDList,reflectorID)) {
+            return;
+        }
+        buildSpecificMachine(res);
+
+        //update Code Configuration in all sub-components     // I think I already did it
+/*        dto_codeDescription = engine.createCodeDescriptionDTO();
+        String codeConfigurationText = createDescriptionFormat(dto_codeDescription);
+        encryptDecryptController.getTa_codeConfiguration().setText(codeConfigurationText);
+        tf_machineConfiguration.setText(codeConfigurationText);*/
+    }
+
+    private List<Pair<String ,Pair<Integer,Integer>>> createIDListForRotors(List<Character> startPositionList) {
+
+        List<Pair<String ,Pair<Integer,Integer>>> rotorsIDList = new ArrayList<>();
+        for(Pair<ChoiceBox<String>, ChoiceBox<Character>> pair :setCodeComponentController.getRotorsChoiceBoxes()){
+            String curRotorId = pair.getKey().getValue();
+            int curNotch = dto_machineInfo.getNotchPositionList().get(Integer.parseInt(curRotorId) -1);
+            char curStartPosition = pair.getValue().getValue();
+            rotorsIDList.add(new Pair<> (curRotorId,new Pair<>(curNotch,dto_machineInfo.getABCOrderOfSpecificRotor(Integer.parseInt(curRotorId) -1).indexOf(curStartPosition))));
+            startPositionList.add(pair.getValue().getValue());
+        }
+        Collections.reverse(rotorsIDList);
+        Collections.reverse(startPositionList);
+        return rotorsIDList;
+    }
+
+    private boolean searchErrorInitInput(List<Pair<String, Pair<Integer, Integer>>> rotorsIDList, String reflectorID) {
+
+        if(!checkRotorsIDList(rotorsIDList))
+            return true;
+
+        if(reflectorID == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR,"you not enter reflector ID");
+            alert.show();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkRotorsIDList(List<Pair<String, Pair<Integer, Integer>>> rotorsIDList) {
+
+        Set<String> set = new HashSet<>();
+        if(rotorsIDList.size() < dto_machineInfo.getNumOfUsedRotors())
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR,"Error - You should select exactly " + dto_machineInfo.getNumOfUsedRotors()
+                    + " Rotors!");
+            alert.show();
+            return false;
+        }
+        for (Pair<String, Pair<Integer, Integer>> id : rotorsIDList) {
+            if (set.contains(id.getKey())) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "you enter duplicate rotor");
+                alert.show();
+                return false;
+            }
+            else
+                set.add(id.getKey());
+        }
+        return true;
     }
 }

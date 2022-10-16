@@ -1,18 +1,24 @@
 package servlets;
 
+import DTOs.DTO_CandidateResult;
 import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
 import EnginePackage.EngineCapabilities;
 import WebConstants.Constants;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 import javafx.util.Pair;
 import utils.ServletUtils;
 import utils.SessionUtils;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.*;
 
@@ -20,7 +26,7 @@ import java.util.*;
 public class SetCodeServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) // for random code
             throws IOException {
 
         String uBoatNameFromSession = SessionUtils.getUsername(request);
@@ -33,14 +39,38 @@ public class SetCodeServlet extends HttpServlet {
                 createRandomMachineSetting(dtoMachineInfo,engine);
                 break;
 
-            case Constants.SET_SPECIFIC_CODE_TYPE:
+/*            case Constants.SET_SPECIFIC_CODE_TYPE:
 
-                break;
+                engine.buildRotorsStack(*//*engine.createCodeDescriptionDTO()*//* ,true);
+                break;*/
             default:
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 break;
         }
     }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) // for specific code
+            throws IOException, ServletException {
+
+        String uBoatNameFromSession = SessionUtils.getUsername(request);
+        EngineCapabilities engine = ServletUtils.getBattlefield(getServletContext(), uBoatNameFromSession).getEngine();
+
+                Part partCur = null;
+                Collection<Part> parts = request.getParts();
+                for (Part p : parts) {
+                    partCur = p;
+                    break;
+                }
+                Gson gson = new Gson();
+
+                String json_dtoCodeDescription = partCur.getInputStream().toString();
+                Type dtoCodeDescriptionType = new TypeToken<DTO_CodeDescription>() {
+                }.getType();
+                DTO_CodeDescription dto_codeDescription = gson.fromJson(json_dtoCodeDescription, dtoCodeDescriptionType);
+                engine.buildRotorsStack(dto_codeDescription ,true);
+    }
+
 
 private void createRandomMachineSetting(DTO_MachineInfo dtoMachineInfo,EngineCapabilities engine) {
 

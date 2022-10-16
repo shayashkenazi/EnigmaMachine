@@ -38,13 +38,22 @@ public class SetCodeController {
 
     @FXML public void initialize() {
 
-        btn_set.disableProperty().bind(isReflectorSelected.not().or(isRotorsSelected.not()));
+        //btn_set.disableProperty().bind(isReflectorSelected.not().or(isRotorsSelected.not()));
 
         cb_reflector.valueProperty().addListener(observable -> {
-            isReflectorSelected.set(cb_reflector.getValue() != null);
+            isReflectorSelected.set(!cb_reflector.getValue().equals(""));
         });
 
-        // TODO: use old logic that Shay did to know when all the Rotors were selected
+        // TODO: doesnt work, after fix - remove the comment from line 41
+        for(Pair<ChoiceBox<String>, ChoiceBox<Character>> pair : rotorsChoiceBoxes) {
+
+            pair.getKey().valueProperty().addListener((observable, oldValue, newValue) -> {
+                isRotorsSelected.set(isAllRotorsChoose());
+            });
+            pair.getValue().valueProperty().addListener((observable, oldValue, newValue) -> {
+                isRotorsSelected.set(isAllRotorsChoose());
+            });
+        }
     }
 
     @FXML
@@ -55,7 +64,7 @@ public class SetCodeController {
     @FXML
     void setBtnClick(ActionEvent event) {
 
-        // TODO: enter all the details to the engine
+        uBoatMainController.codeSetController_setBtnClick();
         uBoatMainController.switchToMainPanel();
     }
 
@@ -131,4 +140,15 @@ public class SetCodeController {
         ObservableList<String> res2 = FXCollections.observableArrayList(res1);
         return res2;
     }
+
+    private boolean isAllRotorsChoose(){
+        for(Pair<ChoiceBox<String>, ChoiceBox<Character>> pair : rotorsChoiceBoxes) {
+            if(pair.getValue().getValue().equals("") || pair.getKey().getValue().equals(""))
+                return false;
+        }
+        return true;
+    }
+
+    public List<Pair<ChoiceBox<String>,ChoiceBox<Character>>> getRotorsChoiceBoxes (){return rotorsChoiceBoxes;}
+    public ChoiceBox<String> getReflector(){return cb_reflector;}
 }

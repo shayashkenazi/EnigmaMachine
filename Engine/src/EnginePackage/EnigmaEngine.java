@@ -65,8 +65,8 @@ public class EnigmaEngine implements EngineCapabilities,Serializable{
 
         machine.buildRotorsStack(codeDescription);
 
-        if (newMachine)
-            usageHistory.addCodeSegment(codeDescription);
+        /*if (newMachine)
+            usageHistory.addCodeSegment(codeDescription);*/
     }
     @Override
     public DTO_CodeDescription createCodeDescriptionDTO() { // From the engine to the UI

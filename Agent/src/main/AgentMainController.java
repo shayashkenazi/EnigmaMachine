@@ -69,14 +69,13 @@ public class AgentMainController {
                 .parse(Constants.DTO)
                 .newBuilder()
                 .addQueryParameter(WebConstants.Constants.DTO_TYPE, Constants.DTO_ALLIES)
-                .addQueryParameter(Constants.USERNAME, userName.getValue())
                 .build()
                 .toString();
 
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                System.out.println("Ohhhhh NOOOOOOOOOOOO !!!!!\n\n\n\n\n\n\nNOOOOOOO");
+                System.out.println("Ohhhhh NOOOOOOOOOOOO !!!!!  ALLIESSSS");
             }
 
             @Override
