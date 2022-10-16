@@ -1,5 +1,6 @@
 package Main;
 
+import DTOs.DTO_MachineInfo;
 import codeCalibration.CodeCalibrationController;
 import com.google.gson.reflect.TypeToken;
 import encryptMessage.EncryptMessageController;
@@ -50,6 +51,7 @@ public class UBoatMainController {
     private final BooleanProperty isXmlLoaded = new SimpleBooleanProperty(false);
     private final BooleanProperty isCodeChosen = new SimpleBooleanProperty(false);
     private BooleanProperty isReady;
+    private DTO_MachineInfo dto_machineInfo;
 
     //private Parent uBoatComponent;
 
@@ -263,7 +265,7 @@ public class UBoatMainController {
                 .parse(Constants.DTO)
                 .newBuilder()
                 .addQueryParameter("dtoType", "machineInfo") // TODO: constant
-                .addQueryParameter(Constants.USERNAME, userName.getValue())
+                //.addQueryParameter(Constants.USERNAME, userName.getValue())
                 .build()
                 .toString();
 
@@ -275,10 +277,13 @@ public class UBoatMainController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String text = newValue ? response.body().string() : "";
+                /*String text = newValue ? response.body().string() : "";
                 Platform.runLater(() -> {
                     ta_machineDetails.setText(text);
-                });
+                });*/
+                String json_dto = response.body().string();
+                Type dtoType = new TypeToken<DTO_MachineInfo>() { }.getType();
+                dto_machineInfo = GSON_INSTANCE.fromJson(json_dto, dtoType);
             }
         });
     }
@@ -315,7 +320,6 @@ public class UBoatMainController {
                 .parse(Constants.DTO)
                 .newBuilder()
                 .addQueryParameter(WebConstants.Constants.DTO_TYPE, WebConstants.Constants.DICTIONARY)
-                .addQueryParameter(Constants.USERNAME, userName.getValue())
                 .build()
                 .toString();
 
@@ -350,7 +354,9 @@ public class UBoatMainController {
     public void switchToSetCodePanel() {
         sp_mainPage.setContent(setCodeComponentController.getMainPage());
     }
-
+    public void updateSetCodePanel() {
+        setCodeComponentController.createSetCodeController(dto_machineInfo);
+    }
     public void setIsReady(boolean isReady) {
         this.isReady.set(isReady);
     }

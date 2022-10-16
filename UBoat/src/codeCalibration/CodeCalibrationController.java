@@ -23,6 +23,7 @@ public class CodeCalibrationController {
 
     @FXML void setCodeBtnClick(ActionEvent event) {
         uBoatMainController.switchToSetCodePanel();
+        uBoatMainController.updateSetCodePanel();
     }
 
     public void setMainController(UBoatMainController uBoatMainController) {

@@ -1,15 +1,26 @@
 package setCode;
 
+import DTOs.DTO_MachineInfo;
 import Main.UBoatMainController;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.Pair;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SetCodeController {
 
@@ -21,6 +32,7 @@ public class SetCodeController {
     @FXML private ScrollPane sp_mainPage;
 
     private UBoatMainController uBoatMainController;
+    private List<Pair<ChoiceBox<String>,ChoiceBox<Character>>> rotorsChoiceBoxes = new ArrayList<>();
     private BooleanProperty isRotorsSelected = new SimpleBooleanProperty(false);
     private BooleanProperty isReflectorSelected = new SimpleBooleanProperty(false);
 
@@ -53,5 +65,70 @@ public class SetCodeController {
 
     public ScrollPane getMainPage() {
         return sp_mainPage;
+    }
+
+    public void createSetCodeController(DTO_MachineInfo dto_machineInfo) {
+
+        hb_rotors.setPrefWidth(sp_rotors.getPrefWidth());
+        rotorsChoiceBoxes = new ArrayList<>();
+        hb_rotors.getChildren().clear();
+        cb_reflector.setValue("");
+        for(int i = 0; i < dto_machineInfo.getNumOfUsedRotors(); i++){
+            HBox curHBox = new HBox(20);
+            curHBox.setAlignment(Pos.CENTER);
+            int rotorNum = i + 1;
+            Label label = new Label("Rotor number " + rotorNum);
+
+            ChoiceBox<String> choiceRotor = new ChoiceBox<>();
+
+            // Choose rotors
+            choiceRotor.setItems(getIntRange(dto_machineInfo.getNumOfPossibleRotors()));
+            // Choose Starting Point
+            ChoiceBox<Character> choiceStartingPoint = new ChoiceBox<>();
+            choiceStartingPoint.setItems(getChoicesABC(dto_machineInfo.getABC()));
+            curHBox.getChildren().add(label);
+            curHBox.getChildren().add(choiceRotor);
+            curHBox.getChildren().add(choiceStartingPoint);
+            hb_rotors.getChildren().add(curHBox);
+            //add to list of choice boxes
+            rotorsChoiceBoxes.add(new Pair<>(choiceRotor,choiceStartingPoint));
+            cb_reflector.setItems(getIdReflectors(dto_machineInfo.getNumOfReflectors()));
+        }
+    }
+
+    private ObservableList<String> getIntRange(int numOfRotors) {
+
+        List<String> res1 = new ArrayList<>();
+        for (int i = 1; i <= numOfRotors; i++)
+            res1.add(String.valueOf(i));
+
+        ObservableList<String> res2 = FXCollections.observableArrayList(res1);
+        return res2;
+    }
+
+    private ObservableList<Character> getChoicesABC(String abc) {
+
+        List<Character> res1 = new ArrayList<>();
+        for (int i = 0; i < abc.length(); i++)
+            res1.add(abc.charAt(i));
+
+        ObservableList<Character> res2 = FXCollections.observableArrayList(res1);
+        return res2;
+    }
+
+    private ObservableList<String> getIdReflectors(int numOfReflectors) {
+
+        Map<Integer, String> MapNumbers = new LinkedHashMap<>();
+        MapNumbers.put(1,"I");
+        MapNumbers.put(2,"II");
+        MapNumbers.put(3,"III");
+        MapNumbers.put(4,"IV");
+        MapNumbers.put(5,"V");
+        List<String> res1 = new ArrayList<>();
+        for(int i = 0; i < numOfReflectors; i++) {
+            res1.add(MapNumbers.get(i+1));
+        }
+        ObservableList<String> res2 = FXCollections.observableArrayList(res1);
+        return res2;
     }
 }

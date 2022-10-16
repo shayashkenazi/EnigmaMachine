@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import javafx.util.Pair;
 import users.UserManager;
 import utils.ServletUtils;
+import utils.SessionUtils;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -27,10 +28,11 @@ public class DTOServlet extends HttpServlet {
             throws IOException {
         Gson gson;
         EngineCapabilities engine = null;
-        String userName = request.getParameter(Constants.USERNAME);
+        //String userName = request.getParameter(Constants.USERNAME);
+        String uBoatNameFromSession = SessionUtils.getUsername(request);
         String dtoType = request.getParameter(Constants.DTO_TYPE);
         if(dtoType.equals(Constants.DTO_MACHINE_INFO_PARAMETER) || dtoType.equals(Constants.DTO_MACHINE_CONFIGURATION) || dtoType.equals(Constants.DICTIONARY))
-            engine = ServletUtils.getBattlefield(getServletContext(), userName).getEngine();
+            engine = ServletUtils.getBattlefield(getServletContext(), uBoatNameFromSession).getEngine();
 
         response.setStatus(HttpServletResponse.SC_OK); // is it ok to set to good and if bas set again to bad ?
 
@@ -38,7 +40,10 @@ public class DTOServlet extends HttpServlet {
             //case Constants.DTO_MACHINE_INFO:
             case Constants.DTO_MACHINE_INFO_PARAMETER:
                 DTO_MachineInfo dtoMachineInfo = engine.createMachineInfoDTO();
-                response.getOutputStream().print(createMachineInfoAsString(dtoMachineInfo));
+                gson = new Gson();
+                String dtoMachineInfo_json = gson.toJson(dtoMachineInfo);
+                //response.getOutputStream().print(createMachineInfoAsString(dtoMachineInfo));
+                response.getWriter().println(dtoMachineInfo_json);
                 break;
 
             case Constants.DTO_MACHINE_CONFIGURATION:
