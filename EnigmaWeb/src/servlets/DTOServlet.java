@@ -26,10 +26,11 @@ public class DTOServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         Gson gson;
-
+        EngineCapabilities engine = null;
         String userName = request.getParameter(Constants.USERNAME);
         String dtoType = request.getParameter(Constants.DTO_TYPE);
-        EngineCapabilities engine = ServletUtils.getBattlefield(getServletContext(), userName).getEngine();
+        if(dtoType.equals(Constants.DTO_MACHINE_INFO_PARAMETER) || dtoType.equals(Constants.DTO_MACHINE_CONFIGURATION) || dtoType.equals(Constants.DICTIONARY))
+            engine = ServletUtils.getBattlefield(getServletContext(), userName).getEngine();
 
         response.setStatus(HttpServletResponse.SC_OK); // is it ok to set to good and if bas set again to bad ?
 

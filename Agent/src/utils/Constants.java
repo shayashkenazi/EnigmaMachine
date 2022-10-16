@@ -11,6 +11,9 @@ public class Constants {
     private final static String FULL_SERVER_PATH = BASE_URL + CONTEXT_PATH;
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/loginServlet";
     public final static String TASKS = FULL_SERVER_PATH + "/tasksServlet";
+    public final static String CHECK_READY_BATTLE = FULL_SERVER_PATH + "/checkBattleIsReadyServlet";
+    public final static int REFRESH_RATE = 2000;
+
     public final static String CANDIDATES = FULL_SERVER_PATH + "candidatesServlet";
 
     public static final String DTO_ALLIES = "allies";

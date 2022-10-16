@@ -1,5 +1,6 @@
 package servlets;
 
+import EnginePackage.Battlefield;
 import EnginePackage.EngineCapabilities;
 import WebConstants.Constants;
 import enigmaException.EnigmaException;
@@ -31,9 +32,10 @@ public class LoadXmlServlet extends HttpServlet {
         String userName = request.getParameter(Constants.USERNAME);
         try {
             for (Part curPart : parts) {
-                ServletUtils.getBattlefield(getServletContext(), userName)
-                        .createBattlefieldFromXMLInputStream(curPart.getInputStream());
+                Battlefield battlefield = ServletUtils.getBattlefield(getServletContext(), userName);
+                battlefield.createBattlefieldFromXMLInputStream(curPart.getInputStream());
                 response.setStatus(HttpServletResponse.SC_OK);
+                response.getOutputStream().print(battlefield.getName());
                 break;
             }
         }

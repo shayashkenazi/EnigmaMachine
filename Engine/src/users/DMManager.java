@@ -10,9 +10,8 @@ public class DMManager {
     //      map < allyName, dm for ally>
     private final Map<String, DM> DMmap = new HashMap<>();
 
-    public synchronized void addDM(String username) {
-
-        //map.put(username);
+    public synchronized void addDM(String username,DM dm) {
+        DMmap.put(username,dm);
     }
 
     public synchronized DM getDM(String allyName){

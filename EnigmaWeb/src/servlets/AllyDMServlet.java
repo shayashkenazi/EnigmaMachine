@@ -10,6 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import users.DMManager;
 import users.HierarchyManager;
 import users.UserManager;
 import utils.ServletUtils;
@@ -30,12 +31,16 @@ public class AllyDMServlet extends HttpServlet {
 
         String uBoatName = request.getParameter(Constants.UBOAT_NAME);
         String taskSize = request.getParameter(Constants.TASK_SIZE);
-
+        String allyName = SessionUtils.getUsername(request);
         Battlefield battlefield = ServletUtils.getBattlefield(getServletContext(), uBoatName);
 
         DM dm = new DM(battlefield.getEngine(), battlefield.getLevel(), Integer.parseInt(taskSize));
-        request.getSession(false).setAttribute(Constants.DM, dm); //TODO CHECK IF TRUE AT THE GET SESSION
-        response.setStatus(HttpServletResponse.SC_OK);
+        DMManager DMManager = ServletUtils.getDMManager(getServletContext(),battlefield.getName());
+        DMManager.addDM(allyName,dm);
+
+        //request.getSession(false).setAttribute(Constants.DM, dm); //TODO CHECK IF TRUE AT THE GET SESSION
+        //response.setStatus(HttpServletResponse.SC_OK);
+        //response.sendRedirect("/EnigmaWeb_Web/readyServlet");
 
     }
 

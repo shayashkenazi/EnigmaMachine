@@ -37,11 +37,13 @@ public class UBoatMainController {
     @FXML private VBox encryptMessageComponent;
     @FXML private Button btn_loadFile, btn_logOut;
     @FXML private TextField tf_filePath;
+    @FXML private Label lb_battlefieldName;
     @FXML private TextArea ta_machineDetails, ta_candidates, ta_teamsDetails;
     @FXML private ScrollPane sp_mainPage;
     @FXML private Tab tab_machine, tab_contest;
 
     private final StringProperty userName;
+    private String battlefieldName;
     private Node rootNode;
     private LoginController loginComponentController;
     private SetCodeController setCodeComponentController;
@@ -90,7 +92,6 @@ public class UBoatMainController {
             setMachineDetailsTextArea(newValue);
 
             if (newValue) {
-
                 initializeTrieWithDictionary();
             }
         });
@@ -141,24 +142,52 @@ public class UBoatMainController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String body = response.body().string();
                 if (response.code() == HttpServletResponse.SC_OK) {
                     isXmlLoaded.set(true);
                     //battlefieldName = response.body().string();
-                    Platform.runLater(() ->
-                            tf_filePath.setText(fileSelected.getAbsolutePath())
-                    );
+                    Platform.runLater(() -> {
+                        tf_filePath.setText(fileSelected.getAbsolutePath());
+                        battlefieldName = body;
+                        lb_battlefieldName.setText(battlefieldName);
+                    });
                 } else { // TODO: fix - don't work? - WORK
                     Platform.runLater(() -> {
                         String errorMsg = null;
-                        try {
-                            errorMsg = response.body().string();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
+                        //try {
+                            errorMsg = body;
+                        //} catch (IOException e) {
+                         //   throw new RuntimeException(e);
+                        //}
                         Alert errorAlert = new Alert(Alert.AlertType.ERROR, errorMsg);
                         errorAlert.show();
                     });
                 }
+            }
+        });
+    }
+    public void updateReadyManager(){
+        String finalUrl = HttpUrl
+                .parse(Constants.READY)
+                .newBuilder()
+                .addQueryParameter(Constants.BATTLEFIELD_NAME,battlefieldName)
+                .addQueryParameter(Constants.UBOAT_NAME, userName.getValue())
+                .addQueryParameter(Constants.DTO_TYPE,Constants.UBOAT_CLASS)
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String text = response.body().string();  // this is decode msg
+                Platform.runLater(() -> {
+
+                });
             }
         });
     }

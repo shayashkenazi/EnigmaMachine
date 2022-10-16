@@ -19,6 +19,12 @@ public class Constants {
 
     public final static String USERNAME = "username";
     public final static String CLASS_TYPE = "classType";
+    public static final String BATTLEFIELD_NAME = "battlefieldName";
+    public static final String UBOAT_NAME = "uboatName";
 
+    public static final String READY = FULL_SERVER_PATH + "/readyServlet";
+
+    public static final String DTO_TYPE = "dtoType";
+    public final static String UBOAT_CLASS = "uBoat";
     public final static Gson GSON_INSTANCE = new Gson();
 }

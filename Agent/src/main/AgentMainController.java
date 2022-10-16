@@ -5,6 +5,8 @@ import DecryptionManager.DmTask;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import http.HttpClientUtil;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
@@ -19,10 +21,7 @@ import utils.Constants;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -36,10 +35,13 @@ public class AgentMainController {
 
     private int numberOfTasks;
     private int numberOfThreads;
+    private TimerTask listRefresher;
     private String allyName;
     private List<String> decodedCandidates;
     private ExecutorService threadPool;
     private List<DmTask> tasks;
+    private BooleanProperty isBattleReady = new SimpleBooleanProperty(false);
+    private Timer timer;
     List<DTO_CandidateResult> listDtoCandidates = new ArrayList<>();
 
     @FXML private TextArea ta_contestAndTeam, ta_agentProgressAndStatus, ta_agentCandidates;
@@ -48,6 +50,11 @@ public class AgentMainController {
     @FXML void initialize() {
         rootNode = sp_mainPage.getContent();
         showAllies();
+        isBattleReady.addListener((observable, oldValue, newValue) -> {
+            if(newValue){
+                takeMissionFromAlly();
+            }
+        });
     }
     public AgentMainController() {
         userName = new SimpleStringProperty("Anonymous");
@@ -174,5 +181,58 @@ public class AgentMainController {
     public void runMissionFromQueue() {
         for (DmTask task : tasks) threadPool.submit(task);
 
+    }
+
+    private void readyBattleListener(){
+        String finalUrl = HttpUrl
+                .parse(Constants.CHECK_READY_BATTLE)
+                .newBuilder()
+                .addQueryParameter("allyName", allyName)
+                .addQueryParameter("agentName", userName.getValue())// TODO: constant
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if(response.code() == 200){
+
+                }
+            }
+        });
+    }
+
+    public void checkReadyRefresher() {
+        listRefresher = new TimerTask() {
+            @Override
+            public void run() {
+                String finalUrl = HttpUrl
+                        .parse(Constants.CHECK_READY_BATTLE)
+                        .newBuilder()
+                        .addQueryParameter("allyName", allyName)
+                        .build()
+                        .toString();
+                HttpClientUtil.runAsync(finalUrl, new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (response.code() == 200) {
+                            isBattleReady.set(true);
+                        }
+                    }
+                });
+            }
+        };
+        timer = new Timer();
+        timer.schedule(listRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
     }
 }

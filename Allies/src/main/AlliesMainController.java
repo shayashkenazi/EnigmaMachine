@@ -86,15 +86,16 @@ public class AlliesMainController {
     void readyBtnClick(ActionEvent event) {
         updateHierarchy();
         createDM();
-
+        updateReadyManager();
     }
-    private void createDM() {
+    private void updateReadyManager(){
         String uBoatName = getUboatNameByBattlefieldName(cb_battlefieldNames.getValue());
         String finalUrl = HttpUrl
-                .parse(Constants.DM)
+                .parse(Constants.READY)
                 .newBuilder()
-                .addQueryParameter(Constants.TASK_SIZE, tf_taskSize.getText())
+                .addQueryParameter(Constants.BATTLEFIELD_NAME,cb_battlefieldNames.getValue())
                 .addQueryParameter(Constants.UBOAT_NAME, uBoatName)
+                .addQueryParameter(Constants.DTO_TYPE,Constants.ALLIES_CLASS)
                 .build()
                 .toString();
 
@@ -112,7 +113,32 @@ public class AlliesMainController {
                 });
             }
         });
+    }
+    private void createDM() {
+        String uBoatName = getUboatNameByBattlefieldName(cb_battlefieldNames.getValue());
+        String finalUrl = HttpUrl
+                .parse(Constants.DM)
+                .newBuilder()
+                .addQueryParameter(Constants.TASK_SIZE, tf_taskSize.getText())
+                .addQueryParameter(Constants.UBOAT_NAME, uBoatName)
+                .addQueryParameter(Constants.BATTLEFIELD_NAME,cb_battlefieldNames.getValue())
+                .build()
+                .toString();
 
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String text = response.body().string();  // this is decode msg
+                Platform.runLater(() -> {
+
+                });
+            }
+        });
 
     }
     private String getUboatNameByBattlefieldName(String battlefieldName){

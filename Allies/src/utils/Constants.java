@@ -7,6 +7,8 @@ public class Constants {
     // Server resources locations
     public final static String BASE_DOMAIN = "localhost";
     public static final String UBOAT_NAME = "uboatName";
+    public static final String BATTLEFIELD_NAME = "battlefieldName";
+    public final static String ALLIES_CLASS = "allies";
 
     private final static String BASE_URL = "http://" + BASE_DOMAIN + ":8080";
     private final static String CONTEXT_PATH = "/EnigmaWeb_Web";
@@ -14,6 +16,8 @@ public class Constants {
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/loginServlet";
     public static final String HIERARCHY = FULL_SERVER_PATH + "/hierarchyServlet";
     public static final String DM = FULL_SERVER_PATH + "/allyDMServlet";
+    public static final String READY = FULL_SERVER_PATH + "/readyServlet";
+
 
     public final static String USERNAME = "username";
     public final static String CLASS_TYPE = "classType";

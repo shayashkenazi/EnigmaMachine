@@ -174,7 +174,7 @@ public class EnigmaEngine implements EngineCapabilities,Serializable{
         else
             resMsg = res;
         long end = System.nanoTime();
-        usageHistory.addMsgAndTimeToCurrentCodeSegment(msgToEncodeDecode, resMsg, end - start);
+        //usageHistory.addMsgAndTimeToCurrentCodeSegment(msgToEncodeDecode, resMsg, end - start);
 
         return resMsg;
     }

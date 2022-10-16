@@ -34,6 +34,10 @@ public class Constants {
     public static final String UBOAT_NAME = "uboatName";
     public static final String BATTLEFIELD_NAME = "battlefieldName";
 
+    //parameters for Ready Manager servlet
+
+    public static final String SENTENCE_TO_CHECK = "sentenceToCheck";
+
 
 
 }

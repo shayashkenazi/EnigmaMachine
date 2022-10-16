@@ -103,6 +103,7 @@ public class LoginController {
                     Platform.runLater(() -> {
                         agentMainController.setUserName(userName);
                         agentMainController.switchToMainPanel();
+                        agentMainController.checkReadyRefresher();
                     });
                 }
             }
