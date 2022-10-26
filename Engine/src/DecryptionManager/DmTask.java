@@ -94,7 +94,7 @@ public class DmTask implements Runnable {
         try {
             if (engineClone.checkAtDictionary(res)) {
                 // TODO : Send sentence afetr check and not sentence to check (?)
-                DTO_CandidateResult dto_candidateResult = new DTO_CandidateResult(agentExecuteName,allyName,sentenceToCheck,createDescriptionFormat(tmpDTO));
+                DTO_CandidateResult dto_candidateResult = new DTO_CandidateResult(agentExecuteName,allyName,res,createDescriptionFormat(tmpDTO));
                 synchronized (this) {
                     listDtoCandidates.add(dto_candidateResult); // TODO SYNC?
                 }

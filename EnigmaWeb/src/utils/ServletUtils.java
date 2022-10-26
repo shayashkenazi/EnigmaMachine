@@ -21,6 +21,7 @@ public class ServletUtils {
     private static final Object dmManagerLock = new Object();
     private static final Object engineLock = new Object();
     private static final Object battlefieldLock = new Object();
+    private static final Object agentManagerLock = new Object();
 
     public static UserManager getUserManager(ServletContext servletContext) {
 
@@ -48,6 +49,15 @@ public class ServletUtils {
         }
 
         return (Battlefield) servletContext.getAttribute(uBoatName);
+    }
+    public static AgentsDetailsManager getAgentsDetailsManager(ServletContext servletContext, String allyName) {
+
+        synchronized (agentManagerLock) {
+            if (servletContext.getAttribute(allyName) == null)
+                servletContext.setAttribute(allyName, new AgentsDetailsManager());
+        }
+
+        return (AgentsDetailsManager) servletContext.getAttribute(allyName);
     }
 
 }

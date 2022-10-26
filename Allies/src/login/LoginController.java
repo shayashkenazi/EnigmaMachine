@@ -80,11 +80,13 @@ public class LoginController {
                         alliesMainController.setUserName(userName);
                         alliesMainController.switchToMainPanel();
                     });
+                    alliesMainController.refresherTeamsAgentDetails();
                 }
             }
         });
 
         setBattlefieldToCB();
+
 
     }
 

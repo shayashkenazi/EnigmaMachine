@@ -17,6 +17,7 @@ public class Constants {
     public static final String HIERARCHY = FULL_SERVER_PATH + "/hierarchyServlet";
     public static final String ALLY_DM = FULL_SERVER_PATH + "/allyDMServlet";
     public static final String READY = FULL_SERVER_PATH + "/readyServlet";
+    public static final String RESULT = FULL_SERVER_PATH + "/resultServlet";
 
 
     public final static String USERNAME = "username";
@@ -27,6 +28,7 @@ public class Constants {
     public static final String TASK_SIZE = "taskSize";
     public final static String CHECK_READY_BATTLE = FULL_SERVER_PATH + "/checkBattleIsReadyServlet";
     public final static String CREATE_TASKS = FULL_SERVER_PATH + "/createTasksServlet";
+    public final static String TEAMS_AGENT_DETAILS = FULL_SERVER_PATH +  "/getTeamsAgentDetailsServlet";
     public final static int REFRESH_RATE = 2000;
 
     public final static Gson GSON_INSTANCE = new Gson();

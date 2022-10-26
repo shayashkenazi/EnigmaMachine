@@ -1,10 +1,12 @@
 package servlets;
 
+import DTOs.DTO_AgentDetails;
 import WebConstants.Constants;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.*;
+import users.AgentsDetailsManager;
 import users.HierarchyManager;
 import users.UserManager;
 import utils.ServletUtils;
@@ -62,6 +64,10 @@ public class LoginServlet extends HttpServlet {
                                 userManager.addAgentUser(usernameFromParameter);
                                 String myAlly = request.getParameter("ally");
                                 hierarchyManager.connectAgentToParent(myAlly,usernameFromParameter);
+                                AgentsDetailsManager agentsDetailsManager = ServletUtils.getAgentsDetailsManager(getServletContext(),myAlly);
+                                int numberOfTasks = Integer.parseInt(request.getParameter(Constants.NUMBER_TASKS));
+                                int countOfThreads = Integer.parseInt(request.getParameter(Constants.THREADS_NUMBER));
+                                agentsDetailsManager.addAgentDetails(myAlly,new DTO_AgentDetails(usernameFromParameter,countOfThreads,numberOfTasks));
                                 break;
                         }
                         request.getSession(true).setAttribute(Constants.USERNAME, usernameFromParameter);

@@ -1,5 +1,6 @@
 package login;
 
+import DTOs.DTO_AgentDetails;
 import http.HttpClientUtil;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -80,6 +81,8 @@ public class LoginController {
                 .addQueryParameter("username", userName)
                 .addQueryParameter(Constants.CLASS_TYPE,"agent")
                 .addQueryParameter("ally",cb_allies.getValue())
+                .addQueryParameter("numberOfTasks",tf_numberOfTasks.getText())
+                .addQueryParameter("countOfThreads",String.valueOf((int)s_threadsNumber.getValue()))
                 .build()
                 .toString();
 

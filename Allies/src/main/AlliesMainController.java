@@ -1,5 +1,8 @@
 package main;
 
+import DTOs.DTO_AgentDetails;
+import DTOs.DTO_CandidateResult;
+import com.google.gson.reflect.TypeToken;
 import http.HttpClientUtil;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -17,9 +20,13 @@ import org.jetbrains.annotations.NotNull;
 import utils.Constants;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static utils.Constants.GSON_INSTANCE;
 
 public class AlliesMainController {
 
@@ -34,7 +41,11 @@ public class AlliesMainController {
     BooleanProperty  isBattlefieldSelected, isTaskSizeSelected,isReady,isBattleReady;
     Set<Pair<String,String>> uboatBattlefieldSet;
     private TimerTask readyRefresher;
+    private TimerTask resultRefresher;
+    private TimerTask agentsDetailsRefresher;
     private Timer timer;
+    private Timer timerResult;
+    private Timer timerAgentsDetails;
     private Thread createTaskDMThread;
 
     @FXML void initialize() {
@@ -63,8 +74,10 @@ public class AlliesMainController {
         });
         isBattleReady.addListener((observable, oldValue, newValue) -> {
             //TODO new Thread RUN THIS SHIT
-            if(newValue)
+            if(newValue){
                 createTasksDM();
+                refresherResult();
+            }
         });
         isReady.addListener((observable, oldValue, newValue) -> {
             if(newValue)
@@ -279,33 +292,92 @@ public class AlliesMainController {
                 //isReady.set(true);
             }
         });
-
-       /* Request request = new Request.Builder()
-                .url(finalUrl)
-                .build();*/
-
-        /*Call call = HttpClientUtil.HTTP_CLIENT.newCall(request);
-        try {
-            call.execute();
-            System.out.println("thread id is" + Thread.currentThread().getId());
-        } catch (IOException e) {
-            System.out.println(e.getMessage() + "thread" + Thread.currentThread().getId());
-        }*/
-            /*HttpClientUtil.runAsync(finalUrl, new Callback() {
-                @Override
-                public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    System.out.println(e.getMessage() + "create task dm hooooo"+ Thread.currentThread().getId());
-                }
-
-                @Override
-                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    //String text = response.body().string();  // this is decode msg
-                    System.out.println("hey im in dm task response , thread id" + Thread.currentThread().getId());
-                }
-            });*/
-        /*createTaskDMThread = new Thread(workerThread);
-        createTaskDMThread.start();*/
-
         System.out.println("thread idddddd" + Thread.currentThread().getId());
     }
+    private void refresherResult(){
+        resultRefresher = new TimerTask() {
+            @Override
+            public void run() {
+                String finalUrl = HttpUrl
+                        .parse(Constants.RESULT)
+                        .newBuilder()
+                        .addQueryParameter(Constants.CLASS_TYPE,Constants.ALLIES_CLASS)
+                        .build()
+                        .toString();
+                HttpClientUtil.runAsync(finalUrl, new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
+                        if (response.code() == 200) {
+                           showCandidates(response);
+
+                        }
+                    }
+                });
+            }
+        };
+        timerResult = new Timer();
+        timerResult.schedule(resultRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+    }
+    private void showCandidates(@NotNull Response response) throws IOException{
+        String json_candidates = response.body().string();
+        Type setCandidatesType = new TypeToken<Set<DTO_CandidateResult>>() { }.getType(); // TODO: FIX !!!
+        Set<DTO_CandidateResult> setCandidates = GSON_INSTANCE.fromJson(json_candidates, setCandidatesType);
+        ta_teamCandidates.clear();
+        for(DTO_CandidateResult dto_candidateResult : setCandidates){
+            Platform.runLater(() -> {
+                ta_teamCandidates.appendText("-----------------------------------------\n");
+                ta_teamCandidates.appendText(dto_candidateResult.getPrintedFormat());
+                ta_teamCandidates.appendText("-----------------------------------------\n");
+            });
+        }
+    }
+    public void refresherTeamsAgentDetails(){
+        agentsDetailsRefresher = new TimerTask() {
+            @Override
+            public void run() {
+                String finalUrl = HttpUrl
+                        .parse(Constants.TEAMS_AGENT_DETAILS)
+                        .newBuilder()
+                        .build()
+                        .toString();
+                HttpClientUtil.runAsync(finalUrl, new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
+                        if (response.code() == 200) {
+                            showTeamsAgent(response);
+                        }
+                    }
+                });
+            }
+        };
+        timerAgentsDetails = new Timer();
+        timerAgentsDetails.schedule(agentsDetailsRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+    }
+    private void showTeamsAgent(@NotNull Response response) throws IOException{
+
+        String json_teamsAgentDetails = response.body().string();
+        Type listAgentsDetails = new TypeToken< List<DTO_AgentDetails>>() { }.getType();
+        List<DTO_AgentDetails> dto_agentDetailsList = GSON_INSTANCE.fromJson(json_teamsAgentDetails, listAgentsDetails);
+        ta_teamsAgentsData.clear();
+        for(DTO_AgentDetails dto_agentDetails : dto_agentDetailsList){
+            Platform.runLater(() -> {
+                ta_teamsAgentsData.appendText("-----------------------------------------\n");
+                ta_teamsAgentsData.appendText(dto_agentDetails.printDetailsAgent());
+                ta_teamsAgentsData.appendText("-----------------------------------------\n");
+            });
+        }
+    }
+
 }

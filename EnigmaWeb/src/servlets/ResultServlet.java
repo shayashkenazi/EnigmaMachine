@@ -27,7 +27,7 @@ public class ResultServlet extends HttpServlet {
             case Constants.UBOAT_CLASS:
                 uBoatName = userNameFromSession;
                 break;
-            case Constants.ALLY_NAME:
+            case Constants.ALLIES_CLASS:
                 uBoatName = ServletUtils.getHierarchyManager(getServletContext()).getParent(userNameFromSession);
                 break;
         }
