@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import javafx.util.Pair;
+import users.HierarchyManager;
 import users.ReadyManager;
 import utils.ServletUtils;
 import utils.SessionUtils;
@@ -20,14 +21,20 @@ public class ReadyServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String dtoType = request.getParameter(Constants.DTO_TYPE);
-        String battlefieldName = request.getParameter(Constants.BATTLEFIELD_NAME);
-        String uBoatName = request.getParameter(Constants.UBOAT_NAME);
-        String usernameFromSession = SessionUtils.getUsername(request);
-        ReadyManager readyManager = ServletUtils.getReadyManager(getServletContext(),battlefieldName);
-        switch (dtoType){
+        String dtoType = request.getParameter(Constants.CLASS_TYPE);
+        String userName = SessionUtils.getUsername(request);
+        String uBoatName;
+        if(dtoType.equals(Constants.ALLIES_CLASS)){
+            HierarchyManager hierarchyManager = ServletUtils.getHierarchyManager(getServletContext());
+            uBoatName = hierarchyManager.getParent(userName);
+        }
+        else
+            uBoatName = userName;
+
+        ReadyManager readyManager = ServletUtils.getBattlefield(getServletContext(),uBoatName).getReadyManager();
+                switch (dtoType){
             case Constants.ALLIES_CLASS:
-                readyManager.addAlliesToSet(usernameFromSession);
+                readyManager.addAlliesToSet(userName);
                 break;
             case Constants.UBOAT_CLASS:
                 String sentenceToCheck = request.getParameter(Constants.SENTENCE_TO_CHECK);

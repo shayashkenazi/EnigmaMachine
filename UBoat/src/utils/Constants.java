@@ -16,12 +16,14 @@ public class Constants {
     public final static String SET_CODE = FULL_SERVER_PATH + "/SetCodeServlet";
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/loginServlet";
 
-
+    public static final String SENTENCE_TO_CHECK = "sentenceToCheck";
+    public static final String RESULT = FULL_SERVER_PATH + "/resultServlet";
     public final static String USERNAME = "username";
     public final static String CLASS_TYPE = "classType";
     public static final String BATTLEFIELD_NAME = "battlefieldName";
     public static final String UBOAT_NAME = "uboatName";
-
+    public final static int REFRESH_RATE = 2000;
+    public final static String CHECK_READY_BATTLE = FULL_SERVER_PATH + "/checkBattleIsReadyServlet";
     public static final String READY = FULL_SERVER_PATH + "/readyServlet";
 
     public static final String DTO_TYPE = "dtoType";

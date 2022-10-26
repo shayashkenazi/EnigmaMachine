@@ -40,25 +40,6 @@ public class ServletUtils {
         }
         return (HierarchyManager) servletContext.getAttribute(HIERARCHY_MANAGER_ATTRIBUTE_NAME);
     }
-    public static ResultsManager getResultsManager(ServletContext servletContext,String battlefieldName) {
-
-        synchronized (resultsManagerLock) {
-            if (servletContext.getAttribute(battlefieldName) == null) {
-                servletContext.setAttribute(battlefieldName, new ResultsManager());
-            }
-        }
-        return (ResultsManager) servletContext.getAttribute(battlefieldName);
-    }
-    public static DMManager getDMManager(ServletContext servletContext, String battlefieldName) {
-
-        synchronized (dmManagerLock) {
-            if (servletContext.getAttribute(battlefieldName) == null) {
-                servletContext.setAttribute(battlefieldName, new DMManager());
-            }
-        }
-        return (DMManager) servletContext.getAttribute(battlefieldName);
-    }
-
     public static Battlefield getBattlefield(ServletContext servletContext, String uBoatName) {
 
         synchronized (battlefieldLock) {
@@ -68,13 +49,5 @@ public class ServletUtils {
 
         return (Battlefield) servletContext.getAttribute(uBoatName);
     }
-    public static ReadyManager getReadyManager(ServletContext servletContext, String battlefieldName) {
 
-        synchronized (readyManagerLock) {
-            if (servletContext.getAttribute(battlefieldName) == null)
-                servletContext.setAttribute(battlefieldName, new ReadyManager());
-        }
-
-        return (ReadyManager) servletContext.getAttribute(battlefieldName);
-    }
 }

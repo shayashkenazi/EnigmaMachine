@@ -2,6 +2,8 @@ package main;
 
 import DTOs.DTO_CandidateResult;
 import DecryptionManager.DmTask;
+import EnginePackage.EngineCapabilities;
+import EnginePackage.EnigmaEngine;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import http.HttpClientUtil;
@@ -22,8 +24,10 @@ import utils.Constants;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static utils.Constants.GSON_INSTANCE;
 
@@ -35,15 +39,18 @@ public class AgentMainController {
 
     private int numberOfTasks;
     private int numberOfThreads;
-    private TimerTask listRefresher;
+    private TimerTask readyRefresher;
     private String allyName;
     private List<String> decodedCandidates;
     private ExecutorService threadPool;
     private List<DmTask> tasks;
     private BooleanProperty isBattleReady = new SimpleBooleanProperty(false);
     private Timer timer;
+    private Thread takeMissionThread;
     List<DTO_CandidateResult> listDtoCandidates = new ArrayList<>();
-
+    private CountDownLatch agentTasksLeft;
+    private EngineCapabilities engine;
+    private static final Object takeMissionLock = new Object();
     @FXML private TextArea ta_contestAndTeam, ta_agentProgressAndStatus, ta_agentCandidates;
     @FXML private ScrollPane sp_mainPage;
 
@@ -52,7 +59,8 @@ public class AgentMainController {
         showAllies();
         isBattleReady.addListener((observable, oldValue, newValue) -> {
             if(newValue){
-                takeMissionFromAlly();
+                takeMissionThread = new Thread(takeMissionFromAlly());
+                takeMissionThread.start();
             }
         });
     }
@@ -111,78 +119,100 @@ public class AgentMainController {
         tasks = new LinkedList<>();
     }
 
-    public void takeMissionFromAlly() {
-
-        String finalUrl = HttpUrl
-                .parse(Constants.TASKS)
-                .newBuilder()
-                .addQueryParameter("numberOfTasks", String.valueOf(numberOfTasks)) // TODO: constant
-                .addQueryParameter("allyName", allyName)
-                .addQueryParameter("agentName", userName.getValue())// TODO: constant
-                .build()
-                .toString();
-
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
+    public Runnable takeMissionFromAlly() {
+        return new Runnable() {
             @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            public void run() {
+                String finalUrl = HttpUrl
+                        .parse(Constants.TASKS)
+                        .newBuilder()
+                        .addQueryParameter("numberOfTasks", String.valueOf(numberOfTasks)) // TODO: constant
+                        .addQueryParameter("allyName", allyName)
+                        .build()
+                        .toString();
+                agentTasksLeft = new CountDownLatch(numberOfTasks);
+                Call call = HttpClientUtil.sync(finalUrl);
+                try {
+                    final Response response = call.execute();
+                    if (response.code() == 200) {
+                        String json_dmTasks = response.body().string();
+                        Type dmTasksType = new TypeToken<List<DmTask>>() {
+                        }.getType();
+                        List<DmTask> dmTasks = GSON_INSTANCE.fromJson(json_dmTasks, dmTasksType);
+                        System.out.println("is ok ok");
+                        tasks = dmTasks;
+                        if(tasks.size() < numberOfTasks)
+                            agentTasksLeft = new CountDownLatch(tasks.size());
+                        if(tasks.size() == 0)
+                            return;
+                        for (DmTask task : tasks) {
+                            EngineCapabilities engine = new EnigmaEngine();
+                            engine.setMachine(engine.createMachineFromDTOAgentMachine(task.getDto_agentMachine()));
+                            engine.buildRotorsStack(task.getDto_codeDescription(), false);
+                            task.setListDtoCandidates(listDtoCandidates);
+                            task.setEngine(engine);
+                            task.setAgentTasksLeft(agentTasksLeft);
+                            //task.setTakeMissionLock(takeMissionLock);
+                        }
+                        runMissionFromQueue();
 
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String json_dmTasks = response.body().string();
-                Type dictionaryType = new TypeToken<Pair<String, List<DmTask>>>() {}.getType();
-                Pair<String, List<DmTask>> dmTasks = GSON_INSTANCE.fromJson(json_dmTasks, dictionaryType);
-                tasks = dmTasks.getValue();
-                for (DmTask task : tasks){
-                    task.setListDtoCandidates(listDtoCandidates);
+                    } else {
+                        System.out.println("not 200");
+                    }
                 }
+                catch (IOException e){
+                    System.out.println("fail" + e.getMessage());
+                }
+                try {
+                    agentTasksLeft.await();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                sendResultToServer();
             }
-        });
-        runMissionFromQueue();
-        sendResultToServer();
-        listDtoCandidates.clear();
+
+
+        };
     }
 
     private void sendResultToServer() {
         Gson gson = new Gson();
         String json_listCandidates = gson.toJson(listDtoCandidates);
-        RequestBody bodyCandidates = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                .addFormDataPart("candidatesResult",json_listCandidates)
-                .build();
-
         String finalUrl = HttpUrl
                 .parse(Constants.CANDIDATES)
                 .newBuilder()
                 .build()
                 .toString();
-
         Request request = new Request.Builder()
                 .url(finalUrl)
-                .post(bodyCandidates)
+                .post(RequestBody.create(json_listCandidates.getBytes()))
                 .build();
+
 
         Call call = HttpClientUtil.HTTP_CLIENT.newCall(request);
         call.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
+                System.out.println("on failure candidates");
             }
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if(response.code() == 200){
-
+                    System.out.println("on 200 at candidates!!!");
+                    takeMissionThread = new Thread(takeMissionFromAlly());
+                    takeMissionThread.start();
                 }
+                else
+                    System.out.println("on not 200 candidates");
             }
         });
     }
 
     public void runMissionFromQueue() {
         for (DmTask task : tasks) threadPool.submit(task);
-
     }
 
-    private void readyBattleListener(){
+   /* private void readyBattleListener(){
         String finalUrl = HttpUrl
                 .parse(Constants.CHECK_READY_BATTLE)
                 .newBuilder()
@@ -204,16 +234,16 @@ public class AgentMainController {
                 }
             }
         });
-    }
+    }*/
 
     public void checkReadyRefresher() {
-        listRefresher = new TimerTask() {
+        readyRefresher = new TimerTask() {
             @Override
             public void run() {
                 String finalUrl = HttpUrl
                         .parse(Constants.CHECK_READY_BATTLE)
                         .newBuilder()
-                        .addQueryParameter("allyName", allyName)
+                        .addQueryParameter(WebConstants.Constants.CLASS_TYPE,WebConstants.Constants.AGENT_CLASS)
                         .build()
                         .toString();
                 HttpClientUtil.runAsync(finalUrl, new Callback() {
@@ -232,6 +262,6 @@ public class AgentMainController {
             }
         };
         timer = new Timer();
-        timer.schedule(listRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+        timer.schedule(readyRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
     }
 }

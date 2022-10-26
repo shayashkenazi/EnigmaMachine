@@ -79,14 +79,6 @@ public class DTOServlet extends HttpServlet {
         }
     }
 
-    public String createMachineInfoAsString(DTO_MachineInfo machineInfo) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Machine Status:\n");
-        sb.append("1.    a) Number of Possible Rotors: " + machineInfo.getNumOfPossibleRotors());
-        sb.append("\n      b) Number of Rotors in use: " + machineInfo.getNumOfUsedRotors());
-        sb.append("\n2. Number of Reflectors: " + machineInfo.getNumOfReflectors());
-        return sb.toString();
-    }
 
     public String createMachineConfigurationString(DTO_CodeDescription dto_codeDescription) {
         StringBuilder sb = new StringBuilder();

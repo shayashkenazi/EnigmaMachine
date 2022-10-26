@@ -13,9 +13,13 @@ public class ResultsManager {
     // map agentName, results per agents
     //private final Map<String, String> ResultsMap = new HashMap<>();
 
+
     Set<DTO_CandidateResult> dto_candidateResultSet = new HashSet<>();
     public synchronized void addCandidateResults(DTO_CandidateResult dto_candidateResult) {
         dto_candidateResultSet.add(dto_candidateResult);
+    }
+    public Set<DTO_CandidateResult> getDto_candidateResultSet() {
+        return dto_candidateResultSet;
     }
 
 

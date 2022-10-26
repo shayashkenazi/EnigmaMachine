@@ -18,8 +18,8 @@ public class EncryptCodeServlet extends HttpServlet {
             throws IOException {
 
         //String userName = request.getParameter(Constants.USERNAME);
-        String usernameFromSession = SessionUtils.getUsername(request);
-        EngineCapabilities engine = ServletUtils.getBattlefield(getServletContext(), usernameFromSession).getEngine();
+        String usernameuBoatFromSession = SessionUtils.getUsername(request);
+        EngineCapabilities engine = ServletUtils.getBattlefield(getServletContext(), usernameuBoatFromSession).getEngine();
         String msgToEncode = request.getParameter(Constants.MSG_TO_DECODE);
         String resDecode = engine.encodeDecodeMsg(msgToEncode,false);
         response.getOutputStream().print(resDecode);

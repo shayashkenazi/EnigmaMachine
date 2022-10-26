@@ -12,6 +12,7 @@ public class Machine implements Serializable {
     private Map<String, Rotor> rotorsMap;
     private Map<String,Reflector> reflectorsMap;
     private List <Switcher> rotorsStack = new ArrayList<>();
+
     private Map<Character,Integer> abcMap;
     private String abc;
     private int rotorsCount;
@@ -55,9 +56,9 @@ public class Machine implements Serializable {
     public Map<Character,Character> getSecondSidePlugBoardMap(){
         return plugBoard.getSecondSidePlugBoardMap();
     }
-    public int getReflectorsMapSize() {
-        return reflectorsMap.size();
-    }
+    public int getReflectorsMapSize() {return reflectorsMap.size();}
+    public Map<Character, Integer> getAbcMap() {return abcMap;}
+    public int getRotorsCount() {return rotorsCount;}
 
     public List<Switcher> getRotorsStack() {
         return rotorsStack;

@@ -22,7 +22,7 @@ public class SimpleCookieManager implements CookieJar {
     public List<Cookie> loadForRequest(@NotNull HttpUrl httpUrl) {
         String host = httpUrl.host();
         StringBuilder sb = new StringBuilder();
-        sb.append(CACHE_MANAGER_PREFIX).append("Fetching cookies for domain: [").append(host).append("]...");
+        //sb.append(CACHE_MANAGER_PREFIX).append("Fetching cookies for domain: [").append(host).append("]...");
         List<Cookie> cookiesPerDomain = Collections.emptyList();
         synchronized (this) {
             if (cookies.containsKey(host)) {
@@ -30,7 +30,7 @@ public class SimpleCookieManager implements CookieJar {
             }
         }
         sb.append(" Total of ").append(cookiesPerDomain.size()).append(" cookie(s) will be loaded !");
-        logData.accept(sb.toString());
+        //logData.accept(sb.toString());
         return cookiesPerDomain;
     }
 

@@ -37,6 +37,7 @@ public class SetCodeServlet extends HttpServlet {
             case Constants.RANDOM_SET_CODE_TYPE:
                 DTO_MachineInfo dtoMachineInfo = engine.createMachineInfoDTO();
                 createRandomMachineSetting(dtoMachineInfo,engine);
+                response.setStatus(HttpServletResponse.SC_OK);
                 break;
 
 /*            case Constants.SET_SPECIFIC_CODE_TYPE:

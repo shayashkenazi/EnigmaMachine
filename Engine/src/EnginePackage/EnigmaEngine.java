@@ -1,5 +1,6 @@
 package EnginePackage;
 
+import DTOs.DTO_AgentMachine;
 import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
 import Tools.*;
@@ -58,6 +59,26 @@ public class EnigmaEngine implements EngineCapabilities,Serializable{
 
         return new DTO_MachineInfo(machine.getAbc(), machine.getRotorsMapSize(), machine.getRotorsInUseCount(),
                                    notchPositionList, machine.getReflectorsMapSize(),listOfSpecificRotorAbcOrder);
+    }
+
+    @Override
+    public DTO_AgentMachine createAgentMachineDTO() {
+        DTO_AgentMachine dto_agentMachine = new DTO_AgentMachine(machine.getAbc(),machine.getRotorsMap(),
+                machine.getReflectorsMap(),machine.getAbcMap(),machine.getRotorsCount(),machine.getMyDictionary());
+        return dto_agentMachine;
+    }
+
+    @Override
+    public Machine createMachineFromDTOAgentMachine(DTO_AgentMachine dto_agentMachine) {
+        Machine machine = new Machine();
+        machine.setABC(dto_agentMachine.getAbc());
+        machine.setABCmap(dto_agentMachine.getAbcMap());
+        machine.setRotorsCount(dto_agentMachine.getRotorsCount());
+        machine.setRotors(dto_agentMachine.getRotorsMap());
+        machine.setReflectors(dto_agentMachine.getReflectorsMap());
+        machine.setMyDictionary(dto_agentMachine.getMyDictionary());
+        return machine;
+
     }
 
     @Override

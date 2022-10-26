@@ -35,8 +35,14 @@ public class AllyDMServlet extends HttpServlet {
         Battlefield battlefield = ServletUtils.getBattlefield(getServletContext(), uBoatName);
 
         DM dm = new DM(battlefield.getEngine(), battlefield.getLevel(), Integer.parseInt(taskSize));
-        DMManager DMManager = ServletUtils.getDMManager(getServletContext(),battlefield.getName());
+        DMManager DMManager = ServletUtils.getBattlefield(getServletContext(),uBoatName).getDmManager();
         DMManager.addDM(allyName,dm);
+        response.setStatus(HttpServletResponse.SC_OK);
+
+        //request.setAttribute(Constants.CLASS_TYPE,Constants.ALLIES_CLASS);
+
+
+        //getServletContext().getRequestDispatcher("/readyServlet?"+Constants.CLASS_TYPE+"="+Constants.ALLIES_CLASS).forward(request,response);
 
         //request.getSession(false).setAttribute(Constants.DM, dm); //TODO CHECK IF TRUE AT THE GET SESSION
         //response.setStatus(HttpServletResponse.SC_OK);

@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import utils.ServletUtils;
+import utils.SessionUtils;
 
 import javax.xml.bind.JAXBException;
 import java.io.FileNotFoundException;
@@ -29,10 +30,11 @@ public class LoadXmlServlet extends HttpServlet {
         response.setContentType("text/plain");
         Collection<Part> parts = request.getParts();
         StringBuilder fileContent = new StringBuilder();
-        String userName = request.getParameter(Constants.USERNAME);
+        //String userName = request.getParameter(Constants.USERNAME);
+        String usernUboatameFromSession = SessionUtils.getUsername(request);
         try {
             for (Part curPart : parts) {
-                Battlefield battlefield = ServletUtils.getBattlefield(getServletContext(), userName);
+                Battlefield battlefield = ServletUtils.getBattlefield(getServletContext(), usernUboatameFromSession);
                 battlefield.createBattlefieldFromXMLInputStream(curPart.getInputStream());
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getOutputStream().print(battlefield.getName());

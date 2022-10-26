@@ -1,5 +1,6 @@
 package Main;
 
+import DTOs.DTO_CandidateResult;
 import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
 import codeCalibration.CodeCalibrationController;
@@ -53,8 +54,11 @@ public class UBoatMainController {
     private SetCodeController setCodeComponentController;
     private final BooleanProperty isXmlLoaded = new SimpleBooleanProperty(false);
     private final BooleanProperty isCodeChosen = new SimpleBooleanProperty(false);
-    private BooleanProperty isReady;
+    private BooleanProperty isReady,isBattleReady;
     private DTO_MachineInfo dto_machineInfo;
+    private TimerTask resultRefresher;
+    private TimerTask readyRefresher;
+    private Timer timerResult,timerReady;
 
     //private Parent uBoatComponent;
 
@@ -62,6 +66,7 @@ public class UBoatMainController {
     public UBoatMainController() {
         userName = new SimpleStringProperty("Anonymous");
         isReady = new SimpleBooleanProperty(false);
+        isBattleReady = new SimpleBooleanProperty(false);
         //sp_mainPage.setContent(loginComponentController.getLoginPage());
     }
 
@@ -101,10 +106,14 @@ public class UBoatMainController {
             }
         });
         isCodeChosen.addListener((observable, oldValue, newValue) -> {
-            //codeCalibrationComponentController.enableDisableCodeCalibrationButtons(newValue);
+            codeCalibrationComponentController.enableDisableCodeCalibrationButtons(newValue);
             setMachineConfigurationTextField(newValue);
         });
         rootNode = sp_mainPage.getContent();
+        isBattleReady.addListener((observable, oldValue, newValue) -> {
+            if(newValue)
+                refresherResult();
+        });
     }
 
     @FXML void loadFileBtnClick(ActionEvent event) {
@@ -175,9 +184,8 @@ public class UBoatMainController {
         String finalUrl = HttpUrl
                 .parse(Constants.READY)
                 .newBuilder()
-                .addQueryParameter(Constants.BATTLEFIELD_NAME,battlefieldName)
-                .addQueryParameter(Constants.UBOAT_NAME, userName.getValue())
-                .addQueryParameter(Constants.DTO_TYPE,Constants.UBOAT_CLASS)
+                .addQueryParameter(Constants.CLASS_TYPE,Constants.UBOAT_CLASS)
+                .addQueryParameter(Constants.SENTENCE_TO_CHECK,encryptMessageComponentController.getTf_output().getText())
                 .build()
                 .toString();
 
@@ -259,7 +267,7 @@ public class UBoatMainController {
                     encryptMessageComponentController.getTf_output().setText(text);
                 });*/
 
-                if (response.code() != 200) {
+                if (response.code() == 200) {
                     isCodeChosen.set(true);
                 }
             }
@@ -311,15 +319,23 @@ public class UBoatMainController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                /*String text = newValue ? response.body().string() : "";
-                Platform.runLater(() -> {
-                    ta_machineDetails.setText(text);
-                });*/
                 String json_dto = response.body().string();
                 Type dtoType = new TypeToken<DTO_MachineInfo>() { }.getType();
                 dto_machineInfo = GSON_INSTANCE.fromJson(json_dto, dtoType);
+                String text = newValue ? createMachineInfoAsString() : "";
+                Platform.runLater(() -> {
+                    ta_machineDetails.setText(text);
+                });
             }
         });
+    }
+    public String createMachineInfoAsString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Machine Status:\n");
+        sb.append("1.    a) Number of Possible Rotors: " + dto_machineInfo.getNumOfPossibleRotors());
+        sb.append("\n      b) Number of Rotors in use: " + dto_machineInfo.getNumOfUsedRotors());
+        sb.append("\n2. Number of Reflectors: " + dto_machineInfo.getNumOfReflectors());
+        return sb.toString();
     }
     private void setMachineConfigurationTextField(Boolean newValue) {
 
@@ -463,4 +479,71 @@ public class UBoatMainController {
         }
         return true;
     }
+
+    private void refresherResult(){
+        resultRefresher = new TimerTask() {
+            @Override
+            public void run() {
+                String finalUrl = HttpUrl
+                        .parse(Constants.RESULT)
+                        .newBuilder()
+                        .addQueryParameter(Constants.CLASS_TYPE,Constants.UBOAT_CLASS)
+                        .build()
+                        .toString();
+                HttpClientUtil.runAsync(finalUrl, new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (response.code() == 200) {
+                            String json_candidates = response.body().string();
+                            Type setCandidatesType = new TypeToken<Set<DTO_CandidateResult>>() { }.getType(); // TODO: FIX !!!
+                            Set<DTO_CandidateResult> setCandidates = GSON_INSTANCE.fromJson(json_candidates, setCandidatesType);
+                            for(DTO_CandidateResult dto_candidateResult: setCandidates){
+                                Platform.runLater(() -> {
+                                    ta_candidates.setText("c");
+                                    System.out.println("hey conf" + dto_candidateResult.getConfiguration() + "h" + dto_candidateResult.getSentenceCheck());
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+        };
+        timerResult = new Timer();
+        timerResult.schedule(resultRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+    }
+
+    public void checkReadyRefresher() {
+        readyRefresher = new TimerTask() {
+            @Override
+            public void run() {
+                String finalUrl = HttpUrl
+                        .parse(Constants.CHECK_READY_BATTLE)
+                        .newBuilder()
+                        .addQueryParameter(Constants.CLASS_TYPE,Constants.UBOAT_CLASS)
+                        .build()
+                        .toString();
+                HttpClientUtil.runAsync(finalUrl, new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (response.code() == 200) {
+                            isBattleReady.set(true);
+                        }
+                    }
+                });
+            }
+        };
+        timerReady = new Timer();
+        timerReady.schedule(readyRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+    }
+
 }

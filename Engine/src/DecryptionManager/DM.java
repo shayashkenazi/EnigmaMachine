@@ -1,4 +1,6 @@
 package DecryptionManager;
+import DTOs.DTO_CodeDescription;
+import DTOs.DTO_MachineInfo;
 import EnginePackage.EngineCapabilities;
 import EnginePackage.EnigmaEngine;
 import Tools.Machine;
@@ -19,7 +21,7 @@ public class DM { // Relevant for Ex3 only (for Ex2 use DecryptionManager)
     private EngineCapabilities copyEngine;
     private Difficulty difficulty;
     private int taskSize;
-
+    private Thread createTaskDMThread;
 
     private String sentenceToCheck;
 
@@ -31,31 +33,44 @@ public class DM { // Relevant for Ex3 only (for Ex2 use DecryptionManager)
     public void setSentenceToCheck(String sentenceToCheck) {
         this.sentenceToCheck = sentenceToCheck;
     }
-
     public synchronized void run() {
-        switch (difficulty){
-            case EASY:
-                createEasyTasks(copyEngine);
-                break;
-            case MEDIUM:
-                createMediumTasks(copyEngine);
-                break;
-            case HARD:
-                createHardTasks(copyEngine);
-                break;
-            case IMPOSSIBLE:
-                createImpossibleTasks(copyEngine);
-                break;
-        }
+        System.out.println("im in run and before thread -" + Thread.currentThread().getId());
+        createTaskDMThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("im in run and inside thread -" + Thread.currentThread().getId());
+                switch (difficulty){
+                    case EASY:
+                        createEasyTasks(copyEngine);
+                        break;
+                    case MEDIUM:
+                        createMediumTasks(copyEngine);
+                        break;
+                    case HARD:
+                        createHardTasks(copyEngine);
+                        break;
+                    case IMPOSSIBLE:
+                        createImpossibleTasks(copyEngine);
+                        break;
+                }
+                System.out.println("im in run and after thread -" + Thread.currentThread().getId());
+            }
+        });
+        createTaskDMThread.start();
     }
-    public synchronized List<DmTask> getTasksForAgent(int numberOfTasks){
-        List<DmTask> tasksForAgent = new ArrayList<>();
-        if (tasks.size() < numberOfTasks)
-            numberOfTasks = tasks.size();
-        for(int i = 0; i < numberOfTasks; i++){
-            tasksForAgent.add(tasks.poll());
+    //TODO SYNC
+    public List<DmTask> getTasksForAgent(int numberOfTasks){
+        synchronized (tasks) {
+            List<DmTask> tasksForAgent = new ArrayList<>();
+            if (tasks.size() <= 0)
+                return tasksForAgent;
+            if (tasks.size() < numberOfTasks)
+                numberOfTasks = tasks.size();
+            for (int i = 0; i < numberOfTasks; i++) {
+                tasksForAgent.add(tasks.poll());
+            }
+            return tasksForAgent;
         }
-        return tasksForAgent;
     }
     public void createEasyTasks(EngineCapabilities engineCopy) {
         // Initialize all Rotors to start index position 0,0,0...
@@ -68,17 +83,20 @@ public class DM { // Relevant for Ex3 only (for Ex2 use DecryptionManager)
         double sizeOfAllTasks = Math.pow(engineCopy.getMachine().getABCsize(), engineCopy.getMachine().getRotorsInUseCount());
         int sizeOfFullTasks = (int) (sizeOfAllTasks / taskSize);
         int lastTaskSize = (int) (sizeOfAllTasks % taskSize);
+        System.out.println("size of all" + sizeOfFullTasks);
+
         try {
             // Full Tasks
             for (int i = 0; i < sizeOfFullTasks; i++) {
 
-                DmTask decryptionTask = new DmTask(engineCopy.clone(), taskSize,sentenceToCheck);
+                DmTask decryptionTask = new DmTask(/*engineCopy.clone(),*/ taskSize, sentenceToCheck,engineCopy.createAgentMachineDTO(),engineCopy.createCodeDescriptionDTO());
                 tasks.put(decryptionTask);
                 engineCopy.moveRotorsToPosition(taskSize);
+                System.out.println(i);
             }
 
             // Last little task
-            DmTask decryptionTask = new DmTask(engineCopy.clone(), lastTaskSize,sentenceToCheck);
+            DmTask decryptionTask = new DmTask(/*engineCopy.clone(),*/ lastTaskSize, sentenceToCheck,engineCopy.createAgentMachineDTO(),engineCopy.createCodeDescriptionDTO());
             tasks.put(decryptionTask);
 
         } catch (Exception ee) {

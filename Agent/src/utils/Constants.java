@@ -14,7 +14,7 @@ public class Constants {
     public final static String CHECK_READY_BATTLE = FULL_SERVER_PATH + "/checkBattleIsReadyServlet";
     public final static int REFRESH_RATE = 2000;
 
-    public final static String CANDIDATES = FULL_SERVER_PATH + "candidatesServlet";
+    public final static String CANDIDATES = FULL_SERVER_PATH + "/candidatesServlet";
 
     public static final String DTO_ALLIES = "allies";
     public final static String USERNAME = "username";

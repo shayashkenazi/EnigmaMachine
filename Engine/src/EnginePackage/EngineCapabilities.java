@@ -1,5 +1,6 @@
 package EnginePackage;
 
+import DTOs.DTO_AgentMachine;
 import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
 import Tools.Machine;
@@ -21,6 +22,8 @@ public interface EngineCapabilities {
     Machine getMachine();
     void setMachine(Machine machine);
     DTO_MachineInfo createMachineInfoDTO();
+    DTO_AgentMachine createAgentMachineDTO();
+    Machine createMachineFromDTOAgentMachine(DTO_AgentMachine dto_agentMachine);
     void buildRotorsStack(DTO_CodeDescription codeDescription, boolean newMachine);
 
     UsageHistory getUsageHistory();

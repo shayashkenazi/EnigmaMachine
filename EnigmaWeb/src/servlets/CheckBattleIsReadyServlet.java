@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import users.HierarchyManager;
 import users.ReadyManager;
 import utils.ServletUtils;
+import utils.SessionUtils;
 
 import java.io.IOException;
 
@@ -19,11 +20,24 @@ public class CheckBattleIsReadyServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String allyName = request.getParameter(Constants.ALLY_NAME);
+        String userNameFromSession = SessionUtils.getUsername(request);
         HierarchyManager hierarchyManager = ServletUtils.getHierarchyManager(getServletContext());
-        String uBoatName = hierarchyManager.getParent(allyName);
-        String battlefieldName = ServletUtils.getBattlefield(getServletContext(),uBoatName).getName();
-        ReadyManager readyManager = ServletUtils.getReadyManager(getServletContext(),battlefieldName);
+        String typeClass = request.getParameter(Constants.CLASS_TYPE);
+        String uBoatName = "";
+        switch (typeClass){
+            case Constants.ALLIES_CLASS:
+                uBoatName = hierarchyManager.getParent(userNameFromSession);
+                break;
+            case Constants.UBOAT_CLASS:
+                uBoatName = userNameFromSession;
+                break;
+            case Constants.AGENT_CLASS:
+                String allyName = hierarchyManager.getParent(userNameFromSession);
+                uBoatName = hierarchyManager.getParent(allyName);
+                break;
+
+        }
+        ReadyManager readyManager = ServletUtils.getBattlefield(getServletContext(),uBoatName).getReadyManager();
         if(readyManager.isIsAllReady()){
             response.setStatus(HttpServletResponse.SC_OK);
         }

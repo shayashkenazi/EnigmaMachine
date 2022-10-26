@@ -59,6 +59,7 @@ public class EncryptMessageController {
     @FXML void readyBtnClick(ActionEvent event) {
         uBoatMainController.setIsReady(true);
         uBoatMainController.updateReadyManager();
+        uBoatMainController.checkReadyRefresher();
     }
 
     @FXML void resetBtnClick(ActionEvent event) {

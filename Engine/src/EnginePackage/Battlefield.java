@@ -3,6 +3,9 @@ package EnginePackage;
 import DecryptionManager.Difficulty;
 import Tools.Machine;
 import enigmaException.EnigmaException;
+import users.DMManager;
+import users.ReadyManager;
+import users.ResultsManager;
 
 import javax.xml.bind.JAXBException;
 import java.io.FileNotFoundException;
@@ -14,6 +17,9 @@ public class Battlefield {
     private String name;
     private int numOfAllies;
     private Difficulty level;
+    private DMManager dmManager = new DMManager();
+    private ReadyManager readyManager = new ReadyManager();
+    private ResultsManager resultsManager = new ResultsManager();
 
     public EngineCapabilities getEngine() { return engine; }
 
@@ -36,5 +42,16 @@ public class Battlefield {
 
     public Difficulty getLevel() {
         return level;
+    }
+
+    public DMManager getDmManager() {
+        return dmManager;
+    }
+
+    public ReadyManager getReadyManager() {
+        return readyManager;
+    }
+    public ResultsManager getResultsManager() {
+        return resultsManager;
     }
 }
