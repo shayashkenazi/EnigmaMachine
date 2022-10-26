@@ -93,8 +93,12 @@ public class DmTask implements Runnable {
         String res = engineClone.encodeDecodeMsg(sentenceToCheck.toUpperCase(), false);
         try {
             if (engineClone.checkAtDictionary(res)) {
+                // TODO : Send sentence afetr check and not sentence to check (?)
                 DTO_CandidateResult dto_candidateResult = new DTO_CandidateResult(agentExecuteName,allyName,sentenceToCheck,createDescriptionFormat(tmpDTO));
-                listDtoCandidates.add(dto_candidateResult); // TODO SYNC?
+                synchronized (this) {
+                    listDtoCandidates.add(dto_candidateResult); // TODO SYNC?
+                }
+
             }
         }
         catch (Exception ee) {

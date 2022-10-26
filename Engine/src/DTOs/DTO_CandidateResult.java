@@ -29,16 +29,11 @@ public class DTO_CandidateResult {
         return configuration;
     }
 
-    public void printDtoCandidatesUBoat(){
+    public String getPrintedFormat(){
         StringBuilder sb = new StringBuilder();
         sb.append("Sentence - ").append(sentenceCheck).append("\n");
         sb.append("Ally name is - ").append(allyName).append("\n");
         sb.append("Configuration - ").append(configuration).append("\n");
-    }
-    public void printDtoCandidatesAlly(){
-        StringBuilder sb = new StringBuilder();
-        sb.append("Sentence - ").append(sentenceCheck).append("\n");
-        sb.append("Ally name is - ").append(allyName).append("\n");
-        sb.append("Configuration - ").append(configuration).append("\n");
+        return sb.toString();
     }
 }

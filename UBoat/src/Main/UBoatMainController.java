@@ -498,14 +498,17 @@ public class UBoatMainController {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
                         if (response.code() == 200) {
                             String json_candidates = response.body().string();
                             Type setCandidatesType = new TypeToken<Set<DTO_CandidateResult>>() { }.getType(); // TODO: FIX !!!
                             Set<DTO_CandidateResult> setCandidates = GSON_INSTANCE.fromJson(json_candidates, setCandidatesType);
-                            for(DTO_CandidateResult dto_candidateResult: setCandidates){
+                            ta_candidates.clear();
+                            for(DTO_CandidateResult dto_candidateResult : setCandidates){
                                 Platform.runLater(() -> {
-                                    ta_candidates.setText("c");
-                                    System.out.println("hey conf" + dto_candidateResult.getConfiguration() + "h" + dto_candidateResult.getSentenceCheck());
+                                    ta_candidates.appendText("-----------------------------------------\n");
+                                    ta_candidates.appendText(dto_candidateResult.getPrintedFormat());
+                                    ta_candidates.appendText("-----------------------------------------\n");
                                 });
                             }
                         }

@@ -198,6 +198,7 @@ public class AgentMainController {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if(response.code() == 200){
+                    listDtoCandidates.clear();
                     System.out.println("on 200 at candidates!!!");
                     takeMissionThread = new Thread(takeMissionFromAlly());
                     takeMissionThread.start();
