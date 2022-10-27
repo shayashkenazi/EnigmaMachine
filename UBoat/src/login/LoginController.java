@@ -71,6 +71,7 @@ public class LoginController {
                     Platform.runLater(() -> {
                         uBoatMainController.setUserName(userName);
                         uBoatMainController.switchToMainPanel();
+                        uBoatMainController.refresherActiveTeams();
                     });
                 }
             }

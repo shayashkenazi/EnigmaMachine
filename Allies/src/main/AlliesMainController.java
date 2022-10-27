@@ -2,6 +2,7 @@ package main;
 
 import DTOs.DTO_AgentDetails;
 import DTOs.DTO_CandidateResult;
+import DTOs.DTO_ContestData;
 import com.google.gson.reflect.TypeToken;
 import http.HttpClientUtil;
 import javafx.application.Platform;
@@ -42,10 +43,10 @@ public class AlliesMainController {
     Set<Pair<String,String>> uboatBattlefieldSet;
     private TimerTask readyRefresher;
     private TimerTask resultRefresher;
-    private TimerTask agentsDetailsRefresher;
+    private TimerTask agentsDetailsRefresher,contestDataRefresher;
     private Timer timer;
     private Timer timerResult;
-    private Timer timerAgentsDetails;
+    private Timer timerAgentsDetails,timerContestData;
     private Thread createTaskDMThread;
 
     @FXML void initialize() {
@@ -122,6 +123,7 @@ public class AlliesMainController {
                 .addQueryParameter(Constants.BATTLEFIELD_NAME,cb_battlefieldNames.getValue())
                 .addQueryParameter(Constants.UBOAT_NAME, uBoatName)
                 .addQueryParameter(Constants.CLASS_TYPE,Constants.ALLIES_CLASS)
+                .addQueryParameter(Constants.TASK_SIZE,tf_taskSize.getText())
                 .build()
                 .toString();
 
@@ -376,6 +378,49 @@ public class AlliesMainController {
                 ta_teamsAgentsData.appendText("-----------------------------------------\n");
                 ta_teamsAgentsData.appendText(dto_agentDetails.printDetailsAgent());
                 ta_teamsAgentsData.appendText("-----------------------------------------\n");
+            });
+        }
+    }
+
+    public void refresherContestDataDetails(){
+        contestDataRefresher = new TimerTask() {
+            @Override
+            public void run() {
+                String finalUrl = HttpUrl
+                        .parse(Constants.CONTEST_DATA)
+                        .newBuilder()
+                        .build()
+                        .toString();
+                HttpClientUtil.runAsync(finalUrl, new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
+                        if (response.code() == 200) {
+                            showContestData(response);
+                        }
+                    }
+                });
+            }
+        };
+        timerContestData = new Timer();
+        timerContestData.schedule(contestDataRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+    }
+    private void showContestData(@NotNull Response response) throws IOException{
+
+        String json_contestData = response.body().string();
+        Type listAgentsDetails = new TypeToken< List<DTO_ContestData>>() { }.getType();
+        List<DTO_ContestData> dto_contestDataList = GSON_INSTANCE.fromJson(json_contestData, listAgentsDetails);
+        ta_contestsData.clear();
+        for(DTO_ContestData dto_contestData : dto_contestDataList){
+            Platform.runLater(() -> {
+                ta_contestsData.appendText("-----------------------------------------\n");
+                ta_contestsData.appendText(dto_contestData.printDetailsContestData());
+                ta_contestsData.appendText("-----------------------------------------\n");
             });
         }
     }

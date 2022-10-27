@@ -8,17 +8,34 @@ import java.util.*;
 public class AllyManager {
 
     // ally name, dto
-    Map<String, DTO_AllyDetails> mapAlliesDetails = new HashMap<>();
+    Set<DTO_AllyDetails> setAlliesDetails = new HashSet<>();
+    //every new ally add ally details once
+    public synchronized void addAllyDetails(DTO_AllyDetails dto_allyDetails) {
+        setAlliesDetails.add(dto_allyDetails);
+    }
+    public synchronized void increaseAgentNumber(String allyName){
+        synchronized (setAlliesDetails) {
+            for (DTO_AllyDetails dto_allyDetailsCur : setAlliesDetails) {
+                if (dto_allyDetailsCur.getAllyName().equals(allyName)) {
+                    dto_allyDetailsCur.setNumOfAgents(dto_allyDetailsCur.getNumOfAgents() + 1);
+                    break;
+                }
+            }
+        }
+    }
+    public synchronized List<DTO_AllyDetails> getListOfAllyDetailsWithUboatName(String uBoatName){
+        List<DTO_AllyDetails> dto_allyDetailsList = new ArrayList<>();
+        synchronized (setAlliesDetails) {
+            for (DTO_AllyDetails dto_allyDetailsCur : setAlliesDetails) {
+                if (dto_allyDetailsCur.getuBoatName().equals(uBoatName)) {
+                    dto_allyDetailsList.add(dto_allyDetailsCur);
+                }
+            }
+        }
+        return dto_allyDetailsList;
+    }
 
 
-    public synchronized void addAllyDetails(String allyName,DTO_AllyDetails dto_allyDetails) {
-        if(!mapAlliesDetails.containsKey(allyName))
-            mapAlliesDetails.put(allyName,);
-        mapAlliesDetails.get(allyName).add(dto_allyDetails);
-    }
-    public List<DTO_AgentDetails> getAgentTeamDetails(String allyName){
-        if(!mapAlliesDetails.containsKey(allyName))
-            mapAlliesDetails.put(allyName,new ArrayList<>());
-        return mapAlliesDetails.get(allyName);
-    }
+
+
 }

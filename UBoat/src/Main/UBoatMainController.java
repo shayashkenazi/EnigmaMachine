@@ -1,5 +1,6 @@
 package Main;
 
+import DTOs.DTO_AllyDetails;
 import DTOs.DTO_CandidateResult;
 import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
@@ -56,9 +57,8 @@ public class UBoatMainController {
     private final BooleanProperty isCodeChosen = new SimpleBooleanProperty(false);
     private BooleanProperty isReady,isBattleReady;
     private DTO_MachineInfo dto_machineInfo;
-    private TimerTask resultRefresher;
-    private TimerTask readyRefresher;
-    private Timer timerResult,timerReady;
+    private TimerTask resultRefresher,readyRefresher,allyActiveRefresher;
+    private Timer timerResult,timerReady,timerAllyActiveTeams;
 
     //private Parent uBoatComponent;
 
@@ -556,5 +556,46 @@ public class UBoatMainController {
         timerReady = new Timer();
         timerReady.schedule(readyRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
     }
+    public void refresherActiveTeams(){
+        allyActiveRefresher = new TimerTask() {
+            @Override
+            public void run() {
+                String finalUrl = HttpUrl
+                        .parse(Constants.TEAMS_DETAILS)
+                        .newBuilder()
+                        .addQueryParameter(Constants.CLASS_TYPE,Constants.UBOAT_CLASS)
+                        .build()
+                        .toString();
+                HttpClientUtil.runAsync(finalUrl, new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
+                        if (response.code() == 200) {
+                            String json_candidates = response.body().string();
+                            Type setCandidatesType = new TypeToken<List<DTO_AllyDetails>>() { }.getType(); // TODO: FIX !!!
+                            List<DTO_AllyDetails> dto_allyDetailsList = GSON_INSTANCE.fromJson(json_candidates, setCandidatesType);
+                            ta_teamsDetails.clear();
+                            for(DTO_AllyDetails dto_allyDetails : dto_allyDetailsList){
+                                Platform.runLater(() -> {
+                                    ta_teamsDetails.appendText("-----------------------------------------\n");
+                                    ta_teamsDetails.appendText(dto_allyDetails.getDetailsFormat());
+                                    ta_teamsDetails.appendText("-----------------------------------------\n");
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+        };
+        timerAllyActiveTeams = new Timer();
+        timerAllyActiveTeams.schedule(allyActiveRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+    }
+
+
 
 }

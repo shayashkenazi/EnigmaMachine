@@ -225,5 +225,5 @@
 		</Words>
 		</CTE-Dictionary>
 	</CTE-Decipher>	
-	<CTE-Battlefield battle-name="pearl harbour" allies="1" level="Easy"/>
+	<CTE-Battlefield battle-name="pearl harbour" allies="2" level="Easy"/>
 </CTE-Enigma>

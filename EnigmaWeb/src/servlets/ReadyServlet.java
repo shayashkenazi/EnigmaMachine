@@ -1,5 +1,6 @@
 package servlets;
 
+import DTOs.DTO_AllyDetails;
 import DecryptionManager.DM;
 import EnginePackage.Battlefield;
 import WebConstants.Constants;
@@ -9,6 +10,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import javafx.util.Pair;
+import users.AllyManager;
 import users.HierarchyManager;
 import users.ReadyManager;
 import utils.ServletUtils;
@@ -35,6 +37,10 @@ public class ReadyServlet extends HttpServlet {
                 switch (dtoType){
             case Constants.ALLIES_CLASS:
                 readyManager.addAlliesToSet(userName);
+                String taskSize = request.getParameter(Constants.TASK_SIZE);
+                AllyManager allyManager = ServletUtils.getAllyDetailsManager(getServletContext());
+                DTO_AllyDetails dto_allyDetails = new DTO_AllyDetails(uBoatName,userName,0,Integer.parseInt(taskSize));
+                allyManager.addAllyDetails(dto_allyDetails);
                 break;
             case Constants.UBOAT_CLASS:
                 String sentenceToCheck = request.getParameter(Constants.SENTENCE_TO_CHECK);

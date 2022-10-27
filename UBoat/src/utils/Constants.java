@@ -18,6 +18,7 @@ public class Constants {
 
     public static final String SENTENCE_TO_CHECK = "sentenceToCheck";
     public static final String RESULT = FULL_SERVER_PATH + "/resultServlet";
+    public static final String TEAMS_DETAILS = FULL_SERVER_PATH  + "/teamsDetailsServlet";
     public final static String USERNAME = "username";
     public final static String CLASS_TYPE = "classType";
     public static final String BATTLEFIELD_NAME = "battlefieldName";

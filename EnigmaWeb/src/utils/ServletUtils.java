@@ -9,6 +9,7 @@ import java.util.Enumeration;
 public class ServletUtils {
 
     private static final String USER_MANAGER_ATTRIBUTE_NAME = "userManager";
+    private static final String DETAILS_MANAGER = "detailsManager";
     private static final String HIERARCHY_MANAGER_ATTRIBUTE_NAME = "hierarchyManager";
     private static final String BATTLEFIELD_MANAGER_ATTRIBUTE_NAME = "userManager";
     private static final String ENGINE_ATTRIBUTE_NAME = "engine";
@@ -23,6 +24,7 @@ public class ServletUtils {
     private static final Object battlefieldLock = new Object();
     private static final Object battlefieldCheckExistLock = new Object();
     private static final Object agentManagerLock = new Object();
+    private static final Object detailsManagerLock = new Object();
 
     public static UserManager getUserManager(ServletContext servletContext) {
 
@@ -60,6 +62,15 @@ public class ServletUtils {
         }
 
         return (AgentsDetailsManager) servletContext.getAttribute(allyName);
+    }
+    public static AllyManager getAllyDetailsManager(ServletContext servletContext) {
+
+        synchronized (detailsManagerLock) {
+            if (servletContext.getAttribute(DETAILS_MANAGER) == null)
+                servletContext.setAttribute(DETAILS_MANAGER, new AllyManager());
+        }
+
+        return (AllyManager) servletContext.getAttribute(DETAILS_MANAGER);
     }
 
 }

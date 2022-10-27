@@ -18,6 +18,7 @@ public class Constants {
     public static final String ALLY_DM = FULL_SERVER_PATH + "/allyDMServlet";
     public static final String READY = FULL_SERVER_PATH + "/readyServlet";
     public static final String RESULT = FULL_SERVER_PATH + "/resultServlet";
+    public static final String CONTEST_DATA = FULL_SERVER_PATH + "/contestDataServlet";
 
 
     public final static String USERNAME = "username";

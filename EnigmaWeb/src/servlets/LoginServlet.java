@@ -1,12 +1,14 @@
 package servlets;
 
 import DTOs.DTO_AgentDetails;
+import DTOs.DTO_AllyDetails;
 import WebConstants.Constants;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.*;
 import users.AgentsDetailsManager;
+import users.AllyManager;
 import users.HierarchyManager;
 import users.UserManager;
 import utils.ServletUtils;
@@ -59,6 +61,9 @@ public class LoginServlet extends HttpServlet {
                                 break;
                             case Constants.ALLIES_CLASS:
                                 userManager.addAlliesUser(usernameFromParameter);
+                                //AllyManager allyManager = ServletUtils.getAllyDetailsManager(getServletContext());
+                                //new DTO_AllyDetails(usernameFromParameter,0,));
+                                //allyManager.addAllyDetails()
                                 break;
                             case Constants.AGENT_CLASS:
                                 userManager.addAgentUser(usernameFromParameter);
@@ -68,6 +73,7 @@ public class LoginServlet extends HttpServlet {
                                 int numberOfTasks = Integer.parseInt(request.getParameter(Constants.NUMBER_TASKS));
                                 int countOfThreads = Integer.parseInt(request.getParameter(Constants.THREADS_NUMBER));
                                 agentsDetailsManager.addAgentDetails(myAlly,new DTO_AgentDetails(usernameFromParameter,countOfThreads,numberOfTasks));
+                                ServletUtils.getAllyDetailsManager(getServletContext()).increaseAgentNumber(myAlly);
                                 break;
                         }
                         request.getSession(true).setAttribute(Constants.USERNAME, usernameFromParameter);

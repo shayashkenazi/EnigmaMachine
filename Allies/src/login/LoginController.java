@@ -5,10 +5,7 @@ import http.HttpClientUtil;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.util.Pair;
 import main.AlliesMainController;
 import okhttp3.Call;
@@ -72,20 +69,23 @@ public class LoginController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() ->
-                            System.out.println("Something went wrong: " + responseBody)
-                    );
+                    Platform.runLater(() -> {
+                        Alert alert = new Alert(Alert.AlertType.ERROR, responseBody);
+                        alert.show();
+                    });
                 } else {
                     Platform.runLater(() -> {
                         alliesMainController.setUserName(userName);
                         alliesMainController.switchToMainPanel();
+                        setBattlefieldToCB();
                     });
                     alliesMainController.refresherTeamsAgentDetails();
+                    alliesMainController.refresherContestDataDetails();
                 }
             }
         });
 
-        setBattlefieldToCB();
+
 
 
     }
