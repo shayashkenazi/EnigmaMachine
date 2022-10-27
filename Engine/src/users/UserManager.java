@@ -10,14 +10,16 @@ public class UserManager {
     private final Set<String> uBoatUsers;
     private final Set<String> alliesUsers;
     private final Set<String> agentsUsers;
+    private final Set<String> battlefieldNames;
 
     public UserManager() {
         usersSet = new HashSet<>();
         uBoatUsers = new HashSet<>();
         alliesUsers = new HashSet<>();
         agentsUsers = new HashSet<>();
+        battlefieldNames = new HashSet<>();
     }
-
+    public synchronized void addBattlefieldName(String battlefieldName) { battlefieldNames.add(battlefieldName); }
     public synchronized void addUser(String username) {
         usersSet.add(username);
     }
@@ -31,6 +33,7 @@ public class UserManager {
         agentsUsers.add(username);
     }
 
+    public synchronized void removeBattlefieldName(String battlefieldName) { battlefieldNames.remove(battlefieldName); }
     public synchronized void removeUser(String username) {
         usersSet.remove(username);
     }
@@ -44,6 +47,7 @@ public class UserManager {
         uBoatUsers.remove(username);
     }
 
+    public synchronized Set<String> getBattleFieldNames() { return Collections.unmodifiableSet(battlefieldNames); }
     public synchronized Set<String> getUsersAgent() {
         return Collections.unmodifiableSet(agentsUsers);
     }
@@ -59,5 +63,8 @@ public class UserManager {
 
     public boolean isUserExists(String username) {
         return usersSet.contains(username);
+    }
+    public boolean isBattlefieldNameExist(String battlefieldName) {
+        return battlefieldNames.contains(battlefieldName);
     }
 }

@@ -1,10 +1,10 @@
 package utils;
 
 import EnginePackage.Battlefield;
-import EnginePackage.EngineCapabilities;
-import EnginePackage.EnigmaEngine;
 import jakarta.servlet.ServletContext;
 import users.*;
+
+import java.util.Enumeration;
 
 public class ServletUtils {
 
@@ -21,6 +21,7 @@ public class ServletUtils {
     private static final Object dmManagerLock = new Object();
     private static final Object engineLock = new Object();
     private static final Object battlefieldLock = new Object();
+    private static final Object battlefieldCheckExistLock = new Object();
     private static final Object agentManagerLock = new Object();
 
     public static UserManager getUserManager(ServletContext servletContext) {
@@ -50,6 +51,7 @@ public class ServletUtils {
 
         return (Battlefield) servletContext.getAttribute(uBoatName);
     }
+
     public static AgentsDetailsManager getAgentsDetailsManager(ServletContext servletContext, String allyName) {
 
         synchronized (agentManagerLock) {

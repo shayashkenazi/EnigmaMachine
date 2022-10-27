@@ -157,7 +157,15 @@ public class UBoatMainController {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String body = response.body().string();
-                if (response.code() == HttpServletResponse.SC_OK) {
+
+                if (response.code() == HttpServletResponse.SC_FORBIDDEN) {
+                    String errorMsg = "There is already a battlefield with this name";
+                    Platform.runLater(()->{
+                        Alert errorAlert = new Alert(Alert.AlertType.ERROR, errorMsg);
+                        errorAlert.show();
+                    });
+                }
+                else if (response.code() == HttpServletResponse.SC_OK) {
                     isXmlLoaded.set(true);
                     //battlefieldName = response.body().string();
                     Platform.runLater(() -> {

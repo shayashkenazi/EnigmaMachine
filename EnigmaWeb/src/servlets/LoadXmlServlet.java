@@ -2,6 +2,7 @@ package servlets;
 
 import EnginePackage.Battlefield;
 import EnginePackage.EngineCapabilities;
+import EnginePackage.Factory;
 import WebConstants.Constants;
 import enigmaException.EnigmaException;
 import jakarta.servlet.ServletException;
@@ -34,6 +35,14 @@ public class LoadXmlServlet extends HttpServlet {
         String usernUboatameFromSession = SessionUtils.getUsername(request);
         try {
             for (Part curPart : parts) {
+
+                Factory factory = new Factory(curPart.getInputStream());
+                String battlefieldName = factory.getBattleName();
+                if (ServletUtils.getUserManager(getServletContext()).isBattlefieldNameExist(battlefieldName)){
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    break;
+                }
+                ServletUtils.getUserManager(getServletContext()).addBattlefieldName(battlefieldName);
                 Battlefield battlefield = ServletUtils.getBattlefield(getServletContext(), usernUboatameFromSession);
                 battlefield.createBattlefieldFromXMLInputStream(curPart.getInputStream());
                 response.setStatus(HttpServletResponse.SC_OK);
