@@ -39,7 +39,7 @@ public class AlliesMainController {
     @FXML private ScrollPane sp_mainPage;
     @FXML private TextField tf_taskSize;
     @FXML private TextArea ta_teamsAgentsData, ta_contestsData, ta_contestData, ta_contestTeams, ta_teamAgents, ta_teamCandidates;
-    BooleanProperty  isBattlefieldSelected, isTaskSizeSelected,isReady,isBattleReady;
+    BooleanProperty  isBattlefieldSelected, isTaskSizeSelected,isReady,isBattleReady, moreThanOneAgent;
     Set<Pair<String,String>> uboatBattlefieldSet;
     private TimerTask readyRefresher;
     private TimerTask resultRefresher;
@@ -53,12 +53,13 @@ public class AlliesMainController {
         isBattlefieldSelected = new SimpleBooleanProperty(false);
         isTaskSizeSelected = new SimpleBooleanProperty(false);
         isBattleReady = new SimpleBooleanProperty(false);
+        moreThanOneAgent = new SimpleBooleanProperty(false);
         rootNode = sp_mainPage.getContent();
         cb_battlefieldNames.valueProperty().addListener(observable -> {
             isBattlefieldSelected.set(cb_battlefieldNames.getValue() != null);
         });
 
-        btn_ready.disableProperty().bind(isBattlefieldSelected.not().or(isTaskSizeSelected.not()));
+        btn_ready.disableProperty().bind(isBattlefieldSelected.not().or(isTaskSizeSelected.not().or(moreThanOneAgent.not())));
 
         // Always keep Task Size Text-Field valid
         tf_taskSize.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -373,6 +374,7 @@ public class AlliesMainController {
         Type listAgentsDetails = new TypeToken< List<DTO_AgentDetails>>() { }.getType();
         List<DTO_AgentDetails> dto_agentDetailsList = GSON_INSTANCE.fromJson(json_teamsAgentDetails, listAgentsDetails);
         ta_teamsAgentsData.clear();
+        moreThanOneAgent.set(dto_agentDetailsList.size() > 0);
         for(DTO_AgentDetails dto_agentDetails : dto_agentDetailsList){
             Platform.runLater(() -> {
                 ta_teamsAgentsData.appendText("-----------------------------------------\n");
