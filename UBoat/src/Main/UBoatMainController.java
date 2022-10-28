@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
 
+import static java.lang.Thread.sleep;
 import static utils.Constants.GSON_INSTANCE;
 
 public class UBoatMainController {
@@ -41,7 +42,7 @@ public class UBoatMainController {
     @FXML private VBox codeCalibrationComponent;
     @FXML private EncryptMessageController encryptMessageComponentController;
     @FXML private VBox encryptMessageComponent;
-    @FXML private Button btn_loadFile, btn_logOut;
+    @FXML private Button btn_loadFile, btn_logOut,btn_finishBattle;
     @FXML private TextField tf_filePath;
     @FXML private Label lb_battlefieldName;
     @FXML private TextArea ta_machineDetails, ta_candidates, ta_teamsDetails;
@@ -55,7 +56,7 @@ public class UBoatMainController {
     private SetCodeController setCodeComponentController;
     private final BooleanProperty isXmlLoaded = new SimpleBooleanProperty(false);
     private final BooleanProperty isCodeChosen = new SimpleBooleanProperty(false);
-    private BooleanProperty isReady,isBattleReady;
+    private BooleanProperty isReady, isBattleOn;
     private DTO_MachineInfo dto_machineInfo;
     private TimerTask resultRefresher,readyRefresher,allyActiveRefresher;
     private Timer timerResult,timerReady,timerAllyActiveTeams;
@@ -66,7 +67,7 @@ public class UBoatMainController {
     public UBoatMainController() {
         userName = new SimpleStringProperty("Anonymous");
         isReady = new SimpleBooleanProperty(false);
-        isBattleReady = new SimpleBooleanProperty(false);
+        isBattleOn = new SimpleBooleanProperty(false);
         //sp_mainPage.setContent(loginComponentController.getLoginPage());
     }
 
@@ -110,12 +111,14 @@ public class UBoatMainController {
             setMachineConfigurationTextField(newValue);
         });
         rootNode = sp_mainPage.getContent();
-        isBattleReady.addListener((observable, oldValue, newValue) -> {
+        isBattleOn.addListener((observable, oldValue, newValue) -> {
             if(newValue)
                 refresherResult();
         });
     }
+    @FXML void finishButtonBtnClick(ActionEvent event){
 
+    }
     @FXML void loadFileBtnClick(ActionEvent event) {
 
         isXmlLoaded.set(false);
@@ -244,6 +247,7 @@ public class UBoatMainController {
             }
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String ignoreLeak = response.body().string();
                 if (response.code() != 200) {
                     isCodeChosen.set(false);
                     isCodeChosen.set(true);
@@ -274,7 +278,7 @@ public class UBoatMainController {
                 Platform.runLater(() -> {
                     encryptMessageComponentController.getTf_output().setText(text);
                 });*/
-
+                String ignoreLeak = response.body().string();
                 if (response.code() == 200) {
                     isCodeChosen.set(true);
                 }
@@ -512,12 +516,20 @@ public class UBoatMainController {
                             Type setCandidatesType = new TypeToken<Set<DTO_CandidateResult>>() { }.getType(); // TODO: FIX !!!
                             Set<DTO_CandidateResult> setCandidates = GSON_INSTANCE.fromJson(json_candidates, setCandidatesType);
                             ta_candidates.clear();
+
                             for(DTO_CandidateResult dto_candidateResult : setCandidates){
                                 Platform.runLater(() -> {
                                     ta_candidates.appendText("-----------------------------------------\n");
                                     ta_candidates.appendText(dto_candidateResult.getPrintedFormat());
                                     ta_candidates.appendText("-----------------------------------------\n");
                                 });
+                                if(checkWinner(dto_candidateResult)){
+                                    Platform.runLater(() -> {
+                                        System.out.println("winnerrr" + dto_candidateResult.getPrintedFormat());
+                                            });
+                                    isBattleOn.set(false);
+                                    setBattleFinished();
+                                }
                             }
                         }
                     }
@@ -526,6 +538,31 @@ public class UBoatMainController {
         };
         timerResult = new Timer();
         timerResult.schedule(resultRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+    }
+
+    private boolean checkWinner(DTO_CandidateResult dto_candidateResult) {
+       return encryptMessageComponentController.getTf_codeConfiguration().getText().equals(dto_candidateResult.getConfiguration());
+    }
+    private void setBattleFinished() {
+        String finalUrl = HttpUrl
+                .parse(Constants.FINISH_BATTLE)
+                .newBuilder()
+                .build()
+                .toString();
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String ignoreLeak = response.body().string();
+                if (response.code() == 200) {
+                   btn_finishBattle.setDisable(true);
+                }
+            }
+        });
     }
 
     public void checkReadyRefresher() {
@@ -546,8 +583,9 @@ public class UBoatMainController {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        String ignoreLeak = response.body().string();
                         if (response.code() == 200) {
-                            isBattleReady.set(true);
+                            isBattleOn.set(true);
                         }
                     }
                 });

@@ -42,4 +42,13 @@ public class ReadyManager {
     public void addAlliesToSet(String allyName) {
         this.alliesSet.add(allyName);
     }
+    public void removeAlliesToSet(String allyName) {
+        /*for(String allyNameCur : alliesSet){
+            if(allyNameCur.equals(allyName))
+                this.alliesSet.remove(allyNameCur);
+        }*/
+        this.alliesSet.remove(allyName);
+
+    }
+
 }

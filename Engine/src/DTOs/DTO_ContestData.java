@@ -30,4 +30,12 @@ public class DTO_ContestData {
         sb.append("allies team - ").append(numberOfActiveAllies).append("/").append(numberOfTotalAllies).append("\n");
         return sb.toString();
     }
+
+    public String getBattlefieldName() {
+        return battlefieldName;
+    }
+
+    public String getuBoatName() {
+        return uBoatName;
+    }
 }

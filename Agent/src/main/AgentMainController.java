@@ -7,15 +7,11 @@ import EnginePackage.EnigmaEngine;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import http.HttpClientUtil;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
-import javafx.util.Pair;
 import login.LoginController;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +23,6 @@ import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static utils.Constants.GSON_INSTANCE;
 
@@ -39,16 +34,18 @@ public class AgentMainController {
 
     private int numberOfTasks;
     private int numberOfThreads;
-    private TimerTask readyRefresher;
+    private TimerTask readyRefresher, updateTaskDetailsRefresher;
     private String allyName;
     private List<String> decodedCandidates;
     private ExecutorService threadPool;
     private List<DmTask> tasks;
-    private BooleanProperty isBattleReady = new SimpleBooleanProperty(false);
-    private Timer timer;
+    private BooleanProperty isBattleOn = new SimpleBooleanProperty(false);
+    private Timer timer,timerTasksDetails;
     private Thread takeMissionThread;
+    private IntegerProperty countTasksTaken = new SimpleIntegerProperty(0); //TODO RESET WHEN FINISHED
     List<DTO_CandidateResult> listDtoCandidates = new ArrayList<>();
-    private CountDownLatch agentTasksLeft;
+    private int candidatesFoundCounter = 0;
+    private CountDownLatch agentTasksLeft = new CountDownLatch(0);
     private EngineCapabilities engine;
     private static final Object takeMissionLock = new Object();
     @FXML private TextArea ta_contestAndTeam, ta_agentProgressAndStatus, ta_agentCandidates;
@@ -57,11 +54,15 @@ public class AgentMainController {
     @FXML void initialize() {
         rootNode = sp_mainPage.getContent();
         showAllies();
-        isBattleReady.addListener((observable, oldValue, newValue) -> {
+        isBattleOn.addListener((observable, oldValue, newValue) -> {
             if(newValue){
+                countTasksTaken.set(0);
+                candidatesFoundCounter = 0;
                 takeMissionThread = new Thread(takeMissionFromAlly());
                 takeMissionThread.start();
+                updateTasksDetails();
             }
+
         });
     }
     public AgentMainController() {
@@ -136,15 +137,16 @@ public class AgentMainController {
                     final Response response = call.execute();
                     if (response.code() == 200) {
                         String json_dmTasks = response.body().string();
-                        Type dmTasksType = new TypeToken<List<DmTask>>() {
-                        }.getType();
+                        if(tasks.size() == 0 && !isBattleOn.getValue()){
+                            return;
+                        }
+                        Type dmTasksType = new TypeToken<List<DmTask>>() {}.getType();
                         List<DmTask> dmTasks = GSON_INSTANCE.fromJson(json_dmTasks, dmTasksType);
-                        System.out.println("is ok ok");
                         tasks = dmTasks;
-                        System.out.println("tasks size" + tasks.size());
                         if(tasks.size() < numberOfTasks)
                             agentTasksLeft = new CountDownLatch(tasks.size());
                         if(tasks.size() == 0){
+                            sendResultToServer();
                             return;
                         }
                         for (DmTask task : tasks) {
@@ -154,6 +156,7 @@ public class AgentMainController {
                             task.setListDtoCandidates(listDtoCandidates);
                             task.setEngine(engine);
                             task.setAgentTasksLeft(agentTasksLeft);
+                            countTasksTaken.set(countTasksTaken.get() + 1);
                             //task.setTakeMissionLock(takeMissionLock);
                         }
                         runMissionFromQueue();
@@ -171,6 +174,7 @@ public class AgentMainController {
                     throw new RuntimeException(e);
                 }
                 sendResultToServer();
+
             }
 
 
@@ -199,9 +203,9 @@ public class AgentMainController {
             }
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String ignoreLeak = response.body().string();
                 if(response.code() == 200){
                     listDtoCandidates.clear();
-                    System.out.println("on 200 at candidates!!!");
                     takeMissionThread = new Thread(takeMissionFromAlly());
                     takeMissionThread.start();
                 }
@@ -214,30 +218,6 @@ public class AgentMainController {
     public void runMissionFromQueue() {
         for (DmTask task : tasks) threadPool.submit(task);
     }
-
-   /* private void readyBattleListener(){
-        String finalUrl = HttpUrl
-                .parse(Constants.CHECK_READY_BATTLE)
-                .newBuilder()
-                .addQueryParameter("allyName", allyName)
-                .addQueryParameter("agentName", userName.getValue())// TODO: constant
-                .build()
-                .toString();
-
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if(response.code() == 200){
-
-                }
-            }
-        });
-    }*/
 
     public void checkReadyRefresher() {
         readyRefresher = new TimerTask() {
@@ -257,8 +237,47 @@ public class AgentMainController {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        String ignoreLeak = response.body().string();
                         if (response.code() == 200) {
-                            isBattleReady.set(true);
+                            isBattleOn.set(true);
+                        }
+                        else
+                        {
+                            if(response.code() == 204)
+                                isBattleOn.set(false);
+                            System.out.println("response code ready refresher" + response.code());
+                        }
+                    }
+                });
+            }
+        };
+        timer = new Timer();
+        timer.schedule(readyRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+    }
+
+    public void updateTasksDetails() {
+        updateTaskDetailsRefresher = new TimerTask() {
+            @Override
+            public void run() {
+                String finalUrl = HttpUrl
+                        .parse(Constants.UPDATE_AGENT_TASKS_DETAILS)
+                        .newBuilder()
+                        .addQueryParameter("countOfTasksTaken",countTasksTaken.getValue().toString())
+                        .addQueryParameter("agentTasksLeftInPool",String.valueOf((int)agentTasksLeft.getCount()))
+                        .addQueryParameter("allyName",allyName)
+                        .build()
+                        .toString();
+                HttpClientUtil.runAsync(finalUrl, new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        String ignoreLeak = response.body().string();
+                        if (response.code() == 200) {
+
                         }
                         else
                         {
@@ -268,7 +287,9 @@ public class AgentMainController {
                 });
             }
         };
-        timer = new Timer();
-        timer.schedule(readyRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+        timerTasksDetails = new Timer();
+        timerTasksDetails.schedule(updateTaskDetailsRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
     }
+
+
 }

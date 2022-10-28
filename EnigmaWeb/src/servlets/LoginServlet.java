@@ -1,6 +1,7 @@
 package servlets;
 
 import DTOs.DTO_AgentDetails;
+import DTOs.DTO_AgentTasksDetails;
 import DTOs.DTO_AllyDetails;
 import WebConstants.Constants;
 import jakarta.servlet.ServletException;
@@ -75,6 +76,7 @@ public class LoginServlet extends HttpServlet {
                                 int countOfThreads = Integer.parseInt(request.getParameter(Constants.THREADS_NUMBER));
                                 agentsDetailsManager.addAgentDetails(myAlly,new DTO_AgentDetails(usernameFromParameter,countOfThreads,numberOfTasks));
                                 ServletUtils.getAllyDetailsManager(getServletContext()).increaseAgentNumber(myAlly);
+                                agentsDetailsManager.addAgentTasksDetails(new DTO_AgentTasksDetails(usernameFromParameter,0,0));
                                 break;
                         }
                         request.getSession(true).setAttribute(Constants.USERNAME, usernameFromParameter);

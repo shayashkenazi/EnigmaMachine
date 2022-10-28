@@ -15,6 +15,12 @@ public class DMManager {
     }
 
     public synchronized DM getDM(String allyName){
+        if(!DMmap.containsKey(allyName))
+            return null;
         return DMmap.get(allyName);
     }
+    public synchronized DM removeDM(String allyName){
+        return DMmap.remove(allyName);
+    }
+
 }

@@ -39,6 +39,10 @@ public class Constants {
 
     public static final String SENTENCE_TO_CHECK = "sentenceToCheck";
 
+    public static final String COUNT_OF_TASKS_TAKEN = "countOfTasksTaken";
+    public static final String AGENT_TASKS_LEFT_POOL = "agentTasksLeftInPool";
+
+
 
 
 }

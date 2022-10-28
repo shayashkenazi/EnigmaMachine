@@ -5,8 +5,6 @@ public class DTO_AllyDetails {
     private String uBoatName;
     private String allyName;
     private int numOfAgents = 0;
-
-
     private int taskSize;
 
 

@@ -81,7 +81,7 @@ public class LoginController {
                         setBattlefieldToCB();
                     });
                     alliesMainController.refresherTeamsAgentDetails();
-                    alliesMainController.refresherContestDataDetails();
+                    alliesMainController.refresherContestsDataDetails();
                 }
             }
         });

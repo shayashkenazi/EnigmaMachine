@@ -1,9 +1,6 @@
 package main;
 
-import DTOs.DTO_AgentDetails;
-import DTOs.DTO_AllyDetails;
-import DTOs.DTO_CandidateResult;
-import DTOs.DTO_ContestData;
+import DTOs.*;
 import com.google.gson.reflect.TypeToken;
 import http.HttpClientUtil;
 import javafx.application.Platform;
@@ -39,21 +36,18 @@ public class AlliesMainController {
     @FXML private ComboBox<String> cb_battlefieldNames;
     @FXML private ScrollPane sp_mainPage;
     @FXML private TextField tf_taskSize;
-    @FXML private TextArea ta_teamsAgentsData, ta_contestsData, ta_contestData, ta_contestTeams, ta_teamAgents, ta_teamCandidates;
-    BooleanProperty  isBattlefieldSelected, isTaskSizeSelected,isReady,isBattleReady, moreThanOneAgent;
+    @FXML private TextArea ta_teamsAgentsData, ta_contestsData, ta_contestData, ta_contestTeams, ta_teamsAgentsAndProgress, ta_teamCandidates;
+    BooleanProperty  isBattlefieldSelected, isTaskSizeSelected,isReady, isBattleOn, moreThanOneAgent;
     Set<Pair<String,String>> uboatBattlefieldSet;
-    private TimerTask readyRefresher;
-    private TimerTask resultRefresher;
-    private TimerTask agentsDetailsRefresher,contestDataRefresher,contestsTeamsRefresher;
-    private Timer timer;
-    private Timer timerResult;
-    private Timer timerAgentsDetails,timerContestData,timerContestsTeam;
+    private TimerTask agentsDetailsRefresher,readyRefresher,contestsTeamsRefresher
+            ,finishRefresher,resultRefresher,contestsDataRefresher,currentContestDataRefresher,agentTasksDetailsRefresher;
+    private Timer timerAgentsDetails,timerContestsTeam,timerResult,timerReadyRefresher,timerFinishRefresher,timerContestsData,timerCurrentContestData,timerAgentTasksDetails;
     private Thread createTaskDMThread;
 
     @FXML void initialize() {
         isBattlefieldSelected = new SimpleBooleanProperty(false);
         isTaskSizeSelected = new SimpleBooleanProperty(false);
-        isBattleReady = new SimpleBooleanProperty(false);
+        isBattleOn = new SimpleBooleanProperty(false);
         moreThanOneAgent = new SimpleBooleanProperty(false);
         rootNode = sp_mainPage.getContent();
         cb_battlefieldNames.valueProperty().addListener(observable -> {
@@ -75,17 +69,23 @@ public class AlliesMainController {
             else
                 isTaskSizeSelected.set(true);
         });
-        isBattleReady.addListener((observable, oldValue, newValue) -> {
+        isBattleOn.addListener((observable, oldValue, newValue) -> {
             //TODO new Thread RUN THIS SHIT
             if(newValue){
                 createTasksDM();
+                checkFinishedRefresher();
+                refresherCurrentContestDataDetails();
+                refresherAgentTasksDetails();
             }
+
         });
         isReady.addListener((observable, oldValue, newValue) -> {
             if(newValue)
                 checkReadyRefresher();
         });
     }
+
+
     public AlliesMainController() {
         userName = new SimpleStringProperty("Anonymous");
         isReady = new SimpleBooleanProperty(false);
@@ -136,6 +136,7 @@ public class AlliesMainController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String ignoreLeak = response.body().string();
                 if(response.code() == 200) {
                     System.out.println("ready rep");
                     isReady.set(true);
@@ -257,8 +258,13 @@ public class AlliesMainController {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        String ignoreLeak = response.body().string();
                         if (response.code() == 200) {
-                            isBattleReady.set(true);
+                            isBattleOn.set(true);
+                            if (readyRefresher != null && timerReadyRefresher != null) {
+                                readyRefresher.cancel();
+                                timerReadyRefresher.cancel();
+                            }
                         }
                         else
                         {
@@ -270,8 +276,67 @@ public class AlliesMainController {
                 });
             }
         };
-        timer = new Timer();
-        timer.schedule(readyRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+        timerReadyRefresher = new Timer();
+        timerReadyRefresher.schedule(readyRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+    }
+    private void checkFinishedRefresher() {
+        finishRefresher = new TimerTask() {
+            @Override
+            public void run() {
+                String finalUrl = HttpUrl
+                        .parse(Constants.CHECK_READY_BATTLE)
+                        .newBuilder()
+                        .addQueryParameter(Constants.CLASS_TYPE,Constants.ALLIES_CLASS)
+                        .build()
+                        .toString();
+                HttpClientUtil.runAsync(finalUrl, new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        System.out.println("omg fail");
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        String ignoreLeak = response.body().string();
+                        if (response.code() == 204 ) {
+                            isBattleOn.set(false);
+                            try {
+                                Thread.sleep(3000);
+                            } catch (InterruptedException e) {
+
+                            }
+                            resetAlly();
+                        }
+                    }
+                });
+            }
+        };
+        timerFinishRefresher = new Timer();
+        timerFinishRefresher.schedule(finishRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+    }
+    private void resetAlly(){
+        String uBoatName = getUboatNameByBattlefieldName(cb_battlefieldNames.getValue());
+        String finalUrl = HttpUrl
+                .parse(Constants.RESET_ALLY)
+                .newBuilder()
+                .addQueryParameter(Constants.UBOAT_NAME,uBoatName )
+                .build()
+                .toString();
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                System.out.println(e.getMessage() + " failure" + Thread.currentThread().getId());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String ignoreLeak = response.body().string();
+                if (response.code() == 200) {
+
+                }
+
+            }
+        });
     }
 
     private void createTasksDM() {
@@ -292,6 +357,7 @@ public class AlliesMainController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String ignoreLeak = response.body().string();
                 if (response.code() == 200) {
                     System.out.println("hey im in create tasks servlet res" + "thread" + Thread.currentThread().getId());
                     refresherResult();
@@ -319,7 +385,6 @@ public class AlliesMainController {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-
                         if (response.code() == 200) {
                             refresherContestTeamDetails();
                             showCandidates(response);
@@ -366,7 +431,6 @@ public class AlliesMainController {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-
                         if (response.code() == 200) {
                             showTeamsAgent(response);
                         }
@@ -398,8 +462,8 @@ public class AlliesMainController {
         }
     }
 
-    public void refresherContestDataDetails(){
-        contestDataRefresher = new TimerTask() {
+    public void refresherContestsDataDetails(){
+        contestsDataRefresher = new TimerTask() {
             @Override
             public void run() {
                 String finalUrl = HttpUrl
@@ -415,7 +479,6 @@ public class AlliesMainController {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-
                         if (response.code() == 200) {
                             showContestData(response);
                         }
@@ -427,8 +490,8 @@ public class AlliesMainController {
                 });
             }
         };
-        timerContestData = new Timer();
-        timerContestData.schedule(contestDataRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+        timerContestsData = new Timer();
+        timerContestsData.schedule(contestsDataRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
     }
     private void showContestData(@NotNull Response response) throws IOException{
 
@@ -494,4 +557,95 @@ public class AlliesMainController {
         timerContestsTeam.schedule(contestsTeamsRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
     }
 
+    public void refresherCurrentContestDataDetails() {
+        currentContestDataRefresher = new TimerTask() {
+            @Override
+            public void run() {
+                String finalUrl = HttpUrl
+                        .parse(Constants.CONTEST_DATA)
+                        .newBuilder()
+                        .build()
+                        .toString();
+                HttpClientUtil.runAsync(finalUrl, new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
+                        if (response.code() == 200) {
+                            String json_contestData = response.body().string();
+                            Type listAgentsDetails = new TypeToken< List<DTO_ContestData>>() { }.getType();
+                            List<DTO_ContestData> dto_contestDataList = GSON_INSTANCE.fromJson(json_contestData, listAgentsDetails);
+                            Platform.runLater(() -> {
+                                ta_contestData.clear();
+                            });
+                            for(DTO_ContestData dto_contestData : dto_contestDataList){
+                                if(dto_contestData.getBattlefieldName().equals(cb_battlefieldNames.getValue())) {
+                                    Platform.runLater(() -> {
+                                        ta_contestData.appendText("-----------------------------------------\n");
+                                        ta_contestData.appendText(dto_contestData.printDetailsContestData());
+                                        ta_contestData.appendText("-----------------------------------------\n");
+                                    });
+                                break;
+                                }
+                            }
+                        } else {
+                            System.out.println("omggggg");
+                        }
+
+                    }
+                });
+            }
+        };
+        timerCurrentContestData = new Timer();
+        timerCurrentContestData.schedule(currentContestDataRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+    }
+
+    public void refresherAgentTasksDetails() {
+        agentTasksDetailsRefresher= new TimerTask() {
+            @Override
+            public void run() {
+                String finalUrl = HttpUrl
+                        .parse(Constants.AGENT_TASKS_DETAILS)
+                        .newBuilder()
+                        .build()
+                        .toString();
+                HttpClientUtil.runAsync(finalUrl, new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
+                        if (response.code() == 200) {
+                            String json_contestData = response.body().string();
+                            Type setAgentsTasksDetails = new TypeToken< Set<DTO_AgentTasksDetails>>() { }.getType();
+                            Set<DTO_AgentTasksDetails> dto_agentTasksDetails = GSON_INSTANCE.fromJson(json_contestData, setAgentsTasksDetails);
+                            Platform.runLater(() -> {
+                                ta_teamsAgentsAndProgress.clear();
+                            });
+                            for(DTO_AgentTasksDetails dtoAgentTasksDetails : dto_agentTasksDetails) {
+                                Platform.runLater(() -> {
+                                    ta_teamsAgentsAndProgress.appendText("-----------------------------------------\n");
+                                    ta_teamsAgentsAndProgress.appendText(dtoAgentTasksDetails.printDetailsForAgentsTask());
+                                    ta_teamsAgentsAndProgress.appendText("-----------------------------------------\n");
+                                });
+                                break;
+                            }
+                        } else {
+                            System.out.println("omggggg");
+                        }
+
+                    }
+                });
+            }
+        };
+         timerAgentTasksDetails = new Timer();
+        timerAgentTasksDetails.schedule(agentTasksDetailsRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+    }
 }

@@ -1,16 +1,20 @@
 package users;
 
 import DTOs.DTO_AgentDetails;
+import DTOs.DTO_AgentTasksDetails;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AgentsDetailsManager {
 
     //ALLYNAME,LIST<DTO CANDIDATE
     Map<String, List<DTO_AgentDetails>> mapAgentsDetails = new HashMap<>();
+
+    public Set<DTO_AgentTasksDetails> getSetAgentTasksDetails() {
+        return setAgentTasksDetails;
+    }
+
+    Set<DTO_AgentTasksDetails> setAgentTasksDetails = new HashSet<>();
 
     public synchronized void addAgentDetails(String allyName,DTO_AgentDetails dto_agentDetails) {
         if(!mapAgentsDetails.containsKey(allyName))
@@ -22,4 +26,17 @@ public class AgentsDetailsManager {
             mapAgentsDetails.put(allyName,new ArrayList<>());
         return mapAgentsDetails.get(allyName);
     }
+    public synchronized void addAgentTasksDetails(DTO_AgentTasksDetails dto_agentTasksDetails) {
+        setAgentTasksDetails.add(dto_agentTasksDetails);
+    }
+    public DTO_AgentTasksDetails getAgentTasksDetails(String agentName){
+        for (DTO_AgentTasksDetails dto_agentTasksDetails : setAgentTasksDetails){
+            if(dto_agentTasksDetails.getAgentName().equals(agentName)){
+                return dto_agentTasksDetails;
+            }
+        }
+        return null;
+    }
+
+
 }

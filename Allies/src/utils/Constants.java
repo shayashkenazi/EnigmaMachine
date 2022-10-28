@@ -20,7 +20,8 @@ public class Constants {
     public static final String RESULT = FULL_SERVER_PATH + "/resultServlet";
     public static final String CONTEST_DATA = FULL_SERVER_PATH + "/contestDataServlet";
     public static final String TEAMS_DETAILS = FULL_SERVER_PATH + "/teamsDetailsServlet";
-
+    public static final String RESET_ALLY = FULL_SERVER_PATH + "/resetAllyServlet";
+    public static final String AGENT_TASKS_DETAILS = FULL_SERVER_PATH + "/getAgentTasksDetailsServlet";
 
     public final static String USERNAME = "username";
     public final static String CLASS_TYPE = "classType";

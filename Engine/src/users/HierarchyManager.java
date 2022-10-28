@@ -55,6 +55,10 @@ public class HierarchyManager {
         nodeAlly.setParent(nodeUBoat);
         nodeUBoat.addChild(nameAlly,nodeAlly);
     }
+    /*public synchronized void disconnectAllyFromUBoat(String nameAlly) {
+        Node nodeAlly = hierarchyNodesSet.get(nameAlly);
+        nodeAlly.setParent(null);
+    }*/
 
 
 
