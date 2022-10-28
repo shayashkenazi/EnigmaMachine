@@ -26,6 +26,11 @@ public class DM { // Relevant for Ex3 only (for Ex2 use DecryptionManager)
     private int taskSize;
     private Thread createTaskDMThread;
 
+    public int getAllTaskSize() {
+        return allTaskSize.get();
+    }
+
+
     private IntegerProperty allTaskSize = new SimpleIntegerProperty(0);
     private AtomicInteger counterOfCreatedTasks = new AtomicInteger(0);
 

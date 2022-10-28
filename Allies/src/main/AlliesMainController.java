@@ -20,10 +20,7 @@ import utils.Constants;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 import static utils.Constants.GSON_INSTANCE;
 
@@ -76,6 +73,14 @@ public class AlliesMainController {
                 checkFinishedRefresher();
                 refresherCurrentContestDataDetails();
                 refresherAgentTasksDetails();
+            }
+            else {
+                currentContestDataRefresher.cancel();
+                timerCurrentContestData.cancel();
+                agentTasksDetailsRefresher.cancel();
+                timerAgentTasksDetails.cancel();
+                finishRefresher.cancel();
+                timerFinishRefresher.cancel();
             }
 
         });
@@ -593,7 +598,7 @@ public class AlliesMainController {
                                 }
                             }
                         } else {
-                            System.out.println("omggggg");
+                            System.out.println("CurrentContestDataDetails in omggggg");
                         }
 
                     }
@@ -608,9 +613,11 @@ public class AlliesMainController {
         agentTasksDetailsRefresher= new TimerTask() {
             @Override
             public void run() {
+                String uBoatName = getUboatNameByBattlefieldName(cb_battlefieldNames.getValue());
                 String finalUrl = HttpUrl
                         .parse(Constants.AGENT_TASKS_DETAILS)
                         .newBuilder()
+                        .addQueryParameter(Constants.UBOAT_NAME, uBoatName)
                         .build()
                         .toString();
                 HttpClientUtil.runAsync(finalUrl, new Callback() {
@@ -621,13 +628,14 @@ public class AlliesMainController {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-
+                        String json_contestData = response.body().string();
                         if (response.code() == 200) {
-                            String json_contestData = response.body().string();
-                            Type setAgentsTasksDetails = new TypeToken< Set<DTO_AgentTasksDetails>>() { }.getType();
-                            Set<DTO_AgentTasksDetails> dto_agentTasksDetails = GSON_INSTANCE.fromJson(json_contestData, setAgentsTasksDetails);
+                            Type AgentsTasksDetails = new TypeToken< DTO_ProgressDM>() { }.getType();
+                            DTO_ProgressDM dto_progressDM = GSON_INSTANCE.fromJson(json_contestData, AgentsTasksDetails);
+                            Set<DTO_AgentTasksDetails> dto_agentTasksDetails = dto_progressDM.getDto_AgentTasksDetailsSet();
                             Platform.runLater(() -> {
                                 ta_teamsAgentsAndProgress.clear();
+                                ta_progress.clear();
                             });
                             for(DTO_AgentTasksDetails dtoAgentTasksDetails : dto_agentTasksDetails) {
                                 Platform.runLater(() -> {
@@ -637,8 +645,13 @@ public class AlliesMainController {
                                 });
                                 break;
                             }
+                            Platform.runLater(() -> {
+                                ta_progress.setText(dto_progressDM.printDetails());
+                            });
+
+
                         } else {
-                            System.out.println("omggggg");
+                            System.out.println("herAgentTasksDetails omggggg");
                         }
 
                     }

@@ -10,12 +10,11 @@ public class AgentsDetailsManager {
     //ALLYNAME,LIST<DTO CANDIDATE
     Map<String, List<DTO_AgentDetails>> mapAgentsDetails = new HashMap<>();
 
+
+    Set<DTO_AgentTasksDetails> setAgentTasksDetails = new HashSet<>();
     public Set<DTO_AgentTasksDetails> getSetAgentTasksDetails() {
         return setAgentTasksDetails;
     }
-
-    Set<DTO_AgentTasksDetails> setAgentTasksDetails = new HashSet<>();
-
     public synchronized void addAgentDetails(String allyName,DTO_AgentDetails dto_agentDetails) {
         if(!mapAgentsDetails.containsKey(allyName))
             mapAgentsDetails.put(allyName,new ArrayList<>());

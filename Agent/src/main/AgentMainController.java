@@ -7,6 +7,7 @@ import EnginePackage.EnigmaEngine;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import http.HttpClientUtil;
+import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -34,13 +35,13 @@ public class AgentMainController {
 
     private int numberOfTasks;
     private int numberOfThreads;
-    private TimerTask readyRefresher, updateTaskDetailsRefresher;
+    private TimerTask readyRefresher, updateTaskDetailsRefresher,contestAgentDetailsRefresher;
     private String allyName;
     private List<String> decodedCandidates;
     private ExecutorService threadPool;
     private List<DmTask> tasks;
     private BooleanProperty isBattleOn = new SimpleBooleanProperty(false);
-    private Timer timer,timerTasksDetails;
+    private Timer timer,timerTasksDetails,timerContestAgentDetails;
     private Thread takeMissionThread;
     private IntegerProperty countTasksTaken = new SimpleIntegerProperty(0); //TODO RESET WHEN FINISHED
     List<DTO_CandidateResult> listDtoCandidates = new ArrayList<>();
@@ -56,15 +57,27 @@ public class AgentMainController {
         showAllies();
         isBattleOn.addListener((observable, oldValue, newValue) -> {
             if(newValue){
+                clearTextArea();
                 countTasksTaken.set(0);
                 candidatesFoundCounter = 0;
                 takeMissionThread = new Thread(takeMissionFromAlly());
                 takeMissionThread.start();
                 updateTasksDetails();
             }
+            else{
+                readyRefresher.cancel();
+                timer.cancel();
+            }
 
         });
     }
+
+    private void clearTextArea() {
+        ta_agentCandidates.clear();
+        ta_agentProgressAndStatus.clear();
+        ta_contestAndTeam.clear();
+    }
+
     public AgentMainController() {
         userName = new SimpleStringProperty("Anonymous");
     }
@@ -205,6 +218,11 @@ public class AgentMainController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String ignoreLeak = response.body().string();
                 if(response.code() == 200){
+                    Platform.runLater(()-> {
+                        for (DTO_CandidateResult dto_candidateResult : listDtoCandidates) {
+                            ta_agentCandidates.appendText(dto_candidateResult.getPrintedFormat());
+                        }
+                    });
                     listDtoCandidates.clear();
                     takeMissionThread = new Thread(takeMissionFromAlly());
                     takeMissionThread.start();
@@ -245,7 +263,6 @@ public class AgentMainController {
                         {
                             if(response.code() == 204)
                                 isBattleOn.set(false);
-                            System.out.println("response code ready refresher" + response.code());
                         }
                     }
                 });
@@ -279,10 +296,6 @@ public class AgentMainController {
                         if (response.code() == 200) {
 
                         }
-                        else
-                        {
-                            System.out.println("response code" + response.code());
-                        }
                     }
                 });
             }
@@ -290,6 +303,36 @@ public class AgentMainController {
         timerTasksDetails = new Timer();
         timerTasksDetails.schedule(updateTaskDetailsRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
     }
+    public void updateAgentContestDetails() {
+        contestAgentDetailsRefresher = new TimerTask() {
+            @Override
+            public void run() {
+                String finalUrl = HttpUrl
+                        .parse(Constants.)
+                        .newBuilder()
+                        .addQueryParameter("countOfTasksTaken",countTasksTaken.getValue().toString())
+                        .addQueryParameter("agentTasksLeftInPool",String.valueOf((int)agentTasksLeft.getCount()))
+                        .addQueryParameter("allyName",allyName)
+                        .build()
+                        .toString();
+                HttpClientUtil.runAsync(finalUrl, new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
 
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        String ignoreLeak = response.body().string();
+                        if (response.code() == 200) {
+
+                        }
+                    }
+                });
+            }
+        };
+        timerContestAgentDetails = new Timer();
+        timerContestAgentDetails.schedule(contestAgentDetailsRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+    }
 
 }
