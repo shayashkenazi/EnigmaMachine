@@ -88,7 +88,7 @@
                                           </VBox>
                                           <VBox alignment="CENTER" spacing="30.0">
                                              <children>
-                                                <Button fx:id="btn_finishBattle" mnemonicParsing="false" text="Finish Battle" />
+                                                <Button fx:id="btn_finishBattle" mnemonicParsing="false" onAction="#finishButtonBtnClick" text="Finish Battle" />
                                                 <Button fx:id="btn_logOut" mnemonicParsing="false" onAction="#logOutBtnClick" text="LogOut" />
                                              </children>
                                           </VBox>
