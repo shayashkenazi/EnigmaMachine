@@ -39,8 +39,8 @@ public class ReadyServlet extends HttpServlet {
                 readyManager.addAlliesToSet(userName);
                 String taskSize = request.getParameter(Constants.TASK_SIZE);
                 AllyManager allyManager = ServletUtils.getAllyDetailsManager(getServletContext());
-                DTO_AllyDetails dto_allyDetails = new DTO_AllyDetails(uBoatName,userName,0,Integer.parseInt(taskSize));
-                allyManager.addAllyDetails(dto_allyDetails);
+                allyManager.setuBoatNameByAllyName(userName,uBoatName);
+                allyManager.setTaskSizeByAllyName(userName,Integer.parseInt(taskSize));
                 break;
             case Constants.UBOAT_CLASS:
                 String sentenceToCheck = request.getParameter(Constants.SENTENCE_TO_CHECK);

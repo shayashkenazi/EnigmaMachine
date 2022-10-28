@@ -1,6 +1,7 @@
 package main;
 
 import DTOs.DTO_AgentDetails;
+import DTOs.DTO_AllyDetails;
 import DTOs.DTO_CandidateResult;
 import DTOs.DTO_ContestData;
 import com.google.gson.reflect.TypeToken;
@@ -43,10 +44,10 @@ public class AlliesMainController {
     Set<Pair<String,String>> uboatBattlefieldSet;
     private TimerTask readyRefresher;
     private TimerTask resultRefresher;
-    private TimerTask agentsDetailsRefresher,contestDataRefresher;
+    private TimerTask agentsDetailsRefresher,contestDataRefresher,contestsTeamsRefresher;
     private Timer timer;
     private Timer timerResult;
-    private Timer timerAgentsDetails,timerContestData;
+    private Timer timerAgentsDetails,timerContestData,timerContestsTeam;
     private Thread createTaskDMThread;
 
     @FXML void initialize() {
@@ -78,7 +79,6 @@ public class AlliesMainController {
             //TODO new Thread RUN THIS SHIT
             if(newValue){
                 createTasksDM();
-                refresherResult();
             }
         });
         isReady.addListener((observable, oldValue, newValue) -> {
@@ -136,12 +136,12 @@ public class AlliesMainController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-               /* String text = response.body().string();  // this is decode msg
-                Platform.runLater(() -> {
-
-                });*/
-                System.out.println("ready rep");
-                isReady.set(true);
+                if(response.code() == 200) {
+                    System.out.println("ready rep");
+                    isReady.set(true);
+                }
+                else
+                    System.out.println("zibik elek");
             }
         });
     }
@@ -252,13 +252,17 @@ public class AlliesMainController {
                 HttpClientUtil.runAsync(finalUrl, new Callback() {
                     @Override
                     public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
+                        System.out.println("omg fail");
                     }
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                         if (response.code() == 200) {
                             isBattleReady.set(true);
+                        }
+                        else
+                        {
+                            System.out.println("omg is not ready");
                         }
                         //System.out.println("hey im in ready servlet res");
                         //isReady.set(true);
@@ -290,12 +294,12 @@ public class AlliesMainController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() == 200) {
                     System.out.println("hey im in create tasks servlet res" + "thread" + Thread.currentThread().getId());
+                    refresherResult();
                 }
                 //System.out.println("hey im in ready servlet res");
                 //isReady.set(true);
             }
         });
-        System.out.println("thread idddddd" + Thread.currentThread().getId());
     }
     private void refresherResult(){
         resultRefresher = new TimerTask() {
@@ -317,8 +321,11 @@ public class AlliesMainController {
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
 
                         if (response.code() == 200) {
-                           showCandidates(response);
-
+                            refresherContestTeamDetails();
+                            showCandidates(response);
+                        }
+                        else {
+                            System.out.println("no no at result");
                         }
                     }
                 });
@@ -331,7 +338,9 @@ public class AlliesMainController {
         String json_candidates = response.body().string();
         Type setCandidatesType = new TypeToken<Set<DTO_CandidateResult>>() { }.getType(); // TODO: FIX !!!
         Set<DTO_CandidateResult> setCandidates = GSON_INSTANCE.fromJson(json_candidates, setCandidatesType);
-        ta_teamCandidates.clear();
+        Platform.runLater(() -> {
+            ta_teamCandidates.clear();
+        });
         for(DTO_CandidateResult dto_candidateResult : setCandidates){
             Platform.runLater(() -> {
                 ta_teamCandidates.appendText("-----------------------------------------\n");
@@ -361,6 +370,9 @@ public class AlliesMainController {
                         if (response.code() == 200) {
                             showTeamsAgent(response);
                         }
+                        else{
+                            System.out.println("no no no at teams agents details");
+                        }
                     }
                 });
             }
@@ -373,7 +385,9 @@ public class AlliesMainController {
         String json_teamsAgentDetails = response.body().string();
         Type listAgentsDetails = new TypeToken< List<DTO_AgentDetails>>() { }.getType();
         List<DTO_AgentDetails> dto_agentDetailsList = GSON_INSTANCE.fromJson(json_teamsAgentDetails, listAgentsDetails);
-        ta_teamsAgentsData.clear();
+        Platform.runLater(() -> {
+                    ta_teamsAgentsData.clear();
+                });
         moreThanOneAgent.set(dto_agentDetailsList.size() > 0);
         for(DTO_AgentDetails dto_agentDetails : dto_agentDetailsList){
             Platform.runLater(() -> {
@@ -405,6 +419,10 @@ public class AlliesMainController {
                         if (response.code() == 200) {
                             showContestData(response);
                         }
+                        else {
+                            System.out.println("omggggg");
+                        }
+
                     }
                 });
             }
@@ -417,7 +435,9 @@ public class AlliesMainController {
         String json_contestData = response.body().string();
         Type listAgentsDetails = new TypeToken< List<DTO_ContestData>>() { }.getType();
         List<DTO_ContestData> dto_contestDataList = GSON_INSTANCE.fromJson(json_contestData, listAgentsDetails);
-        ta_contestsData.clear();
+        Platform.runLater(() -> {
+            ta_contestsData.clear();
+        });
         for(DTO_ContestData dto_contestData : dto_contestDataList){
             Platform.runLater(() -> {
                 ta_contestsData.appendText("-----------------------------------------\n");
@@ -425,6 +445,53 @@ public class AlliesMainController {
                 ta_contestsData.appendText("-----------------------------------------\n");
             });
         }
+    }
+
+    public void refresherContestTeamDetails() {
+        contestsTeamsRefresher = new TimerTask() {
+            @Override
+            public void run() {
+                String finalUrl = HttpUrl
+                        .parse(Constants.TEAMS_DETAILS)
+                        .newBuilder()
+                        .addQueryParameter(Constants.CLASS_TYPE, Constants.ALLIES_CLASS)
+                        .build()
+                        .toString();
+                HttpClientUtil.runAsync(finalUrl, new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
+                        if (response.code() == 200) {
+                            String json_candidates = response.body().string();
+                            Type setCandidatesType = new TypeToken<List<DTO_AllyDetails>>() {
+                            }.getType();
+                            List<DTO_AllyDetails> dto_allyDetailsList = GSON_INSTANCE.fromJson(json_candidates, setCandidatesType);
+                            Platform.runLater(() -> {
+                                ta_contestTeams.clear();
+                            });
+
+                            for (DTO_AllyDetails dto_allyDetails : dto_allyDetailsList) {
+                                Platform.runLater(() -> {
+                                    ta_contestTeams.appendText("-----------------------------------------\n");
+                                    ta_contestTeams.appendText(dto_allyDetails.getDetailsFormat());
+                                    ta_contestTeams.appendText("-----------------------------------------\n");
+                                });
+                            }
+                        }
+                        else  {
+                            System.out.println("omg omg omg");
+                        }
+                    }
+                });
+            }
+        };
+        timerContestsTeam = new Timer();
+        timerContestsTeam.schedule(contestsTeamsRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
     }
 
 }

@@ -26,16 +26,17 @@ public class TeamsDetailsServlet extends HttpServlet {
         switch (type) {
             case Constants.UBOAT_CLASS:
                 uBoatName = userNameFromSession;
-                List<DTO_AllyDetails> dto_allyDetailsList = ServletUtils.getAllyDetailsManager(getServletContext()).getListOfAllyDetailsWithUboatName(uBoatName);
-                Gson gson = new Gson();
-                String candidatesJson = gson.toJson(dto_allyDetailsList);
-                response.getWriter().println(candidatesJson);
-                response.setStatus(HttpServletResponse.SC_OK);
                 break;
             case Constants.ALLIES_CLASS:
                 uBoatName = ServletUtils.getHierarchyManager(getServletContext()).getParent(userNameFromSession);
                 break;
         }
+
+        List<DTO_AllyDetails> dto_allyDetailsList = ServletUtils.getAllyDetailsManager(getServletContext()).getListOfAllyDetailsWithUboatName(uBoatName);
+        Gson gson = new Gson();
+        String candidatesJson = gson.toJson(dto_allyDetailsList);
+        response.getWriter().println(candidatesJson);
+        response.setStatus(HttpServletResponse.SC_OK);
 
     }
 }

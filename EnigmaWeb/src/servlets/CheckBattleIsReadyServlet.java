@@ -34,6 +34,10 @@ public class CheckBattleIsReadyServlet extends HttpServlet {
             case Constants.AGENT_CLASS:
                 String allyName = hierarchyManager.getParent(userNameFromSession);
                 uBoatName = hierarchyManager.getParent(allyName);
+                if(uBoatName == null){
+                    response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                    return;
+                }
                 break;
 
         }

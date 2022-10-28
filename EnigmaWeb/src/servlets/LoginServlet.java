@@ -61,9 +61,10 @@ public class LoginServlet extends HttpServlet {
                                 break;
                             case Constants.ALLIES_CLASS:
                                 userManager.addAlliesUser(usernameFromParameter);
-                                //AllyManager allyManager = ServletUtils.getAllyDetailsManager(getServletContext());
-                                //new DTO_AllyDetails(usernameFromParameter,0,));
-                                //allyManager.addAllyDetails()
+                                AllyManager allyManager = ServletUtils.getAllyDetailsManager(getServletContext());
+                                DTO_AllyDetails dto_allyDetails = new DTO_AllyDetails("giklo",usernameFromParameter,0,-1);
+                                allyManager.addAllyDetails(dto_allyDetails);
+
                                 break;
                             case Constants.AGENT_CLASS:
                                 userManager.addAgentUser(usernameFromParameter);

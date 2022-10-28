@@ -42,6 +42,7 @@ public class TasksServlet extends HttpServlet {
             Task.setAllyName(allyName);
         }
         Gson gson = new Gson();
+        System.out.println("dmtasks size" + dmTasks.size());
         //Pair <String, List<DmTask>> pair = new Pair<>(agentName,dmTasks);
         String dmTasksJson = gson.toJson(dmTasks);
         response.getWriter().println(dmTasksJson);

@@ -141,10 +141,12 @@ public class AgentMainController {
                         List<DmTask> dmTasks = GSON_INSTANCE.fromJson(json_dmTasks, dmTasksType);
                         System.out.println("is ok ok");
                         tasks = dmTasks;
+                        System.out.println("tasks size" + tasks.size());
                         if(tasks.size() < numberOfTasks)
                             agentTasksLeft = new CountDownLatch(tasks.size());
-                        if(tasks.size() == 0)
+                        if(tasks.size() == 0){
                             return;
+                        }
                         for (DmTask task : tasks) {
                             EngineCapabilities engine = new EnigmaEngine();
                             engine.setMachine(engine.createMachineFromDTOAgentMachine(task.getDto_agentMachine()));
@@ -257,6 +259,10 @@ public class AgentMainController {
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                         if (response.code() == 200) {
                             isBattleReady.set(true);
+                        }
+                        else
+                        {
+                            System.out.println("response code" + response.code());
                         }
                     }
                 });

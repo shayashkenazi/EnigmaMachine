@@ -15,8 +15,10 @@ public class AllyManager {
     }
     public synchronized void increaseAgentNumber(String allyName){
         synchronized (setAlliesDetails) {
+            System.out.println("before the if");
             for (DTO_AllyDetails dto_allyDetailsCur : setAlliesDetails) {
                 if (dto_allyDetailsCur.getAllyName().equals(allyName)) {
+                    System.out.println("inside the if");
                     dto_allyDetailsCur.setNumOfAgents(dto_allyDetailsCur.getNumOfAgents() + 1);
                     break;
                 }
@@ -34,8 +36,18 @@ public class AllyManager {
         }
         return dto_allyDetailsList;
     }
+    public synchronized void setuBoatNameByAllyName(String allyName,String uBoatName) {
+        for (DTO_AllyDetails dto_allyDetails : setAlliesDetails) {
+            if (dto_allyDetails.getAllyName().equals(allyName))
+                dto_allyDetails.setuBoatName(uBoatName);
+        }
+    }
 
 
-
-
+    public void setTaskSizeByAllyName(String allyName,int taskSize) {
+        for (DTO_AllyDetails dto_allyDetails : setAlliesDetails) {
+            if (dto_allyDetails.getAllyName().equals(allyName))
+                dto_allyDetails.setTaskSize(taskSize);
+        }
+    }
 }

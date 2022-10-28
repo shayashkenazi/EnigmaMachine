@@ -579,7 +579,9 @@ public class UBoatMainController {
                             String json_candidates = response.body().string();
                             Type setCandidatesType = new TypeToken<List<DTO_AllyDetails>>() { }.getType(); // TODO: FIX !!!
                             List<DTO_AllyDetails> dto_allyDetailsList = GSON_INSTANCE.fromJson(json_candidates, setCandidatesType);
-                            ta_teamsDetails.clear();
+                            Platform.runLater(() -> {
+                                ta_teamsDetails.clear();
+                            });
                             for(DTO_AllyDetails dto_allyDetails : dto_allyDetailsList){
                                 Platform.runLater(() -> {
                                     ta_teamsDetails.appendText("-----------------------------------------\n");

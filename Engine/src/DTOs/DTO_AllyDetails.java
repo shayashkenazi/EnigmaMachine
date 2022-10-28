@@ -5,6 +5,8 @@ public class DTO_AllyDetails {
     private String uBoatName;
     private String allyName;
     private int numOfAgents = 0;
+
+
     private int taskSize;
 
 
@@ -37,6 +39,13 @@ public class DTO_AllyDetails {
 
     public void setuBoatName(String uBoatName) {
         this.uBoatName = uBoatName;
+    }
+    public void setAllyName(String allyName) {
+        this.allyName = allyName;
+    }
+
+    public void setTaskSize(int taskSize) {
+        this.taskSize = taskSize;
     }
     public String getDetailsFormat(){
         StringBuilder sb = new StringBuilder();

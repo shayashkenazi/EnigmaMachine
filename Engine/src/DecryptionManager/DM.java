@@ -59,18 +59,17 @@ public class DM { // Relevant for Ex3 only (for Ex2 use DecryptionManager)
         createTaskDMThread.start();
     }
     //TODO SYNC
-    public List<DmTask> getTasksForAgent(int numberOfTasks){
-        synchronized (tasks) {
-            List<DmTask> tasksForAgent = new ArrayList<>();
-            if (tasks.size() <= 0)
-                return tasksForAgent;
-            if (tasks.size() < numberOfTasks)
-                numberOfTasks = tasks.size();
-            for (int i = 0; i < numberOfTasks; i++) {
-                tasksForAgent.add(tasks.poll());
-            }
+    public List<DmTask> getTasksForAgent(int numberOfTasks) {
+        List<DmTask> tasksForAgent = new ArrayList<>();
+        if (tasks.size() <= 0)
             return tasksForAgent;
+        if (tasks.size() < numberOfTasks)
+            numberOfTasks = tasks.size();
+        for (int i = 0; i < numberOfTasks; i++) {
+            tasksForAgent.add(tasks.poll());
         }
+        return tasksForAgent;
+
     }
     public void createEasyTasks(EngineCapabilities engineCopy) {
         // Initialize all Rotors to start index position 0,0,0...
@@ -89,8 +88,10 @@ public class DM { // Relevant for Ex3 only (for Ex2 use DecryptionManager)
             // Full Tasks
             for (int i = 0; i < sizeOfFullTasks; i++) {
 
-                DmTask decryptionTask = new DmTask(/*engineCopy.clone(),*/ taskSize, sentenceToCheck,engineCopy.createAgentMachineDTO(),engineCopy.createCodeDescriptionDTO());
+                DmTask decryptionTask = new DmTask(/*engineCopy.clone(),*/ taskSize, sentenceToCheck, engineCopy.createAgentMachineDTO(), engineCopy.createCodeDescriptionDTO());
+
                 tasks.put(decryptionTask);
+
                 engineCopy.moveRotorsToPosition(taskSize);
                 System.out.println(i);
             }

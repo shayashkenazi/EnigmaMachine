@@ -31,6 +31,12 @@ public class HierarchyManager {
         hierarchyNodesSet.put(name,node);
     }
     public synchronized String getParent(String name) {
+        if(name == null)
+            return null;
+        if(hierarchyNodesSet.get(name) == null)
+            return null;
+        if(hierarchyNodesSet.get(name).parent == null)
+            return null;
         return hierarchyNodesSet.get(name).parent.name;
     }
     public synchronized void connectAgentToParent(String parent,String nameAgent) {

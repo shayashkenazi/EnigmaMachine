@@ -70,8 +70,9 @@ public class LoginController {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
                     Platform.runLater(() -> {
-                        Alert alert = new Alert(Alert.AlertType.ERROR, responseBody);
-                        alert.show();
+                        System.out.println("something wrongggg" + responseBody);
+                       /* Alert alert = new Alert(Alert.AlertType.ERROR,"ababab" + responseBody);
+                        alert.show();*/
                     });
                 } else {
                     Platform.runLater(() -> {
