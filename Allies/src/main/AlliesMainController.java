@@ -36,7 +36,7 @@ public class AlliesMainController {
     @FXML private ComboBox<String> cb_battlefieldNames;
     @FXML private ScrollPane sp_mainPage;
     @FXML private TextField tf_taskSize;
-    @FXML private TextArea ta_teamsAgentsData, ta_contestsData, ta_contestData, ta_contestTeams, ta_teamsAgentsAndProgress, ta_teamCandidates;
+    @FXML private TextArea ta_teamsAgentsData, ta_contestsData, ta_contestData, ta_contestTeams, ta_teamsAgentsAndProgress, ta_teamCandidates, ta_progress;
     BooleanProperty  isBattlefieldSelected, isTaskSizeSelected,isReady, isBattleOn, moreThanOneAgent;
     Set<Pair<String,String>> uboatBattlefieldSet;
     private TimerTask agentsDetailsRefresher,readyRefresher,contestsTeamsRefresher
