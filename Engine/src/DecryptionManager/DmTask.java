@@ -6,6 +6,7 @@ import DTOs.DTO_CodeDescription;
 import DTOs.DTO_MachineInfo;
 import EnginePackage.EngineCapabilities;
 import javafx.application.Platform;
+import javafx.beans.property.IntegerProperty;
 import javafx.util.Pair;
 //import okhttp3.HttpUrl;
 import users.ResultsManager;
@@ -30,6 +31,12 @@ public class DmTask implements Runnable {
     private String agentExecuteName;
     private String allyName;
     private CountDownLatch agentTasksLeft;
+
+    public void setCountTasksFinished(AtomicInteger countTasksFinished) {
+        this.countTasksFinished = countTasksFinished;
+    }
+
+    private AtomicInteger countTasksFinished;
 
     private DTO_AgentMachine dto_agentMachine;
     private DTO_CodeDescription dto_codeDescription;
@@ -84,6 +91,7 @@ public class DmTask implements Runnable {
             engine.rotateRotorByABC();
         }
         agentTasksLeft.countDown();
+        countTasksFinished.incrementAndGet();
 
     }
 

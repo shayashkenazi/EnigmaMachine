@@ -16,7 +16,7 @@ public class Constants {
 
     public final static String CANDIDATES = FULL_SERVER_PATH + "/candidatesServlet";
     public final static String UPDATE_AGENT_TASKS_DETAILS = FULL_SERVER_PATH + "/updateAgentTasksDetailsServlet";
-
+    public final static String UPDATE_AGENT_CONTEST_DETAILS = FULL_SERVER_PATH + "/agentContestDetailsServlet";
     public static final String DTO_ALLIES = "allies";
     public final static String USERNAME = "username";
     public final static String CLASS_TYPE = "classType";

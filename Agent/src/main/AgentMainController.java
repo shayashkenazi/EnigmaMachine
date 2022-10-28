@@ -1,6 +1,7 @@
 package main;
 
 import DTOs.DTO_CandidateResult;
+import DTOs.DTO_ContestData;
 import DecryptionManager.DmTask;
 import EnginePackage.EngineCapabilities;
 import EnginePackage.EnigmaEngine;
@@ -24,6 +25,7 @@ import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static utils.Constants.GSON_INSTANCE;
 
@@ -44,12 +46,13 @@ public class AgentMainController {
     private Timer timer,timerTasksDetails,timerContestAgentDetails;
     private Thread takeMissionThread;
     private IntegerProperty countTasksTaken = new SimpleIntegerProperty(0); //TODO RESET WHEN FINISHED
+    private AtomicInteger countTasksFinished = new AtomicInteger(0);
     List<DTO_CandidateResult> listDtoCandidates = new ArrayList<>();
     private int candidatesFoundCounter = 0;
     private CountDownLatch agentTasksLeft = new CountDownLatch(0);
     private EngineCapabilities engine;
     private static final Object takeMissionLock = new Object();
-    @FXML private TextArea ta_contestAndTeam, ta_agentProgressAndStatus, ta_agentCandidates;
+    @FXML private TextArea ta_contestAndTeam, ta_agentProgressAndStatus, ta_agentCandidates; //TODO : CHECK CANDIDATES
     @FXML private ScrollPane sp_mainPage;
 
     @FXML void initialize() {
@@ -63,6 +66,8 @@ public class AgentMainController {
                 takeMissionThread = new Thread(takeMissionFromAlly());
                 takeMissionThread.start();
                 updateTasksDetails();
+                updateAgentContestDetails();
+                updateTextAreaProgress();
             }
             else{
                 readyRefresher.cancel();
@@ -70,6 +75,16 @@ public class AgentMainController {
             }
 
         });
+    }
+
+    private void updateTextAreaProgress() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("count Of Task left inside the queue - ").append((int)agentTasksLeft.getCount()).append("\n");
+        sb.append("count Of tasks taken - ").append(countTasksTaken.getValue()).append("\n");
+        sb.append("count of tasks finished - ").append(countTasksFinished.get()).append("\n");
+        sb.append("count of candidates - ").append(candidatesFoundCounter).append("\n");
+
+        ta_agentProgressAndStatus.setText(sb.toString());
     }
 
     private void clearTextArea() {
@@ -170,6 +185,7 @@ public class AgentMainController {
                             task.setEngine(engine);
                             task.setAgentTasksLeft(agentTasksLeft);
                             countTasksTaken.set(countTasksTaken.get() + 1);
+                            task.setCountTasksFinished(countTasksFinished);
                             //task.setTakeMissionLock(takeMissionLock);
                         }
                         runMissionFromQueue();
@@ -223,6 +239,7 @@ public class AgentMainController {
                             ta_agentCandidates.appendText(dto_candidateResult.getPrintedFormat());
                         }
                     });
+                    candidatesFoundCounter +=  listDtoCandidates.size();
                     listDtoCandidates.clear();
                     takeMissionThread = new Thread(takeMissionFromAlly());
                     takeMissionThread.start();
@@ -308,11 +325,8 @@ public class AgentMainController {
             @Override
             public void run() {
                 String finalUrl = HttpUrl
-                        .parse(Constants.)
+                        .parse(Constants.UPDATE_AGENT_CONTEST_DETAILS)
                         .newBuilder()
-                        .addQueryParameter("countOfTasksTaken",countTasksTaken.getValue().toString())
-                        .addQueryParameter("agentTasksLeftInPool",String.valueOf((int)agentTasksLeft.getCount()))
-                        .addQueryParameter("allyName",allyName)
                         .build()
                         .toString();
                 HttpClientUtil.runAsync(finalUrl, new Callback() {
@@ -323,9 +337,14 @@ public class AgentMainController {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        String ignoreLeak = response.body().string();
+                        String json_dtoContest = response.body().string();
                         if (response.code() == 200) {
-
+                            Type dtoContestType = new TypeToken<DTO_ContestData>() {}.getType();
+                            DTO_ContestData dto_contestData = GSON_INSTANCE.fromJson(json_dtoContest, dtoContestType);
+                            Platform.runLater(() -> {
+                                ta_contestAndTeam.setText("ally name - "+ allyName + "\n");
+                                ta_contestAndTeam.appendText(dto_contestData.printDetailsContestData());
+                            });
                         }
                     }
                 });
@@ -333,6 +352,9 @@ public class AgentMainController {
         };
         timerContestAgentDetails = new Timer();
         timerContestAgentDetails.schedule(contestAgentDetailsRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+    }
+    public void initTextAreaContest(){
+        ta_contestAndTeam.setText("ally name is - " + allyName + "\ncontest status - IDLE");
     }
 
 }

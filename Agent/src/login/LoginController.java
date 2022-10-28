@@ -107,6 +107,7 @@ public class LoginController {
                         agentMainController.setUserName(userName);
                         agentMainController.switchToMainPanel();
                         agentMainController.checkReadyRefresher();
+                        agentMainController.initTextAreaContest();
                     });
                 }
             }
