@@ -66,8 +66,7 @@ public class AgentMainController {
                 takeMissionThread = new Thread(takeMissionFromAlly());
                 takeMissionThread.start();
                 updateTasksDetails();
-                updateAgentContestDetails();
-                updateTextAreaProgress();
+
             }
             else{
                 readyRefresher.cancel();
@@ -163,8 +162,8 @@ public class AgentMainController {
                 Call call = HttpClientUtil.sync(finalUrl);
                 try {
                     final Response response = call.execute();
+                    String json_dmTasks = response.body().string();
                     if (response.code() == 200) {
-                        String json_dmTasks = response.body().string();
                         if(tasks.size() == 0 && !isBattleOn.getValue()){
                             return;
                         }
@@ -187,6 +186,7 @@ public class AgentMainController {
                             countTasksTaken.set(countTasksTaken.get() + 1);
                             task.setCountTasksFinished(countTasksFinished);
                             //task.setTakeMissionLock(takeMissionLock);
+                            //updateTextAreaProgress();
                         }
                         runMissionFromQueue();
 
@@ -203,7 +203,8 @@ public class AgentMainController {
                     throw new RuntimeException(e);
                 }
                 sendResultToServer();
-
+                updateAgentContestDetails();
+                updateTextAreaProgress();
             }
 
 
@@ -232,13 +233,15 @@ public class AgentMainController {
             }
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String ignoreLeak = response.body().string();
                 if(response.code() == 200){
-                    Platform.runLater(()-> {
-                        for (DTO_CandidateResult dto_candidateResult : listDtoCandidates) {
+                    String ignoreLeak = response.body().string();
+
+                    for (DTO_CandidateResult dto_candidateResult : listDtoCandidates) {
+                        Platform.runLater(() -> {
                             ta_agentCandidates.appendText(dto_candidateResult.getPrintedFormat());
-                        }
-                    });
+                        });
+                    }
+
                     candidatesFoundCounter +=  listDtoCandidates.size();
                     listDtoCandidates.clear();
                     takeMissionThread = new Thread(takeMissionFromAlly());

@@ -34,6 +34,7 @@ public class UpdateAgentTasksDetailsServlet extends HttpServlet {
                 break;
             }
         }
+
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }
