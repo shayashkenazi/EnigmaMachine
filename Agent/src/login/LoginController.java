@@ -99,9 +99,10 @@ public class LoginController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() ->
-                            System.out.println("Something went wrong: " + responseBody)
-                    );
+                    Platform.runLater(() -> {
+                        Alert alert = new Alert(Alert.AlertType.ERROR,responseBody);
+                        alert.show();
+                    });
                 } else {
                     Platform.runLater(() -> {
                         agentMainController.setUserName(userName);

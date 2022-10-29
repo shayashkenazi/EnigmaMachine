@@ -65,7 +65,7 @@ public class EncryptMessageController {
     }
 
     @FXML void resetBtnClick(ActionEvent event) {
-
+        uBoatMainController.resetBtnClick();
     }
 
     public void setMainController(UBoatMainController uBoatMainController) {
