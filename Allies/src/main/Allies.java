@@ -34,7 +34,7 @@ public class Allies  extends Application {
         // Bindings
         alliesMainController.setLoginController(loginController);
         alliesMainController.setContentScene();
-        Scene scene = new Scene(root, 500, 500);
+        Scene scene = new Scene(root, 850, 600);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Allies Application");
         primaryStage.show();
