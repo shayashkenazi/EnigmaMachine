@@ -36,9 +36,9 @@ public class AlliesMainController {
     @FXML private TextArea ta_teamsAgentsData, ta_contestsData, ta_contestData, ta_contestTeams, ta_teamsAgentsAndProgress, ta_teamCandidates, ta_progress;
     BooleanProperty  isBattlefieldSelected, isTaskSizeSelected,isReady, isBattleOn, moreThanOneAgent;
     Set<Pair<String,String>> uboatBattlefieldSet;
-    private TimerTask agentsDetailsRefresher,readyRefresher,contestsTeamsRefresher
+    private TimerTask agentsDetailsRefresher,readyRefresher, contestTeamsRefresher
             ,finishRefresher,resultRefresher,contestsDataRefresher,currentContestDataRefresher,agentTasksDetailsRefresher;
-    private Timer timerAgentsDetails,timerContestsTeam,timerResult,timerReadyRefresher,timerFinishRefresher,timerContestsData,timerCurrentContestData,timerAgentTasksDetails;
+    private Timer timerAgentsDetails, timerContestTeam,timerResult,timerReadyRefresher,timerFinishRefresher,timerContestsData,timerCurrentContestData,timerAgentTasksDetails;
     private Thread createTaskDMThread;
 
     @FXML void initialize() {
@@ -51,7 +51,7 @@ public class AlliesMainController {
             isBattlefieldSelected.set(cb_battlefieldNames.getValue() != null);
         });
 
-        btn_ready.disableProperty().bind(isBattlefieldSelected.not().or(isTaskSizeSelected.not().or(moreThanOneAgent.not())));
+        btn_ready.disableProperty().bind(isBattlefieldSelected.not().or(isTaskSizeSelected.not().or(moreThanOneAgent.not()).or(isReady)));
 
         // Always keep Task Size Text-Field valid
         tf_taskSize.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -73,26 +73,28 @@ public class AlliesMainController {
                 checkFinishedRefresher();
                 refresherCurrentContestDataDetails();
                 refresherAgentTasksDetails();
+                refresherContestTeamDetails();
             }
             else {
-
+                resultRefresher.cancel();
+                timerResult.cancel();
                 currentContestDataRefresher.cancel();
                 timerCurrentContestData.cancel();
                 agentTasksDetailsRefresher.cancel();
                 timerAgentTasksDetails.cancel();
                 finishRefresher.cancel();
                 timerFinishRefresher.cancel();
-                resultRefresher.cancel();
-                timerResult.cancel();
-                contestsTeamsRefresher.cancel();
-                timerContestsTeam.cancel();
+                contestTeamsRefresher.cancel();
+                timerContestTeam.cancel();
 
             }
 
         });
         isReady.addListener((observable, oldValue, newValue) -> {
-            if(newValue)
+            if(newValue){
                 checkReadyRefresher();
+            }
+
         });
     }
 
@@ -121,7 +123,7 @@ public class AlliesMainController {
 
     @FXML
     void readyBtnClick(ActionEvent event) {
-        resetAlly();
+        updateHierarchy();
         //createDM();
         //updateReadyManager();
         //createTasksDM();// TODO ITS NOT HEREEE ONLY WHEN ALL IS READY
@@ -311,11 +313,13 @@ public class AlliesMainController {
                         String ignoreLeak = response.body().string();
                         if (response.code() == 204 ) {
                             isBattleOn.set(false);
+                            isReady.set(false);
                             try {
                                 Thread.sleep(3000);
                             } catch (InterruptedException e) {
 
                             }
+                            resetAlly();
                         }
                     }
                 });
@@ -342,7 +346,7 @@ public class AlliesMainController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String ignoreLeak = response.body().string();
                 if (response.code() == 200) {
-                    updateHierarchy();
+
                 }
 
             }
@@ -396,7 +400,6 @@ public class AlliesMainController {
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                         if (response.code() == 200) {
-                            refresherContestTeamDetails();
                             showCandidates(response);
                         }
                         else {
@@ -521,7 +524,7 @@ public class AlliesMainController {
     }
 
     public void refresherContestTeamDetails() {
-        contestsTeamsRefresher = new TimerTask() {
+        contestTeamsRefresher = new TimerTask() {
             @Override
             public void run() {
                 String finalUrl = HttpUrl
@@ -563,8 +566,8 @@ public class AlliesMainController {
                 });
             }
         };
-        timerContestsTeam = new Timer();
-        timerContestsTeam.schedule(contestsTeamsRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+        timerContestTeam = new Timer();
+        timerContestTeam.schedule(contestTeamsRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
     }
 
     public void refresherCurrentContestDataDetails() {
