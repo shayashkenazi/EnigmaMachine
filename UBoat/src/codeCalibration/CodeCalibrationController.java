@@ -19,6 +19,7 @@ public class CodeCalibrationController {
 
     @FXML void randomCodeBtnClick(ActionEvent event) {
         uBoatMainController.codeCalibrationController_randomCodeBtnClick();
+        uBoatMainController.setContestTab();
     }
 
     @FXML void setCodeBtnClick(ActionEvent event) {

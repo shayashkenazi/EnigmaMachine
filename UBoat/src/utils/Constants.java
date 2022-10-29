@@ -28,6 +28,7 @@ public class Constants {
     public final static int REFRESH_RATE = 2000;
     public final static String CHECK_READY_BATTLE = FULL_SERVER_PATH + "/checkBattleIsReadyServlet";
     public static final String READY = FULL_SERVER_PATH + "/readyServlet";
+    public static final String FINISHED_UBOAT = FULL_SERVER_PATH + "/finishedFromUboatServlet";
 
     public static final String DTO_TYPE = "dtoType";
     public final static String UBOAT_CLASS = "uBoat";

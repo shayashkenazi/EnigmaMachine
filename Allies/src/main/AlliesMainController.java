@@ -75,6 +75,7 @@ public class AlliesMainController {
                 refresherAgentTasksDetails();
             }
             else {
+
                 currentContestDataRefresher.cancel();
                 timerCurrentContestData.cancel();
                 agentTasksDetailsRefresher.cancel();
@@ -83,6 +84,9 @@ public class AlliesMainController {
                 timerFinishRefresher.cancel();
                 resultRefresher.cancel();
                 timerResult.cancel();
+                contestsTeamsRefresher.cancel();
+                timerContestsTeam.cancel();
+
             }
 
         });
@@ -117,7 +121,7 @@ public class AlliesMainController {
 
     @FXML
     void readyBtnClick(ActionEvent event) {
-        updateHierarchy();
+        resetAlly();
         //createDM();
         //updateReadyManager();
         //createTasksDM();// TODO ITS NOT HEREEE ONLY WHEN ALL IS READY
@@ -312,7 +316,6 @@ public class AlliesMainController {
                             } catch (InterruptedException e) {
 
                             }
-                            resetAlly();
                         }
                     }
                 });
@@ -339,7 +342,7 @@ public class AlliesMainController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String ignoreLeak = response.body().string();
                 if (response.code() == 200) {
-
+                    updateHierarchy();
                 }
 
             }

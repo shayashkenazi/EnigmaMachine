@@ -23,6 +23,9 @@ public class ResetAllyServlet extends HttpServlet {
             throws IOException {
         String uBoatName = request.getParameter(Constants.UBOAT_NAME);
         String allyName = SessionUtils.getUsername(request);
+        HierarchyManager hierarchyManager = ServletUtils.getHierarchyManager(getServletContext());
+        if(hierarchyManager.getParent(allyName) == null )
+            return;
         Battlefield battlefield = ServletUtils.getBattlefield(getServletContext(), uBoatName);
 
         // reset dm ally
@@ -31,7 +34,6 @@ public class ResetAllyServlet extends HttpServlet {
         DMManager.removeDM(allyName);
 
         // reset hierarchy ally // TODO : RESET?
-        HierarchyManager hierarchyManager = ServletUtils.getHierarchyManager(getServletContext());
         hierarchyManager.disconnectAllyFromUBoat(allyName);
 
         // set ready to false

@@ -9,8 +9,6 @@ public class AgentsDetailsManager {
 
     //ALLYNAME,LIST<DTO CANDIDATE
     Map<String, List<DTO_AgentDetails>> mapAgentsDetails = new HashMap<>();
-
-
     Set<DTO_AgentTasksDetails> setAgentTasksDetails = new HashSet<>();
     public Set<DTO_AgentTasksDetails> getSetAgentTasksDetails() {
         return setAgentTasksDetails;

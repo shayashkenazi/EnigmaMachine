@@ -14,6 +14,9 @@ public class ResultsManager {
     public synchronized void addCandidateResults(DTO_CandidateResult dto_candidateResult) {
         dto_candidateResultSet.add(dto_candidateResult);
     }
+    public synchronized void clearCandidates(){
+        dto_candidateResultSet.clear();
+    }
 
     public Set<DTO_CandidateResult> getDto_candidateResultSet() {
         return dto_candidateResultSet;

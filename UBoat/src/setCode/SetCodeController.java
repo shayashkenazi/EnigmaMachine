@@ -66,6 +66,7 @@ public class SetCodeController {
 
         uBoatMainController.codeSetController_setBtnClick();
         uBoatMainController.switchToMainPanel();
+        uBoatMainController.setContestTab();
     }
 
     public void setMainController(UBoatMainController uBoatMainController) {

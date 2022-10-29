@@ -86,7 +86,7 @@ public class UBoatMainController {
     public void setContentScene(){
         sp_mainPage.setContent(loginComponentController.getLoginPage());
     }
-
+    public void setContestTab() {tp_mainTapPain.getSelectionModel().select(tab_contest);}
     @FXML public void initialize() {
 
         if (codeCalibrationComponentController != null &&
@@ -98,7 +98,7 @@ public class UBoatMainController {
 
         tab_contest.setDisable(true);
         isXmlLoaded.set(false);
-
+        btn_finishBattle.disableProperty().bind(isBattleOn);
         tab_contest.disableProperty().bind(isXmlLoaded.not().or(isCodeChosen.not()));
         btn_logOut.disableProperty().bind(isBattleOn); //TODO ONLY FINISHED?
         isXmlLoaded.addListener((observable, oldValue, newValue) -> {
@@ -123,12 +123,46 @@ public class UBoatMainController {
         isBattleOn.addListener((observable, oldValue, newValue) -> {
             if(newValue)
                 refresherResult();
+            else{
+                if(resultRefresher != null && timerResult != null) {
+                    resultRefresher.cancel();
+                    timerResult.cancel();
+                }
+                if(readyRefresher != null && timerReady !=null){
+                    readyRefresher.cancel();
+                    timerReady.cancel();
+                }
+            }
         });
 
     }
     @FXML void finishButtonBtnClick(ActionEvent event){
-
+        ta_candidates.clear();
+        deleteDetailsFromServer();
     }
+
+    private void deleteDetailsFromServer() {
+        String finalUrl = HttpUrl
+                .parse(Constants.FINISHED_UBOAT)
+                .newBuilder()
+                .build()
+                .toString();
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String ignoreLeak = response.body().string();
+                if (response.code() == 200) {
+
+                }
+            }
+        });
+    }
+
     @FXML void loadFileBtnClick(ActionEvent event) {
 
         isXmlLoaded.set(false);
@@ -232,6 +266,18 @@ public class UBoatMainController {
         isXmlLoaded.set(false);
         isCodeChosen.set(false);
         tp_mainTapPain.getSelectionModel().select(tab_machine);
+        if(resultRefresher != null && timerResult != null){
+            resultRefresher.cancel();
+            timerResult.cancel();
+        }
+        if (readyRefresher!= null && timerReady != null) {
+            readyRefresher.cancel();
+            timerReady.cancel();
+        }
+        if(allyActiveRefresher != null && timerAllyActiveTeams != null) {
+            allyActiveRefresher.cancel();
+            timerAllyActiveTeams.cancel();
+        }
     }
     private void logOutUboat(){
 
@@ -254,7 +300,7 @@ public class UBoatMainController {
                 });*/
                 String ignoreLeak = response.body().string();
                 if (response.code() == 200) {
-
+                    HttpClientUtil.removeCookiesOf(Constants.BASE_DOMAIN);
                 }
             }
         });
@@ -408,7 +454,7 @@ public class UBoatMainController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String text = newValue ? response.body().string() : "";
+                String text = response.body().string();
                 Platform.runLater(() -> {
                     encryptMessageComponentController.getTf_codeConfiguration().setText(text);
                 });
@@ -602,7 +648,6 @@ public class UBoatMainController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String ignoreLeak = response.body().string();
                 if (response.code() == 200) {
-                   btn_finishBattle.setDisable(true);
 
                 }
             }
@@ -670,6 +715,9 @@ public class UBoatMainController {
                                     ta_teamsDetails.appendText("-----------------------------------------\n");
                                 });
                             }
+                        }
+                        else{
+                            System.out.println("fail not 200 on refresher");
                         }
                     }
                 });

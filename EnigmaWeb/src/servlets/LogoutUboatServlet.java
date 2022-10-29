@@ -28,9 +28,10 @@ public class LogoutUboatServlet extends HttpServlet {
         userManager.removeUser(usernameFromSession);
         userManager.removeBattlefieldName(battlefieldName);
         userManager.removeUserUBoat(usernameFromSession);
-        SessionUtils.clearSession(request);
 
         getServletContext().setAttribute(usernameFromSession,null); // init to null
+        SessionUtils.clearSession(request);
+
 
     }
 

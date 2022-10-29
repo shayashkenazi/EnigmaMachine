@@ -55,9 +55,9 @@ public class LoginController {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                /*Platform.runLater(() ->
-                        errorMessageProperty.set("Something went wrong: " + e.getMessage())
-                );*/
+                Platform.runLater(() ->
+                        System.out.println("Something went wrong: " + e.getMessage())
+                );
             }
 
             @Override
