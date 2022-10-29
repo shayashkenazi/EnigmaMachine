@@ -62,7 +62,7 @@ public class UBoatMainController {
     private DTO_MachineInfo dto_machineInfo;
     private TimerTask resultRefresher,readyRefresher,allyActiveRefresher;
     private Timer timerResult,timerReady,timerAllyActiveTeams;
-
+    private String configurationBeforeProcess;
     //private Parent uBoatComponent;
 
 
@@ -367,6 +367,7 @@ public class UBoatMainController {
                 });*/
                 String ignoreLeak = response.body().string();
                 if (response.code() == 200) {
+                    isCodeChosen.set(false);
                     isCodeChosen.set(true);
                 }
             }
@@ -391,9 +392,13 @@ public class UBoatMainController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String text = response.body().string();  // this is decode msg
+                String json_list = response.body().string();
+                Type listType = new TypeToken<List<String>>() { }.getType();
+                List<String> list  = GSON_INSTANCE.fromJson(json_list, listType);
+                configurationBeforeProcess = list.get(0);
                 Platform.runLater(() -> {
-                    encryptMessageComponentController.getTf_output().setText(text);
+                    encryptMessageComponentController.getTf_output().setText(list.get(2));
+                    encryptMessageComponentController.getTf_codeConfiguration().setText(list.get(1));
                 });
             }
         });
@@ -455,6 +460,8 @@ public class UBoatMainController {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String text = response.body().string();
+
+                configurationBeforeProcess = text;
                 Platform.runLater(() -> {
                     encryptMessageComponentController.getTf_codeConfiguration().setText(text);
                 });
@@ -630,7 +637,7 @@ public class UBoatMainController {
     }
 
     private boolean checkWinner(DTO_CandidateResult dto_candidateResult) {
-       return encryptMessageComponentController.getTf_codeConfiguration().getText().equals(dto_candidateResult.getConfiguration());
+       return configurationBeforeProcess.equals(dto_candidateResult.getConfiguration()); //TODO :CHECNGE
     }
     private void setBattleFinished() {
         String finalUrl = HttpUrl
