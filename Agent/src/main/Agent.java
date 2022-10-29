@@ -33,7 +33,7 @@ public class Agent extends Application {
         // Bindings
         agentMainController.setLoginController(loginController);
         agentMainController.setContentScene();
-        Scene scene = new Scene(root, 500, 500);
+        Scene scene = new Scene(root, 850, 600);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Agent Application");
         primaryStage.show();
