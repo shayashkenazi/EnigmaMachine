@@ -752,9 +752,15 @@ public class UBoatMainController {
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
+<<<<<<< HEAD
 
             }
 
+=======
+
+            }
+
+>>>>>>> 385dfd1... new hi new
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String configuration = response.body().string();
@@ -767,9 +773,12 @@ public class UBoatMainController {
             }
         });
     }
+<<<<<<< HEAD
 
     public void setWithProp(ReadOnlyDoubleProperty withProp, ReadOnlyDoubleProperty highProo) {
         sp_mainPage.prefViewportWidthProperty().bind(withProp);
         sp_mainPage.prefViewportHeightProperty().bind(highProo);
     }
+=======
+>>>>>>> 385dfd1... new hi new
 }

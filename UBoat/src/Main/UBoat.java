@@ -42,9 +42,13 @@ public class UBoat extends Application {
         uBoatMainController.setLoginController(loginController);
         uBoatMainController.setSetCodeController(setCodeController);
         uBoatMainController.setContentScene();
+<<<<<<< HEAD
 
         Scene scene = new Scene(root, 850, 600);
 
+=======
+        Scene scene = new Scene(root, 700, 520);
+>>>>>>> 385dfd1... new hi new
         primaryStage.setScene(scene);
         primaryStage.setTitle("UBoat Application");
         primaryStage.show();
