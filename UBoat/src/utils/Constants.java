@@ -29,6 +29,7 @@ public class Constants {
     public final static String CHECK_READY_BATTLE = FULL_SERVER_PATH + "/checkBattleIsReadyServlet";
     public static final String READY = FULL_SERVER_PATH + "/readyServlet";
     public static final String FINISHED_UBOAT = FULL_SERVER_PATH + "/finishedFromUboatServlet";
+    public static final String RESET_ENGINE = FULL_SERVER_PATH + "/resetEngineServlet";
 
     public static final String DTO_TYPE = "dtoType";
     public final static String UBOAT_CLASS = "uBoat";
