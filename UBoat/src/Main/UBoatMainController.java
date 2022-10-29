@@ -200,7 +200,7 @@ public class UBoatMainController {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                System.out.println("on fail" + e.getMessage());
+
             }
 
             @Override
@@ -484,7 +484,7 @@ public class UBoatMainController {
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                System.out.println("Ohhhhh NOOOOOOOOOOOO !!!!! TIREEE");
+
             }
 
             @Override
@@ -730,7 +730,7 @@ public class UBoatMainController {
                             }
                         }
                         else{
-                            System.out.println("fail not 200 on refresher");
+
                         }
                     }
                 });
