@@ -30,6 +30,9 @@ public class EncryptMessageController {
 
                 if (click.getClickCount() == 2) {
                     String itemString = lv_dictionary.getSelectionModel().getSelectedItem();
+                    if(!tf_input.getText().equals("")){
+                        tf_input.appendText(" ");
+                    }
                     tf_input.appendText(itemString);
                 }
             }
