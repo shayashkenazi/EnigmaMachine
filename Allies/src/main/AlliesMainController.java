@@ -151,11 +151,9 @@ public class AlliesMainController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String ignoreLeak = response.body().string();
                 if(response.code() == 200) {
-                    System.out.println("ready rep");
                     isReady.set(true);
                 }
-                else
-                    System.out.println("zibik elek");
+
             }
         });
     }
@@ -173,16 +171,12 @@ public class AlliesMainController {
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                System.out.println(e.getMessage() + "dm  hooooo");
+
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String text = response.body().string();  // this is decode msg
-                Platform.runLater(() -> {
-                    System.out.println(response.code());
-                });
-                System.out.println("hey im in dm task response");
                 updateReadyManager();
             }
         });
@@ -216,24 +210,16 @@ public class AlliesMainController {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() ->
-                        System.out.println("failure "  + e.getMessage())
-                );
+
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() ->
-                            System.out.println("Something went wrong: " + responseBody)
-                    );
                 }
                 else {
                     if(response.code() == 200){
-                        Platform.runLater(() ->
-                                System.out.println("hey its hierarchy response  :")
-                        );
                         createDM();
                         //isReady.set(true);
                     }
@@ -266,7 +252,7 @@ public class AlliesMainController {
                 HttpClientUtil.runAsync(finalUrl, new Callback() {
                     @Override
                     public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        System.out.println("omg fail");
+
                     }
 
                     @Override
@@ -281,7 +267,7 @@ public class AlliesMainController {
                         }
                         else
                         {
-                            System.out.println("omg is not ready");
+
                         }
                         //System.out.println("hey im in ready servlet res");
                         //isReady.set(true);
@@ -305,7 +291,7 @@ public class AlliesMainController {
                 HttpClientUtil.runAsync(finalUrl, new Callback() {
                     @Override
                     public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        System.out.println("omg fail");
+
                     }
 
                     @Override
@@ -339,7 +325,7 @@ public class AlliesMainController {
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                System.out.println(e.getMessage() + " failure" + Thread.currentThread().getId());
+
             }
 
             @Override
@@ -354,7 +340,7 @@ public class AlliesMainController {
     }
 
     private void createTasksDM() {
-        System.out.println("thread id - " + Thread.currentThread().getId());
+
         //Runnable workerThread = () -> {
         String uBoatName = getUboatNameByBattlefieldName(cb_battlefieldNames.getValue());
         String finalUrl = HttpUrl
@@ -366,14 +352,12 @@ public class AlliesMainController {
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                System.out.println(e.getMessage() + " failure" + Thread.currentThread().getId());
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String ignoreLeak = response.body().string();
                 if (response.code() == 200) {
-                    System.out.println("hey im in create tasks servlet res" + "thread" + Thread.currentThread().getId());
                     refresherResult();
                 }
                 //System.out.println("hey im in ready servlet res");
@@ -402,9 +386,7 @@ public class AlliesMainController {
                         if (response.code() == 200) {
                             showCandidates(response);
                         }
-                        else {
-                            System.out.println("no no at result");
-                        }
+
                     }
                 });
             }
@@ -447,9 +429,7 @@ public class AlliesMainController {
                         if (response.code() == 200) {
                             showTeamsAgent(response);
                         }
-                        else{
-                            System.out.println("no no no at teams agents details");
-                        }
+
                     }
                 });
             }
@@ -495,9 +475,7 @@ public class AlliesMainController {
                         if (response.code() == 200) {
                             showContestData(response);
                         }
-                        else {
-                            System.out.println("omggggg");
-                        }
+
 
                     }
                 });
@@ -559,9 +537,7 @@ public class AlliesMainController {
                                 });
                             }
                         }
-                        else  {
-                            System.out.println("omg omg omg");
-                        }
+
                     }
                 });
             }
@@ -605,8 +581,6 @@ public class AlliesMainController {
                                 break;
                                 }
                             }
-                        } else {
-                            System.out.println("CurrentContestDataDetails in omggggg");
                         }
 
                     }
@@ -658,8 +632,6 @@ public class AlliesMainController {
                             });
 
 
-                        } else {
-                            System.out.println("herAgentTasksDetails omggggg");
                         }
 
                     }
