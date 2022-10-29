@@ -17,7 +17,10 @@ import javafx.util.Pair;
 import utils.ServletUtils;
 import utils.SessionUtils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.*;
@@ -40,12 +43,16 @@ public class SetCodeServlet extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_OK);
                 break;
 
-/*            case Constants.SET_SPECIFIC_CODE_TYPE:
-
-                engine.buildRotorsStack(*//*engine.createCodeDescriptionDTO()*//* ,true);
-                break;*/
+            case Constants.SET_SPECIFIC_CODE_TYPE:
+                Reader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
+                Gson gson = new Gson();
+                Type codeDescriptionType = new TypeToken<DTO_CodeDescription>() {
+                }.getType();
+                DTO_CodeDescription codeDescription = gson.fromJson(reader,codeDescriptionType);
+                engine.buildRotorsStack(codeDescription ,true);
+                break;
             default:
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 break;
         }
     }
@@ -54,23 +61,17 @@ public class SetCodeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) // for specific code
             throws IOException, ServletException {
 
-        String uBoatNameFromSession = SessionUtils.getUsername(request);
-        EngineCapabilities engine = ServletUtils.getBattlefield(getServletContext(), uBoatNameFromSession).getEngine();
+                String uBoatNameFromSession = SessionUtils.getUsername(request);
+                EngineCapabilities engine = ServletUtils.getBattlefield(getServletContext(), uBoatNameFromSession).getEngine();
 
-                Part partCur = null;
-                Collection<Part> parts = request.getParts();
-                for (Part p : parts) {
-                    partCur = p;
-                    break;
-                }
+                Reader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
                 Gson gson = new Gson();
-
-                String json_dtoCodeDescription = partCur.getInputStream().toString();
-                Type dtoCodeDescriptionType = new TypeToken<DTO_CodeDescription>() {
+                Type codeDescriptionType = new TypeToken<DTO_CodeDescription>() {
                 }.getType();
-                DTO_CodeDescription dto_codeDescription = gson.fromJson(json_dtoCodeDescription, dtoCodeDescriptionType);
-                engine.buildRotorsStack(dto_codeDescription ,true);
-    }
+                DTO_CodeDescription codeDescription = gson.fromJson(reader, codeDescriptionType);
+                engine.buildRotorsStack(codeDescription, true);
+                response.setStatus(HttpServletResponse.SC_OK);
+            }
 
 
 private void createRandomMachineSetting(DTO_MachineInfo dtoMachineInfo,EngineCapabilities engine) {

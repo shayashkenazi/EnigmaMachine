@@ -70,6 +70,7 @@ public class LoginController {
                 } else {
                     Platform.runLater(() -> {
                         uBoatMainController.setUserName(userName);
+                        uBoatMainController.setLoginPage(sp_loginPage);
                         uBoatMainController.switchToMainPanel();
                         uBoatMainController.refresherActiveTeams();
                     });

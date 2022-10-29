@@ -81,6 +81,8 @@ public class AlliesMainController {
                 timerAgentTasksDetails.cancel();
                 finishRefresher.cancel();
                 timerFinishRefresher.cancel();
+                resultRefresher.cancel();
+                timerResult.cancel();
             }
 
         });

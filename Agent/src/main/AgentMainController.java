@@ -82,8 +82,10 @@ public class AgentMainController {
         sb.append("count Of tasks taken - ").append(countTasksTaken.getValue()).append("\n");
         sb.append("count of tasks finished - ").append(countTasksFinished.get()).append("\n");
         sb.append("count of candidates - ").append(candidatesFoundCounter).append("\n");
+        Platform.runLater(() -> {
+            ta_agentProgressAndStatus.setText(sb.toString());
+        });
 
-        ta_agentProgressAndStatus.setText(sb.toString());
     }
 
     private void clearTextArea() {
@@ -186,7 +188,6 @@ public class AgentMainController {
                             countTasksTaken.set(countTasksTaken.get() + 1);
                             task.setCountTasksFinished(countTasksFinished);
                             //task.setTakeMissionLock(takeMissionLock);
-                            //updateTextAreaProgress();
                         }
                         runMissionFromQueue();
 
@@ -204,7 +205,6 @@ public class AgentMainController {
                 }
                 sendResultToServer();
                 updateAgentContestDetails();
-                updateTextAreaProgress();
             }
 
 
@@ -254,7 +254,10 @@ public class AgentMainController {
     }
 
     public void runMissionFromQueue() {
-        for (DmTask task : tasks) threadPool.submit(task);
+        for (DmTask task : tasks){
+            threadPool.submit(task);
+            updateTextAreaProgress();
+        }
     }
 
     public void checkReadyRefresher() {

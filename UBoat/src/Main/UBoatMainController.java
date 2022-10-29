@@ -47,8 +47,10 @@ public class UBoatMainController {
     @FXML private Label lb_battlefieldName;
     @FXML private TextArea ta_machineDetails, ta_candidates, ta_teamsDetails;
     @FXML private ScrollPane sp_mainPage;
-    @FXML private Tab tab_machine, tab_contest;
 
+    private ScrollPane sp_loginPage;
+    @FXML private Tab tab_machine, tab_contest;
+    @FXML private TabPane tp_mainTapPain;
     private final StringProperty userName;
     private String battlefieldName;
     private Node rootNode;
@@ -56,7 +58,7 @@ public class UBoatMainController {
     private SetCodeController setCodeComponentController;
     private final BooleanProperty isXmlLoaded = new SimpleBooleanProperty(false);
     private final BooleanProperty isCodeChosen = new SimpleBooleanProperty(false);
-    private BooleanProperty isReady, isBattleOn;
+    private BooleanProperty isBattleOn;
     private DTO_MachineInfo dto_machineInfo;
     private TimerTask resultRefresher,readyRefresher,allyActiveRefresher;
     private Timer timerResult,timerReady,timerAllyActiveTeams;
@@ -66,7 +68,6 @@ public class UBoatMainController {
 
     public UBoatMainController() {
         userName = new SimpleStringProperty("Anonymous");
-        isReady = new SimpleBooleanProperty(false);
         isBattleOn = new SimpleBooleanProperty(false);
         //sp_mainPage.setContent(loginComponentController.getLoginPage());
     }
@@ -75,7 +76,9 @@ public class UBoatMainController {
         this.loginComponentController = loginController;
         loginController.setMainController(this);
     }
-
+    public void setLoginPage(ScrollPane scrollPaneloginPage){
+        this.sp_loginPage = scrollPaneloginPage;
+    }
     public void setSetCodeController(SetCodeController setCodeController) {
         setCodeComponentController = setCodeController;
         setCodeController.setMainController(this);
@@ -97,13 +100,19 @@ public class UBoatMainController {
         isXmlLoaded.set(false);
 
         tab_contest.disableProperty().bind(isXmlLoaded.not().or(isCodeChosen.not()));
-
+        btn_logOut.disableProperty().bind(isBattleOn); //TODO ONLY FINISHED?
         isXmlLoaded.addListener((observable, oldValue, newValue) -> {
             codeCalibrationComponentController.enableDisableCodeCalibrationButtons(newValue);
-            setMachineDetailsTextArea(newValue);
 
             if (newValue) {
+                setMachineDetailsTextArea(newValue);
                 initializeTrieWithDictionary();
+            }
+            else{
+                Platform.runLater(() -> {
+                    ta_machineDetails.setText("");
+                    tf_filePath.setText("");
+                });
             }
         });
         isCodeChosen.addListener((observable, oldValue, newValue) -> {
@@ -115,6 +124,7 @@ public class UBoatMainController {
             if(newValue)
                 refresherResult();
         });
+
     }
     @FXML void finishButtonBtnClick(ActionEvent event){
 
@@ -217,6 +227,37 @@ public class UBoatMainController {
     }
 
     @FXML void logOutBtnClick(ActionEvent event) {
+        switchLoginPagePanel();
+        logOutUboat();
+        isXmlLoaded.set(false);
+        isCodeChosen.set(false);
+        tp_mainTapPain.getSelectionModel().select(tab_machine);
+    }
+    private void logOutUboat(){
+
+        String finalUrl = HttpUrl
+                .parse(Constants.LOGOUT_UBOAT)
+                .newBuilder()
+                .build()
+                .toString();
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                /*String text = response.body().string();  // this is decode msg
+                Platform.runLater(() -> {
+                    encryptMessageComponentController.getTf_output().setText(text);
+                });*/
+                String ignoreLeak = response.body().string();
+                if (response.code() == 200) {
+
+                }
+            }
+        });
 
     }
 
@@ -224,19 +265,18 @@ public class UBoatMainController {
 
         Gson gson = new Gson();
         String json_dtoCodeDescription = gson.toJson(dto_codeDescription);
-        RequestBody bodyDto = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                .addFormDataPart("dto_codeConfiguration", json_dtoCodeDescription)
-                .build();
 
         String finalUrl = HttpUrl
                 .parse(Constants.SET_CODE)
                 .newBuilder()
+                .addQueryParameter(WebConstants.Constants.CODE_TYPE, WebConstants.Constants.SET_SPECIFIC_CODE_TYPE)
                 .build()
                 .toString();
 
+
         Request request = new Request.Builder()
                 .url(finalUrl)
-                .post(bodyDto)
+                .post(RequestBody.create(json_dtoCodeDescription.getBytes()))
                 .build();
 
         Call call = HttpClientUtil.HTTP_CLIENT.newCall(request);
@@ -247,8 +287,9 @@ public class UBoatMainController {
             }
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
                 String ignoreLeak = response.body().string();
-                if (response.code() != 200) {
+                if (response.code() == 200) {
                     isCodeChosen.set(false);
                     isCodeChosen.set(true);
                 }
@@ -411,6 +452,9 @@ public class UBoatMainController {
     public void switchToMainPanel() {
         sp_mainPage.setContent(rootNode);
     }
+    public void switchLoginPagePanel() {
+        sp_mainPage.setContent(sp_loginPage);
+    }
 
     public void switchToSetCodePanel() {
         sp_mainPage.setContent(setCodeComponentController.getMainPage());
@@ -418,9 +462,9 @@ public class UBoatMainController {
     public void updateSetCodePanel() {
         setCodeComponentController.createSetCodeController(dto_machineInfo);
     }
-    public void setIsReady(boolean isReady) {
+   /* public void setIsReady(boolean isReady) {
         this.isReady.set(isReady);
-    }
+    }*/
 
     public void codeSetController_setBtnClick() {
 
@@ -510,9 +554,8 @@ public class UBoatMainController {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-
+                        String json_candidates = response.body().string();
                         if (response.code() == 200) {
-                            String json_candidates = response.body().string();
                             Type setCandidatesType = new TypeToken<Set<DTO_CandidateResult>>() { }.getType(); // TODO: FIX !!!
                             Set<DTO_CandidateResult> setCandidates = GSON_INSTANCE.fromJson(json_candidates, setCandidatesType);
                             ta_candidates.clear();
@@ -560,6 +603,7 @@ public class UBoatMainController {
                 String ignoreLeak = response.body().string();
                 if (response.code() == 200) {
                    btn_finishBattle.setDisable(true);
+
                 }
             }
         });
@@ -612,9 +656,8 @@ public class UBoatMainController {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-
+                        String json_candidates = response.body().string();
                         if (response.code() == 200) {
-                            String json_candidates = response.body().string();
                             Type setCandidatesType = new TypeToken<List<DTO_AllyDetails>>() { }.getType(); // TODO: FIX !!!
                             List<DTO_AllyDetails> dto_allyDetailsList = GSON_INSTANCE.fromJson(json_candidates, setCandidatesType);
                             Platform.runLater(() -> {

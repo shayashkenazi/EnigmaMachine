@@ -27,7 +27,7 @@
                   <TextField fx:id="tf_filePath" prefHeight="25.0" prefWidth="481.0" promptText="xml file path" />
                </children>
             </HBox>
-            <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="524.0" prefWidth="1190.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane fx:id="tp_mainTapPain" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="524.0" prefWidth="1190.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
                 <Tab fx:id="tab_machine" text="Machine">
                      <content>

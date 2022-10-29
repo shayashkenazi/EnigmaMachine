@@ -31,8 +31,8 @@ public class ResetAllyServlet extends HttpServlet {
         DMManager.removeDM(allyName);
 
         // reset hierarchy ally // TODO : RESET?
-        /*HierarchyManager hierarchyManager = ServletUtils.getHierarchyManager(getServletContext());
-        hierarchyManager.disconnectAllyFromUBoat(allyName);*/
+        HierarchyManager hierarchyManager = ServletUtils.getHierarchyManager(getServletContext());
+        hierarchyManager.disconnectAllyFromUBoat(allyName);
 
         // set ready to false
 
