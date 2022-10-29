@@ -9,6 +9,7 @@
           <element id="module-output" name="Engine" />
         </element>
         <element id="directory" name="lib">
+          <element id="library" level="project" name="gson1" />
           <element id="file-copy" path="$USER_HOME$/Desktop/Okhttp/okio-2.2.2.jar" />
           <element id="file-copy" path="$USER_HOME$/Desktop/Okhttp/okhttp-4.2.1.jar" />
           <element id="file-copy" path="$USER_HOME$/Desktop/Okhttp/annotations-13.0.jar" />
