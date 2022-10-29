@@ -18,6 +18,7 @@ public class FinishBattleServlet extends HttpServlet {
 
         String uBoatName = SessionUtils.getUsername(request);
         ReadyManager readyManager = ServletUtils.getBattlefield(getServletContext(),uBoatName).getReadyManager();
+        readyManager.initUboat();
         readyManager.setIsAllReady(false);
         response.setStatus(HttpServletResponse.SC_OK);
     }

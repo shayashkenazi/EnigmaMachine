@@ -27,7 +27,7 @@
                   <TextField fx:id="tf_filePath" prefHeight="25.0" prefWidth="481.0" promptText="xml file path" />
                </children>
             </HBox>
-            <TabPane fx:id="tp_mainTapPain" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="524.0" prefWidth="1190.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+            <TabPane fx:id="tp_mainTapPain" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="524.0" prefWidth="700.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
               <tabs>
                 <Tab fx:id="tab_machine" text="Machine">
                      <content>
@@ -52,7 +52,7 @@
                      <content>
                         <ScrollPane>
                            <content>
-                              <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="450.0" prefWidth="800.0">
+                              <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="450.0" prefWidth="1090.0">
                                  <children>
                                     <Label fx:id="lb_battlefieldName" alignment="TOP_RIGHT" prefHeight="15.0" prefWidth="53.0">
                                        <font>
