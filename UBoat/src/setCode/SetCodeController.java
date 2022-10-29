@@ -38,22 +38,9 @@ public class SetCodeController {
 
     @FXML public void initialize() {
 
-        //btn_set.disableProperty().bind(isReflectorSelected.not().or(isRotorsSelected.not()));
+        btn_set.disableProperty().bind(isReflectorSelected.not().or(isRotorsSelected.not()));
 
-        cb_reflector.valueProperty().addListener(observable -> {
-            isReflectorSelected.set(!cb_reflector.getValue().equals(""));
-        });
 
-        // TODO: doesnt work, after fix - remove the comment from line 41
-        for(Pair<ChoiceBox<String>, ChoiceBox<Character>> pair : rotorsChoiceBoxes) {
-
-            pair.getKey().valueProperty().addListener((observable, oldValue, newValue) -> {
-                isRotorsSelected.set(isAllRotorsChoose());
-            });
-            pair.getValue().valueProperty().addListener((observable, oldValue, newValue) -> {
-                isRotorsSelected.set(isAllRotorsChoose());
-            });
-        }
     }
 
     @FXML
@@ -78,6 +65,7 @@ public class SetCodeController {
     }
 
     public void createSetCodeController(DTO_MachineInfo dto_machineInfo) {
+
 
         hb_rotors.setPrefWidth(sp_rotors.getPrefWidth());
         rotorsChoiceBoxes = new ArrayList<>();
@@ -104,6 +92,20 @@ public class SetCodeController {
             rotorsChoiceBoxes.add(new Pair<>(choiceRotor,choiceStartingPoint));
             cb_reflector.setItems(getIdReflectors(dto_machineInfo.getNumOfReflectors()));
         }
+        // TODO: doesnt work, after fix - remove the comment from line 41
+        for(Pair<ChoiceBox<String>, ChoiceBox<Character>> pair : rotorsChoiceBoxes) {
+
+            pair.getKey().valueProperty().addListener((observable, oldValue, newValue) -> {
+                isRotorsSelected.set(isAllRotorsChoose());
+            });
+            pair.getValue().valueProperty().addListener((observable, oldValue, newValue) -> {
+                isRotorsSelected.set(isAllRotorsChoose());
+            });
+        }
+        cb_reflector.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue != null)
+                isReflectorSelected.set(!newValue.equals(""));
+        });
     }
 
     private ObservableList<String> getIntRange(int numOfRotors) {
@@ -144,7 +146,7 @@ public class SetCodeController {
 
     private boolean isAllRotorsChoose(){
         for(Pair<ChoiceBox<String>, ChoiceBox<Character>> pair : rotorsChoiceBoxes) {
-            if(pair.getValue().getValue().equals("") || pair.getKey().getValue().equals(""))
+            if(pair.getValue().getValue() == null || pair.getKey().getValue() == null)
                 return false;
         }
         return true;

@@ -7,9 +7,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fx:id="sp_mainPage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="522.0" prefWidth="819.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.AgentMainController">
+<ScrollPane fx:id="sp_mainPage" fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="522.0" prefWidth="819.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.AgentMainController">
    <content>
-      <VBox alignment="CENTER" prefHeight="520.0" prefWidth="816.0" spacing="10.0">
+      <VBox alignment="CENTER" prefHeight="520.0" prefWidth="700.0" spacing="10.0">
          <children>
             <Label text="Agent Application">
                <font>
@@ -19,7 +19,7 @@
             <VBox alignment="CENTER">
                <children>
                   <Label text="Contest and team data" />
-                  <TextArea fx:id="ta_contestAndTeam" prefHeight="200.0" prefWidth="672.0" />
+                  <TextArea fx:id="ta_contestAndTeam" prefHeight="200.0" prefWidth="672.0" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
             <HBox alignment="CENTER" prefHeight="265.0" prefWidth="816.0" spacing="20.0">
@@ -27,13 +27,13 @@
                   <VBox alignment="CENTER" prefHeight="250.0" prefWidth="380.0">
                      <children>
                         <Label text="Agent progress &amp; status" />
-                        <TextArea fx:id="ta_agentProgressAndStatus" prefHeight="200.0" prefWidth="200.0" />
+                        <TextArea fx:id="ta_agentProgressAndStatus" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                      </children>
                   </VBox>
                   <VBox alignment="CENTER" prefHeight="250.0" prefWidth="380.0">
                      <children>
                         <Label text="Agent's Candidates" />
-                        <TextArea fx:id="ta_agentCandidates" prefHeight="200.0" prefWidth="200.0" />
+                        <TextArea fx:id="ta_agentCandidates" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                      </children>
                   </VBox>
                </children>

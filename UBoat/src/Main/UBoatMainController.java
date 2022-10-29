@@ -735,5 +735,28 @@ public class UBoatMainController {
     }
 
 
+    public void resetBtnClick() {
+        String finalUrl = HttpUrl
+                .parse(Constants.RESET_ENGINE)
+                .newBuilder()
+                .build()
+                .toString();
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
 
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String configuration = response.body().string();
+                if (response.code() == 200) {
+                    configurationBeforeProcess = configuration;
+                    Platform.runLater(() ->{
+                        encryptMessageComponentController.getTf_codeConfiguration().setText(configuration);
+                    });
+                }
+            }
+        });
+    }
 }
