@@ -25,6 +25,9 @@ public class ReadyManager {
     public void setIsAllReady(boolean isAllReady) {
         this.isAllReady.set(isAllReady);
     }
+    public void initUboat(){
+        uBoatAndSentence = null;
+    }
 
 
     public synchronized Pair<String, String> getuBoatAndSentence() {

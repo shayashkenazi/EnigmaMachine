@@ -69,8 +69,12 @@ public class AgentMainController {
 
             }
             else{
-                readyRefresher.cancel();
-                timer.cancel();
+                contestAgentDetailsRefresher.cancel();
+                timerContestAgentDetails.cancel();
+                updateTaskDetailsRefresher.cancel();
+                timerTasksDetails.cancel();
+                //readyRefresher.cancel();
+                //timer.cancel();
             }
 
         });

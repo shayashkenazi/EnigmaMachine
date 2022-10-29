@@ -11,10 +11,7 @@ import encryptMessage.EncryptMessageController;
 import http.HttpClientUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -100,7 +97,8 @@ public class UBoatMainController {
         tab_contest.setDisable(true);
         isXmlLoaded.set(false);
         btn_finishBattle.disableProperty().bind(isBattleOn);
-        encryptMessageComponentController.getBtn_ready().disableProperty().bind(isReady);
+        encryptMessageComponentController.getBtn_ready().disableProperty().bind(isReady
+                .or(encryptMessageComponentController.getTf_output().textProperty().isEmpty()));
         tab_contest.disableProperty().bind(isXmlLoaded.not().or(isCodeChosen.not()));
         btn_logOut.disableProperty().bind(isBattleOn); //TODO ONLY FINISHED?
         isXmlLoaded.addListener((observable, oldValue, newValue) -> {
@@ -765,5 +763,10 @@ public class UBoatMainController {
                 }
             }
         });
+    }
+
+    public void setWithProp(ReadOnlyDoubleProperty withProp, ReadOnlyDoubleProperty highProo) {
+        sp_mainPage.prefViewportWidthProperty().bind(withProp);
+        sp_mainPage.prefViewportHeightProperty().bind(highProo);
     }
 }
