@@ -117,7 +117,6 @@ public class AgentMainController {
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                System.out.println("Ohhhhh NOOOOOOOOOOOO !!!!!  ALLIESSSS");
             }
 
             @Override
@@ -195,12 +194,9 @@ public class AgentMainController {
                         }
                         runMissionFromQueue();
 
-                    } else {
-                        System.out.println("not 200");
                     }
                 }
                 catch (IOException e){
-                    System.out.println("fail" + e.getMessage());
                 }
                 try {
                     agentTasksLeft.await();
@@ -233,7 +229,6 @@ public class AgentMainController {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                System.out.println("on failure candidates");
             }
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -251,8 +246,7 @@ public class AgentMainController {
                     takeMissionThread = new Thread(takeMissionFromAlly());
                     takeMissionThread.start();
                 }
-                else
-                    System.out.println("on not 200 candidates");
+
             }
         });
     }
