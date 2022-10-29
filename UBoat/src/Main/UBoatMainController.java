@@ -630,6 +630,7 @@ public class UBoatMainController {
                                     isBattleOn.set(false);
                                     isReady.set(false);
                                     setBattleFinished();
+                                    break;
                                 }
                             }
                         }
