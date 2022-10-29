@@ -18,7 +18,11 @@ public class EncryptMessageController {
     private Trie trie = new Trie();
     private UBoatMainController uBoatMainController;
 
-    @FXML private Button btn_clear, btn_process, btn_ready, btn_reset;
+    @FXML private Button btn_clear;
+    @FXML private Button btn_process;
+
+    @FXML private Button btn_ready;
+    @FXML private Button btn_reset;
     @FXML private ListView<String> lv_dictionary;
     @FXML private TextField tf_codeConfiguration, tf_input, tf_output, tf_searchBar;
 
@@ -58,10 +62,14 @@ public class EncryptMessageController {
     @FXML void processBtnClick(ActionEvent event) {
         uBoatMainController.EncryptMessageController_processBtnClick(tf_input.getText());
     }
+    public Button getBtn_ready() {
+        return btn_ready;
+    }
 
     @FXML void readyBtnClick(ActionEvent event) {
         uBoatMainController.updateReadyManager();
         uBoatMainController.checkReadyRefresher();
+        uBoatMainController.setIsReady(true);
     }
 
     @FXML void resetBtnClick(ActionEvent event) {

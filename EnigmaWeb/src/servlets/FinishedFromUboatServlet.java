@@ -22,5 +22,6 @@ public class FinishedFromUboatServlet extends HttpServlet {
         ResultsManager resultsManager = ServletUtils.getBattlefield(getServletContext(),usernameFromSession).getResultsManager();
         resultsManager.clearCandidates();
 
+
     }
 }
