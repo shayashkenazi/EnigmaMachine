@@ -58,7 +58,7 @@ public class UBoatMainController {
     private SetCodeController setCodeComponentController;
     private final BooleanProperty isXmlLoaded = new SimpleBooleanProperty(false);
     private final BooleanProperty isCodeChosen = new SimpleBooleanProperty(false);
-    private BooleanProperty isBattleOn;
+    private BooleanProperty isBattleOn,isReady;
     private DTO_MachineInfo dto_machineInfo;
     private TimerTask resultRefresher,readyRefresher,allyActiveRefresher;
     private Timer timerResult,timerReady,timerAllyActiveTeams;
@@ -69,6 +69,7 @@ public class UBoatMainController {
     public UBoatMainController() {
         userName = new SimpleStringProperty("Anonymous");
         isBattleOn = new SimpleBooleanProperty(false);
+        isReady = new SimpleBooleanProperty(false);
         //sp_mainPage.setContent(loginComponentController.getLoginPage());
     }
 
@@ -99,6 +100,7 @@ public class UBoatMainController {
         tab_contest.setDisable(true);
         isXmlLoaded.set(false);
         btn_finishBattle.disableProperty().bind(isBattleOn);
+        encryptMessageComponentController.getBtn_ready().disableProperty().bind(isReady);
         tab_contest.disableProperty().bind(isXmlLoaded.not().or(isCodeChosen.not()));
         btn_logOut.disableProperty().bind(isBattleOn); //TODO ONLY FINISHED?
         isXmlLoaded.addListener((observable, oldValue, newValue) -> {
@@ -138,6 +140,8 @@ public class UBoatMainController {
     }
     @FXML void finishButtonBtnClick(ActionEvent event){
         ta_candidates.clear();
+        ta_teamsDetails.clear();
+        isReady.set(false);
         deleteDetailsFromServer();
     }
 
@@ -165,7 +169,7 @@ public class UBoatMainController {
 
     @FXML void loadFileBtnClick(ActionEvent event) {
 
-        isXmlLoaded.set(false);
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("xml files", "*.xml"));
 
@@ -213,6 +217,7 @@ public class UBoatMainController {
                     });
                 }
                 else if (response.code() == HttpServletResponse.SC_OK) {
+                    isXmlLoaded.set(false);
                     isXmlLoaded.set(true);
                     //battlefieldName = response.body().string();
                     Platform.runLater(() -> {
@@ -515,9 +520,9 @@ public class UBoatMainController {
     public void updateSetCodePanel() {
         setCodeComponentController.createSetCodeController(dto_machineInfo);
     }
-   /* public void setIsReady(boolean isReady) {
+    public void setIsReady(boolean isReady) {
         this.isReady.set(isReady);
-    }*/
+    }
 
     public void codeSetController_setBtnClick() {
 
@@ -621,9 +626,11 @@ public class UBoatMainController {
                                 });
                                 if(checkWinner(dto_candidateResult)){
                                     Platform.runLater(() -> {
-                                        System.out.println("winnerrr" + dto_candidateResult.getPrintedFormat());
-                                            });
+                                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "The winner is: \n" + dto_candidateResult.getPrintedFormat());
+                                        alert.show();
+                                    });
                                     isBattleOn.set(false);
+                                    isReady.set(false);
                                     setBattleFinished();
                                 }
                             }
