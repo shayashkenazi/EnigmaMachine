@@ -1,6 +1,5 @@
 package login;
 
-import Main.UBoat;
 import Main.UBoatMainController;
 import http.HttpClientUtil;
 import javafx.application.Platform;
@@ -56,9 +55,7 @@ public class LoginController {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() ->
-                        System.out.println("Something went wrong: " + e.getMessage())
-                );
+
             }
 
             @Override
