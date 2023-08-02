@@ -16,7 +16,7 @@
             <Font name="System Bold" size="20.0" />
          </font>
       </Label>
-      <HBox alignment="CENTER">
+      <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity">
          <children>
             <HBox alignment="CENTER" fillHeight="false" spacing="40.0">
                <children>
