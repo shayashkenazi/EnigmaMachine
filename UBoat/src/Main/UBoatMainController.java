@@ -88,7 +88,7 @@ public class UBoatMainController {
     @FXML public void initialize() {
 
         if (codeCalibrationComponentController != null &&
-            encryptMessageComponentController  != null) {
+                encryptMessageComponentController  != null) {
 
             codeCalibrationComponentController.setMainController(this);
             encryptMessageComponentController.setMainController(this);
@@ -227,9 +227,9 @@ public class UBoatMainController {
                     Platform.runLater(() -> {
                         String errorMsg = null;
                         //try {
-                            errorMsg = body;
+                        errorMsg = body;
                         //} catch (IOException e) {
-                         //   throw new RuntimeException(e);
+                        //   throw new RuntimeException(e);
                         //}
                         Alert errorAlert = new Alert(Alert.AlertType.ERROR, errorMsg);
                         errorAlert.show();
@@ -645,7 +645,7 @@ public class UBoatMainController {
     }
 
     private boolean checkWinner(DTO_CandidateResult dto_candidateResult) {
-       return configurationBeforeProcess.equals(dto_candidateResult.getConfiguration()); //TODO :CHECNGE
+        return configurationBeforeProcess.equals(dto_candidateResult.getConfiguration()); //TODO :CHECNGE
     }
     private void setBattleFinished() {
         String finalUrl = HttpUrl
@@ -752,15 +752,9 @@ public class UBoatMainController {
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-<<<<<<< HEAD
 
             }
 
-=======
-
-            }
-
->>>>>>> 385dfd1... new hi new
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String configuration = response.body().string();
@@ -773,12 +767,9 @@ public class UBoatMainController {
             }
         });
     }
-<<<<<<< HEAD
 
     public void setWithProp(ReadOnlyDoubleProperty withProp, ReadOnlyDoubleProperty highProo) {
         sp_mainPage.prefViewportWidthProperty().bind(withProp);
         sp_mainPage.prefViewportHeightProperty().bind(highProo);
     }
-=======
->>>>>>> 385dfd1... new hi new
 }
