@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Allies:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Allies_jar</output-path>
+    <root id="archive" name="Allies.jar">
+      <element id="module-output" name="Allies" />
+      <element id="module-output" name="Engine" />
+      <element id="module-output" name="WebUtils" />
+      <element id="module-output" name="Agent" />
+      <element id="module-output" name="EnigmaWeb" />
+      <element id="extracted-dir" path="$USER_HOME$/Desktop/לימודים/שנה ג/סמסטר קיץ/קורס ג'אבה/gson/gson-2.8.8.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Desktop/לימודים/שנה ג/סמסטר קיץ/קורס ג'אבה/gson/gson-2.8.8-javadoc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Desktop/לימודים/שנה ג/סמסטר קיץ/קורס ג'אבה/gson/gson-2.8.8-sources.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Desktop/Okhttp/okio-2.2.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Desktop/Okhttp/okhttp-4.2.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Desktop/Okhttp/annotations-13.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Desktop/Okhttp/kotlin-stdlib-1.3.50.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Desktop/Okhttp/kotlin-stdlib-common-1.3.50.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
