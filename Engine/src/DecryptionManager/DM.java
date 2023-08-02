@@ -48,12 +48,10 @@ public class DM { // Relevant for Ex3 only (for Ex2 use DecryptionManager)
         this.sentenceToCheck = sentenceToCheck;
     }
     public synchronized void run() {
-        System.out.println("im in run and before thread -" + Thread.currentThread().getId());
         createTaskDMThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 setAllTaskSize(difficulty);
-                System.out.println("im in run and inside thread -" + Thread.currentThread().getId());
                 switch (difficulty){
                     case EASY:
                         createEasyTasks(copyEngine);
@@ -68,7 +66,6 @@ public class DM { // Relevant for Ex3 only (for Ex2 use DecryptionManager)
                         createImpossibleTasks(copyEngine);
                         break;
                 }
-                System.out.println("im in run and after thread -" + Thread.currentThread().getId());
             }
         });
         createTaskDMThread.start();
@@ -127,7 +124,6 @@ public class DM { // Relevant for Ex3 only (for Ex2 use DecryptionManager)
         double sizeOfAllTasks = Math.pow(engineCopy.getMachine().getABCsize(), engineCopy.getMachine().getRotorsInUseCount());
         int sizeOfFullTasks = (int) (sizeOfAllTasks / taskSize);
         int lastTaskSize = (int) (sizeOfAllTasks % taskSize);
-        System.out.println("size of all" + sizeOfFullTasks);
 
         try {
             // Full Tasks
@@ -137,14 +133,12 @@ public class DM { // Relevant for Ex3 only (for Ex2 use DecryptionManager)
                 tasks.put(decryptionTask);
                 counterOfCreatedTasks.incrementAndGet();
                 engineCopy.moveRotorsToPosition(taskSize);
-                System.out.println(i);
             }
 
             // Last little task
             DmTask decryptionTask = new DmTask(/*engineCopy.clone(),*/ lastTaskSize, sentenceToCheck,engineCopy.createAgentMachineDTO(),engineCopy.createCodeDescriptionDTO());
             tasks.put(decryptionTask);
             counterOfCreatedTasks.incrementAndGet();
-            System.out.println("blala");
 
 
         } catch (Exception ee) {

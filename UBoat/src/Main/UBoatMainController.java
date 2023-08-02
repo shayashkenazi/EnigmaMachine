@@ -428,6 +428,7 @@ public class UBoatMainController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String json_dto = response.body().string();
                 Type dtoType = new TypeToken<DTO_MachineInfo>() { }.getType();
+                System.out.println("here is on res dto macgin" + json_dto);
                 dto_machineInfo = GSON_INSTANCE.fromJson(json_dto, dtoType);
                 String text = newValue ? createMachineInfoAsString() : "";
                 Platform.runLater(() -> {
@@ -490,6 +491,7 @@ public class UBoatMainController {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String json_dictionary = response.body().string();
+                System.out.println("hereee trie" + json_dictionary);
                 Type dictionaryType = new TypeToken<Set<String>>() { }.getType(); // TODO: FIX !!!
                 Set<String> dictionary = GSON_INSTANCE.fromJson(json_dictionary, dictionaryType);
 

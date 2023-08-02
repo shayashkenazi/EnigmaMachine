@@ -36,7 +36,6 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="EnigmaWeb" />
-    <orderEntry type="library" name="gson1" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -51,5 +50,6 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="Engine" />
+    <orderEntry type="library" name="okHttp" level="project" />
   </component>
 </module>

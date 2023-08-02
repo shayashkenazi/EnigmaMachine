@@ -25,7 +25,7 @@ public class UBoat extends Application {
 
         // SetCode Controller
         fxmlLoader = new FXMLLoader();
-        url = getClass().getResource("/setCode/SetCodeController.fxml");
+        url = getClass().getResource("/setCode/setCodeController.fxml");
         fxmlLoader.setLocation(url);
         ScrollPane setCodeComponent = fxmlLoader.load(url.openStream());
         SetCodeController setCodeController = fxmlLoader.getController();
@@ -45,7 +45,6 @@ public class UBoat extends Application {
 
         Scene scene = new Scene(root, 850, 600);
 
-        //uBoatMainController.setWithProp(scene.widthProperty(),scene.heightProperty());
         primaryStage.setScene(scene);
         primaryStage.setTitle("UBoat Application");
         primaryStage.show();

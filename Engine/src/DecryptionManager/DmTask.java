@@ -110,7 +110,7 @@ public class DmTask implements Runnable {
             }
         }
         catch (Exception ee) {
-            System.out.println(ee.getMessage());
+
         }
     }
 
